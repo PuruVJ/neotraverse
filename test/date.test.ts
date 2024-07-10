@@ -27,7 +27,6 @@ test('dateMap', function (t) {
 		}
 	});
 
-	console.log(res.x);
 	expect(obj.x).not.toBe(res.x);
 	expect(res).toEqual({
 		x: obj.x,

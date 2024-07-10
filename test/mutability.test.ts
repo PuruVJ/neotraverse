@@ -44,8 +44,6 @@ test('cloneTypedArray', function (t) {
 	const obj = new Uint8Array([1]);
 	const res = new Traverse(obj).clone();
 
-	console.log(23, obj, res);
-
 	expect(Array.from(obj)).toEqual(Array.from(res));
 	expect(obj).not.toBe(res);
 
@@ -97,7 +95,7 @@ test('remove', function (t) {
 test('removeNoStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 }, f: 5 };
 
-	const keys = [];
+	const keys: (PropertyKey | undefined)[] = [];
 	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
@@ -111,7 +109,7 @@ test('removeNoStop', function (t) {
 test('removeStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 }, f: 5 };
 
-	const keys = [];
+	const keys: (PropertyKey | undefined)[] = [];
 	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
@@ -150,7 +148,7 @@ test('delete', function (t) {
 test('deleteNoStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 } };
 
-	const keys = [];
+	const keys: (PropertyKey | undefined)[] = [];
 	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
@@ -164,7 +162,7 @@ test('deleteNoStop', function (t) {
 test('deleteStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 } };
 
-	const keys = [];
+	const keys: (PropertyKey | undefined)[] = [];
 	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
