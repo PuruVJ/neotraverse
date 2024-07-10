@@ -1,4 +1,4 @@
-import { Traverse } from '../dist/index.js';
+import { Traverse } from '../src/index.ts';
 
 import { expect, test } from 'vitest';
 

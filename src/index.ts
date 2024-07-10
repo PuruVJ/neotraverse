@@ -353,9 +353,7 @@ function walk(
 
 			updateState();
 
-			for (const [stringIndex, key] of Object.entries(state.keys ?? [])) {
-				const index = Number(stringIndex);
-
+			for (const key of state.keys ?? []) {
 				path.push(key);
 
 				if (modifiers.pre) {
@@ -503,7 +501,7 @@ export class Traverse<T extends any> {
 		return acc;
 	}
 
-	clone() {
+	clone(src?: any) {
 		var parents: any[] = [];
 		var nodes: any[] = [];
 		var options = this.#options;
@@ -512,7 +510,7 @@ export class Traverse<T extends any> {
 			return this.#value.slice();
 		}
 
-		return (function clone(src) {
+		return ((src) => {
 			for (var i = 0; i < parents.length; i++) {
 				if (parents[i] === src) {
 					return nodes[i];

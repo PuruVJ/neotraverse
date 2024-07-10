@@ -1,5 +1,5 @@
 {
-	"name": "traverse",
+	"name": "neotraverse",
 	"version": "0.6.9",
 	"description": "traverse and transform objects by visiting every node on a recursive walk",
 	"main": "dist/index.js",
@@ -23,7 +23,7 @@
 	},
 	"scripts": {
 		"compile": "tsup",
-		"test": "vitest run tests/compile.test.ts"
+		"test": "vitest run test/circular.test.ts"
 	},
 	"repository": {
 		"type": "git",
