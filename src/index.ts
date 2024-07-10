@@ -177,11 +177,11 @@ function own_enumerable_keys(obj: object): PropertyKey[] {
 	return res;
 }
 
-function is_writable(object, key) {
+function is_writable(object: any, key: PropertyKey) {
 	return !gopd(object, key)?.writable;
 }
 
-function copy(src: any, options) {
+function copy(src: any, options: InternalTraverseOptions) {
 	if (typeof src === 'object' && src !== null) {
 		let dst: any;
 
@@ -207,6 +207,7 @@ function copy(src: any, options) {
 				const proto = (src.constructor && src.constructor.prototype) || src.__proto__ || {};
 				const T = function T() {}; // eslint-disable-line func-style, func-name-matching
 				T.prototype = proto;
+				// @ts-expect-error legacy
 				dst = new T();
 			}
 		}
@@ -394,26 +395,27 @@ function walk(
 }
 
 export class Traverse {
-	#value: any;
-	#options: TraverseOptions;
+	// ! Have to keep these public as legacy mode requires them
+	private value: any;
+	private options: TraverseOptions;
 
 	constructor(obj: any, options: TraverseOptions = empty_null) {
-		this.#value = obj;
-		this.#options = options;
+		this.value = obj;
+		this.options = options;
 	}
 
 	/**
 	 * Get the element at the array `path`.
 	 */
 	get(paths: PropertyKey[]): any {
-		let node = this.#value;
+		let node = this.value;
 
 		for (let i = 0; node && i < paths.length; i++) {
 			const key = paths[i];
 
 			if (
 				!has_own_property.call(node, key) ||
-				(!this.#options.includeSymbols && typeof key === 'symbol')
+				(!this.options.includeSymbols && typeof key === 'symbol')
 			) {
 				return void undefined;
 			}
@@ -428,14 +430,14 @@ export class Traverse {
 	 * Return whether the element at the array `path` exists.
 	 */
 	has(paths: string[]): boolean {
-		let node = this.#value;
+		let node = this.value;
 
 		for (let i = 0; node && i < paths.length; i++) {
 			const key = paths[i];
 
 			if (
 				!has_own_property.call(node, key) ||
-				(!this.#options.includeSymbols && typeof key === 'symbol')
+				(!this.options.includeSymbols && typeof key === 'symbol')
 			) {
 				return false;
 			}
@@ -450,7 +452,7 @@ export class Traverse {
 	 * Set the element at the array `path` to `value`.
 	 */
 	set(path: string[], value: any): any {
-		let node = this.#value;
+		let node = this.value;
 
 		let i = 0;
 		for (i = 0; i < path.length - 1; i++) {
@@ -472,10 +474,11 @@ export class Traverse {
 	 * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
 	 */
 	map(cb: (this: TraverseContext, v: any) => void): any {
-		return walk(this.#value, cb, {
+		console.log(this);
+		return walk(this.value, cb, {
 			__proto__: null,
 			immutable: true,
-			includeSymbols: !!this.#options.includeSymbols,
+			includeSymbols: !!this.options.includeSymbols,
 		});
 	}
 
@@ -483,8 +486,8 @@ export class Traverse {
 	 * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
 	 */
 	forEach(cb: (this: TraverseContext, v: any) => void): any {
-		this.#value = walk(this.#value, cb, this.#options as InternalTraverseOptions);
-		return this.#value;
+		this.value = walk(this.value, cb, this.options as InternalTraverseOptions);
+		return this.value;
 	}
 
 	/**
@@ -494,7 +497,7 @@ export class Traverse {
 	 */
 	reduce(cb: (this: TraverseContext, acc: any, v: any) => void, init?: any): any {
 		const skip = arguments.length === 1;
-		let acc = skip ? this.#value : init;
+		let acc = skip ? this.value : init;
 
 		this.forEach(function (x) {
 			if (!this.isRoot || !skip) {
@@ -538,10 +541,10 @@ export class Traverse {
 	clone(): any {
 		const parents: any[] = [];
 		const nodes: any[] = [];
-		const options = this.#options;
+		const options = this.options;
 
-		if (is_typed_array(this.#value)) {
-			return this.#value.slice();
+		if (is_typed_array(this.value)) {
+			return this.value.slice();
 		}
 
 		return (function clone(src) {
@@ -552,7 +555,7 @@ export class Traverse {
 			}
 
 			if (typeof src === 'object' && src !== null) {
-				const dst = copy(src, options);
+				const dst = copy(src, options as InternalTraverseOptions);
 
 				parents.push(src);
 				nodes.push(dst);
@@ -568,6 +571,6 @@ export class Traverse {
 			}
 
 			return src;
-		})(this.#value);
+		})(this.value);
 	}
 }

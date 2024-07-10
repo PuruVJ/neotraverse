@@ -1,13 +1,11 @@
-# traverse <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+# neotraverse
 
-[![github actions][actions-image]][actions-url]
-[![coverage][codecov-image]][codecov-url]
-[![License][license-image]][license-url]
-[![Downloads][downloads-image]][downloads-url]
+Traverse and transform objects by visiting every node on a recursive walk. This is a fork of [traverse](https://github.com/ljharb/js-traverse) with 0 dependencies with some improvements.
 
-[![npm badge][npm-badge-png]][package-url]
-
-Traverse and transform objects by visiting every node on a recursive walk.
+- 🤌 1.45KB min+brotli
+- 🚥 Zero dependencies
+- ❎ No polyfills
+- 🛸 ESM-first
 
 # examples
 
@@ -15,16 +13,16 @@ Traverse and transform objects by visiting every node on a recursive walk.
 
 negative.js
 
-````javascript
+```javascript
 var traverse = require('traverse');
-var obj = [ 5, 6, -3, [ 7, 8, -2, 1 ], { f : 10, g : -13 } ];
+var obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
 
 traverse(obj).forEach(function (x) {
-    if (x < 0) this.update(x + 128);
+	if (x < 0) this.update(x + 128);
 });
 
 console.dir(obj);
-````
+```
 
 Output:
 
@@ -34,23 +32,23 @@ Output:
 
 leaves.js
 
-````javascript
+```javascript
 var traverse = require('traverse');
 
 var obj = {
-    a : [1,2,3],
-    b : 4,
-    c : [5,6],
-    d : { e : [7,8], f : 9 },
+	a: [1, 2, 3],
+	b: 4,
+	c: [5, 6],
+	d: { e: [7, 8], f: 9 },
 };
 
 var leaves = traverse(obj).reduce(function (acc, x) {
-    if (this.isLeaf) acc.push(x);
-    return acc;
+	if (this.isLeaf) acc.push(x);
+	return acc;
 }, []);
 
 console.dir(leaves);
-````
+```
 
 Output:
 
@@ -60,17 +58,17 @@ Output:
 
 scrub.js:
 
-````javascript
+```javascript
 var traverse = require('traverse');
 
-var obj = { a : 1, b : 2, c : [ 3, 4 ] };
+var obj = { a: 1, b: 2, c: [3, 4] };
 obj.c.push(obj);
 
 var scrubbed = traverse(obj).map(function (x) {
-    if (this.circular) this.remove()
+	if (this.circular) this.remove();
 });
 console.dir(scrubbed);
-````
+```
 
 output:
 
@@ -94,7 +92,7 @@ Execute `fn` for each node in the object but unlike `.map()`, when
 ## .reduce(fn, acc)
 
 For each node in the object, perform a
-[left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function))
+[left-fold](<http://en.wikipedia.org/wiki/Fold_(higher-order_function)>)
 with the return value of `fn(acc, node)`.
 
 If `acc` isn't specified, `acc` is set to the root object for the first step
@@ -199,7 +197,6 @@ Call this function before each of the children are traversed.
 ## this.post(fn)
 
 Call this function after each of the children are traversed.
-
 
 # install
 

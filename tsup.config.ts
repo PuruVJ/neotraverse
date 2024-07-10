@@ -22,9 +22,9 @@ export default defineConfig([
 		outDir: 'dist/min',
 	},
 	{
-		entry: ['src/index.ts'],
+		entry: ['src/legacy.ts'],
 		format: ['cjs', 'esm'],
-		dts: false,
+		dts: true,
 		sourcemap: false,
 		clean: true,
 		platform: 'neutral',
