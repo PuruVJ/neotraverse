@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
-test('traverse an Uint8Array', { skip: typeof Uint8Array !== 'function' }, function (t) {
+test('new Traverse an Uint8Array', { skip: typeof Uint8Array !== 'function' }, function (t) {
 	var obj = new Uint8Array(4);
-	var results = traverse(obj).map(function () {});
+	var results = new Traverse(obj).map(function () {});
 
 	console.log(obj, results);
 

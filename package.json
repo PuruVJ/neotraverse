@@ -1,6 +1,6 @@
 {
 	"name": "neotraverse",
-	"version": "0.6.9",
+	"version": "0.0.1",
 	"description": "traverse and transform objects by visiting every node on a recursive walk",
 	"main": "dist/index.js",
 	"type": "module",

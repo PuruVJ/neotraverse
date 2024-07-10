@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
-test('traverse an Error', () => {
+test('new Traverse an Error', () => {
 	var obj = new Error('test');
-	var results = traverse(obj).map(function () {});
+	var results = new Traverse(obj).map(function () {});
 	// t.same(results, { message: 'test' });
 	expect(results).toEqual({ message: 'test' });
 });

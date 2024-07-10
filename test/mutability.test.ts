@@ -1,10 +1,10 @@
 import assert from 'node:assert';
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('mutate', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).forEach(function (x) {
+	const res = new Traverse(obj).forEach(function (x) {
 		if (typeof x === 'number' && x % 2 === 0) {
 			this.update(x * 10);
 		}
@@ -16,7 +16,7 @@ test('mutate', function (t) {
 
 test('map', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).map(function (x) {
+	const res = new Traverse(obj).map(function (x) {
 		if (typeof x === 'number' && x % 2 === 0) {
 			this.update(x * 10);
 		}
@@ -28,7 +28,7 @@ test('map', function (t) {
 
 test('clone', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).clone();
+	const res = new Traverse(obj).clone();
 	expect(obj).toEqual(res);
 	expect(obj).not.toBe(res);
 
@@ -42,7 +42,7 @@ test('clone', function (t) {
 // TODO: Investigate why clone gives a different Uint8Array
 test('cloneTypedArray', function (t) {
 	const obj = new Uint8Array([1]);
-	const res = traverse(obj).clone();
+	const res = new Traverse(obj).clone();
 
 	console.log(23, obj, res);
 
@@ -58,7 +58,7 @@ test('cloneTypedArray', function (t) {
 
 test('reduce', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).reduce(function (acc, x) {
+	const res = new Traverse(obj).reduce(function (acc, x) {
 		if (this.isLeaf) {
 			acc.push(x);
 		}
@@ -71,7 +71,7 @@ test('reduce', function (t) {
 
 test('reduceInit', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).reduce(function (acc) {
+	const res = new Traverse(obj).reduce(function (acc) {
 		if (this.isRoot) {
 			assert.fail('got root');
 		}
@@ -85,7 +85,7 @@ test('reduceInit', function (t) {
 
 test('remove', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	traverse(obj).forEach(function (x) {
+	new Traverse(obj).forEach(function (x) {
 		if (this.isLeaf && x % 2 === 0) {
 			this.remove();
 		}
@@ -98,7 +98,7 @@ test('removeNoStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 }, f: 5 };
 
 	const keys = [];
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
 			this.remove();
@@ -112,7 +112,7 @@ test('removeStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 }, f: 5 };
 
 	const keys = [];
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
 			this.remove(true);
@@ -124,7 +124,7 @@ test('removeStop', function (t) {
 
 test('removeMap', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).map(function (x) {
+	const res = new Traverse(obj).map(function (x) {
 		if (this.isLeaf && x % 2 === 0) {
 			this.remove();
 		}
@@ -136,7 +136,7 @@ test('removeMap', function (t) {
 
 test('delete', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	traverse(obj).forEach(function (x) {
+	new Traverse(obj).forEach(function (x) {
 		if (this.isLeaf && x % 2 === 0) {
 			this.delete();
 		}
@@ -151,7 +151,7 @@ test('deleteNoStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 } };
 
 	const keys = [];
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
 			this.delete();
@@ -165,7 +165,7 @@ test('deleteStop', function (t) {
 	const obj = { a: 1, b: 2, c: { d: 3, e: 4 } };
 
 	const keys = [];
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		keys.push(this.key);
 		if (this.key === 'c') {
 			this.delete(true);
@@ -177,7 +177,7 @@ test('deleteStop', function (t) {
 
 test('deleteRedux', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4, 5] };
-	traverse(obj).forEach(function (x) {
+	new Traverse(obj).forEach(function (x) {
 		if (this.isLeaf && x % 2 === 0) {
 			this.delete();
 		}
@@ -191,7 +191,7 @@ test('deleteRedux', function (t) {
 
 test('deleteMap', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).map(function (x) {
+	const res = new Traverse(obj).map(function (x) {
 		if (this.isLeaf && x % 2 === 0) {
 			this.delete();
 		}
@@ -210,7 +210,7 @@ test('deleteMap', function (t) {
 
 test('deleteMapRedux', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4, 5] };
-	const res = traverse(obj).map(function (x) {
+	const res = new Traverse(obj).map(function (x) {
 		if (this.isLeaf && x % 2 === 0) {
 			this.delete();
 		}
@@ -231,7 +231,7 @@ test('deleteMapRedux', function (t) {
 
 test('objectToString', function (t) {
 	const obj = { a: 1, b: 2, c: [3, 4] };
-	const res = traverse(obj).forEach(function (x) {
+	const res = new Traverse(obj).forEach(function (x) {
 		if (typeof x === 'object' && !this.isRoot) {
 			this.update(JSON.stringify(x));
 		}
@@ -243,7 +243,7 @@ test('objectToString', function (t) {
 
 test('stringToObject', function (t) {
 	const obj = { a: 1, b: 2, c: '[3,4]' };
-	const res = traverse(obj).forEach(function (x) {
+	const res = new Traverse(obj).forEach(function (x) {
 		if (typeof x === 'string') {
 			this.update(JSON.parse(x));
 		} else if (typeof x === 'number' && x % 2 === 0) {

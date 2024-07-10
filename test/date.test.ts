@@ -1,12 +1,12 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('dateEach', function (t) {
 	var obj = { x: new Date(), y: 10, z: 5 };
 
 	var counts = {};
 
-	traverse(obj).forEach(function (node) {
+	new Traverse(obj).forEach(function (node) {
 		var type = (node instanceof Date && 'Date') || typeof node;
 		counts[type] = (counts[type] || 0) + 1;
 	});
@@ -21,12 +21,13 @@ test('dateEach', function (t) {
 test('dateMap', function (t) {
 	var obj = { x: new Date(), y: 10, z: 5 };
 
-	var res = traverse(obj).map(function (node) {
+	var res = new Traverse(obj).map(function (node) {
 		if (typeof node === 'number') {
 			this.update(node + 100);
 		}
 	});
 
+	console.log(res.x);
 	expect(obj.x).not.toBe(res.x);
 	expect(res).toEqual({
 		x: obj.x,

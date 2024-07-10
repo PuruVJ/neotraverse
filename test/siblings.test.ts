@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('siblings', function (t) {
 	var obj = { a: 1, b: 2, c: [4, 5, 6] };
 
-	var res = traverse(obj).reduce(function (acc) {
+	var res = new Traverse(obj).reduce(function (acc) {
 		/* eslint no-param-reassign: 0 */
 		var p = '/' + this.path.join('/');
 		if (this.parent) {

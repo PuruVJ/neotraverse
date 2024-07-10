@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('circular', function (t) {
 	const obj = { x: 3 };
 	// @ts-expect-error
 	obj.y = obj;
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		if (this.path.join('') === 'y') {
 			// t.equal(util.inspect(this.circular.node), util.inspect(obj));
 			expect(this.circular?.node).toEqual(obj);
@@ -18,7 +18,7 @@ test('deepCirc', function (t) {
 	// @ts-expect-error
 	obj.y[2] = obj;
 
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		if (this.circular) {
 			expect(this.circular?.path).toEqual([]);
 			expect(this.path).toEqual(['y', '2']);
@@ -34,7 +34,7 @@ test('doubleCirc', function (t) {
 	obj.x.push(obj.y);
 
 	const circs: any[] = [];
-	traverse(obj).forEach(function (x) {
+	new Traverse(obj).forEach(function (x) {
 		if (this.circular) {
 			circs.push({ circ: this.circular, self: this, node: x });
 		}
@@ -56,7 +56,7 @@ test('circDubForEach', function (t) {
 	// @ts-expect-error
 	obj.x.push(obj.y);
 
-	traverse(obj).forEach(function () {
+	new Traverse(obj).forEach(function () {
 		if (this.circular) {
 			this.update('...');
 		}
@@ -72,7 +72,7 @@ test('circDubMap', function (t) {
 	// @ts-expect-error
 	obj.x.push(obj.y);
 
-	const c = traverse(obj).map(function () {
+	const c = new Traverse(obj).map(function () {
 		if (this.circular) {
 			this.update('...');
 		}
@@ -88,7 +88,7 @@ test('circClone', function (t) {
 	// @ts-expect-error
 	obj.x.push(obj.y);
 
-	const clone = traverse(obj).clone();
+	const clone = new Traverse(obj).clone();
 	expect(obj).not.toBe(clone);
 
 	expect(clone.y[2]).toBe(clone);
@@ -104,7 +104,7 @@ test('circMapScrub', function (t) {
 	// @ts-expect-error
 	obj.c = obj;
 
-	const scrubbed = traverse(obj).map(function () {
+	const scrubbed = new Traverse(obj).map(function () {
 		if (this.circular) {
 			this.remove();
 		}

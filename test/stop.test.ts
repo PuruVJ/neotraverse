@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('stop', function (t) {
 	let visits = 0;
-	traverse('abcdefghij'.split('')).forEach(function (node) {
+	new Traverse('abcdefghij'.split('')).forEach(function (node) {
 		if (typeof node === 'string') {
 			visits += 1;
 			if (node === 'e') {
@@ -16,7 +16,7 @@ test('stop', function (t) {
 });
 
 test('stopMap', function (t) {
-	var s = traverse('abcdefghij'.split(''))
+	var s = new Traverse('abcdefghij'.split(''))
 		.map(function (node) {
 			if (typeof node === 'string') {
 				if (node === 'e') {
@@ -36,7 +36,7 @@ test('stopReduce', function (t) {
 		a: [4, 5],
 		b: [6, [7, 8, 9]],
 	};
-	var xs = traverse(obj).reduce(function (acc, node) {
+	var xs = new Traverse(obj).reduce(function (acc, node) {
 		if (this.isLeaf) {
 			if (node === 7) {
 				this.stop();

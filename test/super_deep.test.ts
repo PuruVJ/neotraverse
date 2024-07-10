@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 function make() {
 	var a: any = { self: 'a' };

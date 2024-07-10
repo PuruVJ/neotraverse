@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('subexpr', function (t) {
 	var obj = ['a', 4, 'b', 5, 'c', 6];
-	var r = traverse(obj).map(function (x) {
+	var r = new Traverse(obj).map(function (x) {
 		if (typeof x === 'number') {
 			this.update([x - 0.1, x, x + 0.1], true);
 		}
@@ -15,7 +15,7 @@ test('subexpr', function (t) {
 
 test('block', { skip: true }, function (t) {
 	var obj = [[1], [2], [3]];
-	var r = traverse(obj).map(function (x) {
+	var r = new Traverse(obj).map(function (x) {
 		if (Array.isArray(x) && !this.isRoot) {
 			if (x[0] === 5) {
 				this.block();

@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('stringify', function (t) {
 	var obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
 
 	var s = '';
-	traverse(obj).forEach(function (node) {
+	new Traverse(obj).forEach(function (node) {
 		if (Array.isArray(node)) {
 			this.before(function () {
 				s += '[';

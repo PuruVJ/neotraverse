@@ -1,19 +1,19 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('interface map', function (t) {
 	const obj = { a: [5, 6, 7], b: { c: [8] } };
 
 	expect(
-		traverse
-			.paths(obj)
+		new Traverse(obj)
+			.paths()
 			.sort()
 			.map((path) => path.join('/'))
 			.slice(1)
 			.join(' ')
 	).toBe('a a/0 a/1 a/2 b b/c b/c/0');
 
-	expect(traverse.nodes(obj)).toEqual([
+	expect(new Traverse(obj).nodes()).toEqual([
 		{ a: [5, 6, 7], b: { c: [8] } },
 		[5, 6, 7],
 		5,
@@ -25,7 +25,7 @@ test('interface map', function (t) {
 	]);
 
 	// t.same(
-	// 	traverse.map(obj, function (node) {
+	// 	new Traverse.map(obj, function (node) {
 	// 		if (typeof node === 'number') {
 	// 			return node + 1000;
 	// 		}
@@ -37,7 +37,7 @@ test('interface map', function (t) {
 	// 	{ a: '5 6 7', b: { c: '8' } }
 	// );
 	expect(
-		traverse.map(obj, (node) => {
+		new Traverse(obj).map((node) => {
 			if (typeof node === 'number') {
 				return node + 1000;
 			}
@@ -49,7 +49,7 @@ test('interface map', function (t) {
 	).toEqual({ a: '5 6 7', b: { c: '8' } });
 
 	var nodes = 0;
-	traverse.forEach(obj, function () {
+	new Traverse(obj).forEach(function () {
 		nodes += 1;
 	});
 

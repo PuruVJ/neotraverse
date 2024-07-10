@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
-test('traverse an object with nested functions', function (t) {
+test('new Traverse an object with nested functions', function (t) {
 	function Cons(x) {
 		expect(x).toBe(10);
 	}
-	traverse(new Cons(10));
+	new Traverse(new Cons(10));
 });

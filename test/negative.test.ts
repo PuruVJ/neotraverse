@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 describe('negative update test', function (t) {
 	var obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
-	var fixed = traverse(obj).map(function (x) {
+	var fixed = new Traverse(obj).map(function (x) {
 		if (x < 0) {
 			this.update(x + 128);
 		}

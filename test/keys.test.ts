@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { traverse } from '../src';
+import { Traverse } from '../src';
 
 test('sort test', function (t) {
 	const acc: any[] = [];
-	traverse({
+	new Traverse({
 		a: 30,
 		b: 22,
 		id: 9,
