@@ -1,10 +1,10 @@
 # neotraverse
 
-Traverse and transform objects by visiting every node on a recursive walk. This is a fork of [traverse](https://github.com/ljharb/js-traverse) with 0 dependencies with some improvements:
+Traverse and transform objects by visiting every node on a recursive walk. This is a fork and TypeScript rewrite of [traverse](https://github.com/ljharb/js-traverse) with 0 dependencies and major improvements:
 
 - 🤌 1.45KB min+brotli
 - 🚥 Zero dependencies
-- 🎹 TypeScript
+- 🎹 TypeScript. Throw away the `@types/traverse` package
 - ❎ No polyfills
 - 🛸 ESM-first
 
