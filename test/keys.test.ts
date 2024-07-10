@@ -1,10 +1,8 @@
-'use strict';
-
-var test = require('tape');
-var traverse = require('../');
+import { expect, test } from 'vitest';
+import { traverse } from '../src';
 
 test('sort test', function (t) {
-	var acc = [];
+	const acc: any[] = [];
 	traverse({
 		a: 30,
 		b: 22,
@@ -20,14 +18,10 @@ test('sort test', function (t) {
 				});
 			});
 		}
-		if (this.isLeaf) { acc.push(node); }
+		if (this.isLeaf) {
+			acc.push(node);
+		}
 	});
 
-	t.equal(
-		acc.join(' '),
-		'9 30 22',
-		'Traversal in a custom order'
-	);
-
-	t.end();
+	expect(acc.join(' ')).toBe('9 30 22');
 });

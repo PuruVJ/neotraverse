@@ -1,14 +1,12 @@
-'use strict';
-
-var test = require('tape');
-var deepEqual = require('./lib/deep_equal');
+import { expect, test } from 'vitest';
+import { traverse } from '../src';
 
 function make() {
-	var a = { self: 'a' };
-	var b = { self: 'b' };
-	var c = { self: 'c' };
-	var d = { self: 'd' };
-	var e = { self: 'e' };
+	var a: any = { self: 'a' };
+	var b: any = { self: 'b' };
+	var c: any = { self: 'c' };
+	var d: any = { self: 'd' };
+	var e: any = { self: 'e' };
 
 	a.a = a;
 	a.b = b;
@@ -41,16 +39,16 @@ function make() {
 test('super_deep', function (t) {
 	var a0 = make();
 	var a1 = make();
-	t.ok(deepEqual(a0, a1));
+
+	expect(a0).toEqual(a1);
 
 	a0.c.d.moo = true;
-	t.ok(!deepEqual(a0, a1));
+	expect(a0).not.toEqual(a1);
 
 	a1.c.d.moo = true;
-	t.ok(deepEqual(a0, a1));
+	expect(a0).toEqual(a1);
 
 	// TODO: this one
 	// a0.c.a = a1;
 	// t.ok(!deepEqual(a0, a1));
-	t.end();
 });

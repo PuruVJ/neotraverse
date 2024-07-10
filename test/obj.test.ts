@@ -1,13 +1,9 @@
-'use strict';
-
-var test = require('tape');
-var traverse = require('../');
+import { expect, test } from 'vitest';
+import { traverse } from '../src';
 
 test('traverse an object with nested functions', function (t) {
-	t.plan(1);
-
 	function Cons(x) {
-		t.equal(x, 10);
+		expect(x).toBe(10);
 	}
 	traverse(new Cons(10));
 });

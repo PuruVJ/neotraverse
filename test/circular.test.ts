@@ -1,12 +1,11 @@
-import { Traverse } from '../src/index.ts';
-
 import { expect, test } from 'vitest';
+import { traverse } from '../src';
 
 test('circular', function (t) {
 	const obj = { x: 3 };
 	// @ts-expect-error
 	obj.y = obj;
-	new Traverse(obj).forEach(function () {
+	traverse(obj).forEach(function () {
 		if (this.path.join('') === 'y') {
 			// t.equal(util.inspect(this.circular.node), util.inspect(obj));
 			expect(this.circular?.node).toEqual(obj);
@@ -19,7 +18,7 @@ test('deepCirc', function (t) {
 	// @ts-expect-error
 	obj.y[2] = obj;
 
-	new Traverse(obj).forEach(function () {
+	traverse(obj).forEach(function () {
 		if (this.circular) {
 			expect(this.circular?.path).toEqual([]);
 			expect(this.path).toEqual(['y', '2']);
@@ -35,7 +34,7 @@ test('doubleCirc', function (t) {
 	obj.x.push(obj.y);
 
 	const circs: any[] = [];
-	new Traverse(obj).forEach(function (x) {
+	traverse(obj).forEach(function (x) {
 		if (this.circular) {
 			circs.push({ circ: this.circular, self: this, node: x });
 		}
@@ -57,7 +56,7 @@ test('circDubForEach', function (t) {
 	// @ts-expect-error
 	obj.x.push(obj.y);
 
-	new Traverse(obj).forEach(function () {
+	traverse(obj).forEach(function () {
 		if (this.circular) {
 			this.update('...');
 		}
@@ -73,12 +72,10 @@ test('circDubMap', function (t) {
 	// @ts-expect-error
 	obj.x.push(obj.y);
 
-	const c = new Traverse(obj).map(function (v) {
+	const c = traverse(obj).map(function () {
 		if (this.circular) {
 			this.update('...');
 		}
-
-		return v;
 	});
 
 	expect(c).toEqual({ x: [1, 2, 3, [4, 5, '...']], y: [4, 5, '...'] });
@@ -91,7 +88,7 @@ test('circClone', function (t) {
 	// @ts-expect-error
 	obj.x.push(obj.y);
 
-	const clone = new Traverse(obj).clone();
+	const clone = traverse(obj).clone();
 	expect(obj).not.toBe(clone);
 
 	expect(clone.y[2]).toBe(clone);
@@ -107,7 +104,7 @@ test('circMapScrub', function (t) {
 	// @ts-expect-error
 	obj.c = obj;
 
-	const scrubbed = new Traverse(obj).map(function () {
+	const scrubbed = traverse(obj).map(function () {
 		if (this.circular) {
 			this.remove();
 		}

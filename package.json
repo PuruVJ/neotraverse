@@ -15,6 +15,7 @@
 			"default": "./dist/min/index.js"
 		},
 		"./legacy": {
+			"node": "./dist/legacy/index.cjs",
 			"types": "./dist/index.d.ts",
 			"import": "./dist/legacy/index.js",
 			"default": "./dist/legacy/index.js"
@@ -23,7 +24,7 @@
 	},
 	"scripts": {
 		"compile": "tsup",
-		"test": "vitest run test/circular.test.ts"
+		"test": "vitest run"
 	},
 	"repository": {
 		"type": "git",
@@ -47,9 +48,16 @@
 		"node": ">= 18"
 	},
 	"devDependencies": {
+		"@types/node": "^20.14.10",
 		"terser": "^5.31.2",
 		"tsup": "^8.1.0",
 		"typescript": "^5.5.3",
 		"vitest": "^2.0.1"
+	},
+	"dependencies": {
+		"gopd": "^1.0.1",
+		"klona": "^2.0.6",
+		"typedarray.prototype.slice": "^1.0.3",
+		"which-typed-array": "^1.1.15"
 	}
 }

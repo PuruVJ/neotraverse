@@ -1,0 +1,57 @@
+import { expect, test } from 'vitest';
+import { traverse } from '../src';
+
+test('interface map', function (t) {
+	const obj = { a: [5, 6, 7], b: { c: [8] } };
+
+	expect(
+		traverse
+			.paths(obj)
+			.sort()
+			.map((path) => path.join('/'))
+			.slice(1)
+			.join(' ')
+	).toBe('a a/0 a/1 a/2 b b/c b/c/0');
+
+	expect(traverse.nodes(obj)).toEqual([
+		{ a: [5, 6, 7], b: { c: [8] } },
+		[5, 6, 7],
+		5,
+		6,
+		7,
+		{ c: [8] },
+		[8],
+		8,
+	]);
+
+	// t.same(
+	// 	traverse.map(obj, function (node) {
+	// 		if (typeof node === 'number') {
+	// 			return node + 1000;
+	// 		}
+	// 		if (Array.isArray(node)) {
+	// 			return node.join(' ');
+	// 		}
+	// 		return void undefined;
+	// 	}),
+	// 	{ a: '5 6 7', b: { c: '8' } }
+	// );
+	expect(
+		traverse.map(obj, (node) => {
+			if (typeof node === 'number') {
+				return node + 1000;
+			}
+			if (Array.isArray(node)) {
+				return node.join(' ');
+			}
+			return void undefined;
+		})
+	).toEqual({ a: '5 6 7', b: { c: '8' } });
+
+	var nodes = 0;
+	traverse.forEach(obj, function () {
+		nodes += 1;
+	});
+
+	expect(nodes).toBe(8);
+});
