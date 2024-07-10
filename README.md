@@ -89,9 +89,11 @@ output:
 # Differences from `traverse`
 
 - ESM-first
+- ES2022
 - Works as-is in all major browsers and Deno
 - No polyfills
 - `new Traverse()` class instead of regular old `traverse()`
+- Legacy mode supporting ES2015 minimum
 
 There is a legacy mode that provides the same API as `traverse`, acting as a drop-in replacement:
 
