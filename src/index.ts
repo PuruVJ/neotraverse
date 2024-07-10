@@ -189,7 +189,6 @@ function copy(src: any, options: InternalTraverseOptions) {
 			dst = [];
 		} else if (is_date(src)) {
 			dst = new Date(src.getTime ? src.getTime() : src);
-			console.log({ src, dst });
 		} else if (is_regexp(src)) {
 			dst = new RegExp(src);
 		} else if (is_error(src)) {
@@ -232,7 +231,7 @@ const empty_null: InternalTraverseOptions = {
 function walk(
 	root: any,
 	cb: (this: TraverseContext, v: any) => void,
-	options: InternalTraverseOptions = empty_null
+	options: InternalTraverseOptions = empty_null,
 ) {
 	const path: PropertyKey[] = [];
 	const parents: any[] = [];
@@ -396,26 +395,26 @@ function walk(
 
 export class Traverse {
 	// ! Have to keep these public as legacy mode requires them
-	private value: any;
-	private options: TraverseOptions;
+	#value: any;
+	#options: TraverseOptions;
 
 	constructor(obj: any, options: TraverseOptions = empty_null) {
-		this.value = obj;
-		this.options = options;
+		this.#value = obj;
+		this.#options = options;
 	}
 
 	/**
 	 * Get the element at the array `path`.
 	 */
 	get(paths: PropertyKey[]): any {
-		let node = this.value;
+		let node = this.#value;
 
 		for (let i = 0; node && i < paths.length; i++) {
 			const key = paths[i];
 
 			if (
 				!has_own_property.call(node, key) ||
-				(!this.options.includeSymbols && typeof key === 'symbol')
+				(!this.#options.includeSymbols && typeof key === 'symbol')
 			) {
 				return void undefined;
 			}
@@ -430,14 +429,14 @@ export class Traverse {
 	 * Return whether the element at the array `path` exists.
 	 */
 	has(paths: string[]): boolean {
-		let node = this.value;
+		let node = this.#value;
 
 		for (let i = 0; node && i < paths.length; i++) {
 			const key = paths[i];
 
 			if (
 				!has_own_property.call(node, key) ||
-				(!this.options.includeSymbols && typeof key === 'symbol')
+				(!this.#options.includeSymbols && typeof key === 'symbol')
 			) {
 				return false;
 			}
@@ -452,7 +451,7 @@ export class Traverse {
 	 * Set the element at the array `path` to `value`.
 	 */
 	set(path: string[], value: any): any {
-		let node = this.value;
+		let node = this.#value;
 
 		let i = 0;
 		for (i = 0; i < path.length - 1; i++) {
@@ -474,11 +473,10 @@ export class Traverse {
 	 * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
 	 */
 	map(cb: (this: TraverseContext, v: any) => void): any {
-		console.log(this);
-		return walk(this.value, cb, {
+		return walk(this.#value, cb, {
 			__proto__: null,
 			immutable: true,
-			includeSymbols: !!this.options.includeSymbols,
+			includeSymbols: !!this.#options.includeSymbols,
 		});
 	}
 
@@ -486,8 +484,8 @@ export class Traverse {
 	 * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
 	 */
 	forEach(cb: (this: TraverseContext, v: any) => void): any {
-		this.value = walk(this.value, cb, this.options as InternalTraverseOptions);
-		return this.value;
+		this.#value = walk(this.#value, cb, this.#options as InternalTraverseOptions);
+		return this.#value;
 	}
 
 	/**
@@ -497,7 +495,7 @@ export class Traverse {
 	 */
 	reduce(cb: (this: TraverseContext, acc: any, v: any) => void, init?: any): any {
 		const skip = arguments.length === 1;
-		let acc = skip ? this.value : init;
+		let acc = skip ? this.#value : init;
 
 		this.forEach(function (x) {
 			if (!this.isRoot || !skip) {
@@ -541,10 +539,10 @@ export class Traverse {
 	clone(): any {
 		const parents: any[] = [];
 		const nodes: any[] = [];
-		const options = this.options;
+		const options = this.#options;
 
-		if (is_typed_array(this.value)) {
-			return this.value.slice();
+		if (is_typed_array(this.#value)) {
+			return this.#value.slice();
 		}
 
 		return (function clone(src) {
@@ -571,6 +569,6 @@ export class Traverse {
 			}
 
 			return src;
-		})(this.value);
+		})(this.#value);
 	}
 }
