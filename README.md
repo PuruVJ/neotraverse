@@ -89,7 +89,7 @@ output:
 # Differences from `traverse`
 
 - ESM-first
-- ES2022, Node 16+
+- ES2022, Node 18+
 - Types included by default. No need to install `@types/traverse`
 - Works as-is in all major browsers and Deno
 - No polyfills
