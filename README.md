@@ -90,6 +90,7 @@ output:
 
 - ESM-first
 - ES2022
+- Types included by default. No need to install `@types/traverse`
 - Works as-is in all major browsers and Deno
 - No polyfills
 - `new Traverse()` class instead of regular old `traverse()`
@@ -115,7 +116,7 @@ traverse(obj).forEach(function (x) {
 
 ```sh
 npm install neotraverse
-npm uninstall traverse # Remove the old dependency
+npm uninstall traverse @types/traverse # Remove the old dependencies
 ```
 
 ### Step 2: Replace `traverse` with `neotraverse`
