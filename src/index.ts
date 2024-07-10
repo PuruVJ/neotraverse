@@ -225,7 +225,7 @@ function copy(src: any) {
 const emptyNull: TraverseOptions & { __proto__: null } = { __proto__: null };
 
 function walk(
-	root: unknown,
+	root: any,
 	cb: (this: TraverseContext, v: any) => void,
 	options: TraverseOptions = emptyNull
 ) {
@@ -391,7 +391,7 @@ function walk(
 
 export class Traverse<T extends any> {
 	#options: TraverseOptions;
-	#value: T;
+	#value: any;
 
 	constructor(obj: T, options?: TraverseOptions) {
 		this.#options = options ?? emptyNull;
