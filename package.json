@@ -22,7 +22,8 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"test": "npm run tests-only"
+		"compile": "tsup",
+		"test": "vitest run tests/compile.test.ts"
 	},
 	"repository": {
 		"type": "git",
