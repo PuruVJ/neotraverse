@@ -273,20 +273,6 @@ Call this function before each of the children are traversed.
 
 Call this function after each of the children are traversed.
 
-# install
-
-Using [npm](http://npmjs.org) do:
-
-    $ npm install traverse
-
 # license
 
 MIT
-
-```
-
-```
-
-```
-
-```
