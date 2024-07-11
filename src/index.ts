@@ -195,20 +195,10 @@ function copy(src: any, options: InternalTraverseOptions) {
 			dst = { message: src.message };
 		} else if (is_boolean(src) || is_number(src) || is_string(src)) {
 			dst = Object(src);
+		} else if (is_typed_array(src)) {
+			return src.slice();
 		} else {
-			if (is_typed_array(src)) {
-				return src.slice();
-			} else if (Object.create && Object.getPrototypeOf) {
-				dst = Object.create(Object.getPrototypeOf(src));
-			} else if (src.constructor === Object) {
-				dst = {};
-			} else {
-				const proto = (src.constructor && src.constructor.prototype) || src.__proto__ || {};
-				const T = function T() {}; // eslint-disable-line func-style, func-name-matching
-				T.prototype = proto;
-				// @ts-expect-error legacy
-				dst = new T();
-			}
+			dst = Object.create(Object.getPrototypeOf(src));
 		}
 
 		const iterator_function = options.includeSymbols ? own_enumerable_keys : Object.keys;
@@ -328,7 +318,7 @@ function walk(
 				for (let i = 0; i < parents.length; i++) {
 					if (parents[i].node_ === node_) {
 						state.circular = parents[i];
-						break; // eslint-disable-line no-restricted-syntax
+						break;
 					}
 				}
 			} else {
@@ -577,18 +567,30 @@ const traverse = (obj: any, options?: TraverseOptions): Traverse => {
 	return new Traverse(obj, options);
 };
 
+/**
+ * Get the element at the array `path`.
+ */
 traverse.get = (obj: any, paths: PropertyKey[], options?: TraverseOptions): any => {
 	return new Traverse(obj, options).get(paths);
 };
 
+/**
+ * Set the element at the array `path` to `value`.
+ */
 traverse.set = (obj: any, path: string[], value: any, options?: TraverseOptions): any => {
 	return new Traverse(obj, options).set(path, value);
 };
 
+/**
+ * Return whether the element at the array `path` exists.
+ */
 traverse.has = (obj: any, paths: string[], options?: TraverseOptions): boolean => {
 	return new Traverse(obj, options).has(paths);
 };
 
+/**
+ * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
+ */
 traverse.map = (
 	obj: any,
 	cb: (this: TraverseContext, v: any) => void,
@@ -597,6 +599,9 @@ traverse.map = (
 	return new Traverse(obj, options).map(cb);
 };
 
+/**
+ * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
+ */
 traverse.forEach = (
 	obj: any,
 	cb: (this: TraverseContext, v: any) => void,
@@ -605,6 +610,11 @@ traverse.forEach = (
 	return new Traverse(obj, options).forEach(cb);
 };
 
+/**
+ * For each node in the object, perform a [left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function)) with the return value of `fn(acc, node)`.
+ *
+ * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
+ */
 traverse.reduce = (
 	obj: any,
 	cb: (this: TraverseContext, acc: any, v: any) => void,
@@ -614,14 +624,24 @@ traverse.reduce = (
 	return new Traverse(obj, options).reduce(cb, init);
 };
 
+/**
+ * Return an `Array` of every possible non-cyclic path in the object.
+ * Paths are `Array`s of string keys.
+ */
 traverse.paths = (obj: any, options?: TraverseOptions): PropertyKey[][] => {
 	return new Traverse(obj, options).paths();
 };
 
+/**
+ * Return an `Array` of every node in the object.
+ */
 traverse.nodes = (obj: any, options?: TraverseOptions): any[] => {
 	return new Traverse(obj, options).nodes();
 };
 
+/**
+ * Create a deep clone of the object.
+ */
 traverse.clone = (obj: any, options?: TraverseOptions): any => {
 	return new Traverse(obj, options).clone();
 };

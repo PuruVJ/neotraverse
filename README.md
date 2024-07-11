@@ -159,6 +159,20 @@ output:
 
     { a: 1, b: 2, c: [ 3, 4 ] }
 
+## commonjs
+
+neotraverse/legacy is compatible with commonjs and provides the same API as `traverse`, acting as a drop-in replacement:
+
+```js
+const traverse = require('neotraverse/legacy');
+```
+
+## esm
+
+```js
+import { Traverse } from 'neotraverse';
+```
+
 # Differences from `traverse`
 
 - ESM-first
@@ -167,7 +181,7 @@ output:
 - Works as-is in all major browsers and Deno
 - No polyfills
 - `new Traverse()` class instead of regular old `traverse()`
-- Legacy mode supporting ES5 and CJS
+- Legacy mode supporting `ES5` and `CJS`
 
 There is a legacy mode that provides the same API as `traverse`, acting as a drop-in replacement:
 
