@@ -18,6 +18,7 @@ Rules this package aims to follow for an indefinite period of time:
 - ESM-first.
 - Pushing to be modern
 - Always provide a legacy mode
+- Always follow `traverse` API. There already are many packages that do this. `neotraverse` intends to be a drop-in replacement for `traverse` and provide the same API with 0 dependencies and enhanced Developer Experience.
 
 # examples
 
