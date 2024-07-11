@@ -1,4 +1,4 @@
-import traverse from '../dist/legacy/legacy.js';
+import traverse from '../dist/legacy/index.js';
 
 var id = 54;
 var callbacks = {};

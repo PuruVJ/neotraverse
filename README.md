@@ -2,11 +2,12 @@
 
 Traverse and transform objects by visiting every node on a recursive walk. This is a fork and TypeScript rewrite of [traverse](https://github.com/ljharb/js-traverse) with 0 dependencies and major improvements:
 
-- 🤌 1.45KB min+brotli
+- 🤌 1.54KB min+brotli
 - 🚥 Zero dependencies
 - 🎹 TypeScript. Throw away the `@types/traverse` package
 - ❎ No polyfills
 - 🛸 ESM-first
+- Legacy mode supporting ES5
 
 # Principles
 
@@ -29,6 +30,25 @@ import { Traverse } from 'neotraverse';
 const obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
 
 new Traverse(obj).forEach(function (x) {
+  if (x < 0) this.update(x + 128);
+});
+
+console.dir(obj);
+```
+
+or in legacy mode:
+
+```js
+import traverse from 'neotraverse';
+
+const obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
+
+traverse(obj).forEach(function (x) {
+  if (x < 0) this.update(x + 128);
+});
+
+// This is identical to the above
+traverse.forEach(obj, function (x) {
   if (x < 0) this.update(x + 128);
 });
 
@@ -61,6 +81,37 @@ const leaves = new Traverse(obj).reduce(function (acc, x) {
 console.dir(leaves);
 ```
 
+or in legacy mode:
+
+```js
+import traverse from 'neotraverse';
+
+const obj = {
+  a: [1, 2, 3],
+  b: 4,
+  c: [5, 6],
+  d: { e: [7, 8], f: 9 }
+};
+
+const leaves = traverse(obj).reduce(function (acc, x) {
+  if (this.isLeaf) acc.push(x);
+  return acc;
+}, []);
+
+// Equivalent to the above
+const leavesLegacy = traverse.reduce(
+  obj,
+  function (acc, x) {
+    if (this.isLeaf) acc.push(x);
+    return acc;
+  },
+  []
+);
+
+console.dir(leaves);
+console.dir(leavesLegacy);
+```
+
 Output:
 
     [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
@@ -82,6 +133,27 @@ const scrubbed = new Traverse(obj).map(function (x) {
 console.dir(scrubbed);
 ```
 
+or in legacy mode:
+
+```js
+import traverse from 'neotraverse';
+
+const obj = { a: 1, b: 2, c: [3, 4] };
+obj.c.push(obj);
+
+const scrubbed = traverse(obj).map(function (x) {
+  if (this.circular) this.remove();
+});
+
+// Equivalent to the above
+const scrubbedLegacy = traverse.map(obj, function (x) {
+  if (this.circular) this.remove();
+});
+
+console.dir(scrubbed);
+console.dir(scrubbedLegacy);
+```
+
 output:
 
     { a: 1, b: 2, c: [ 3, 4 ] }
@@ -94,9 +166,21 @@ output:
 - Works as-is in all major browsers and Deno
 - No polyfills
 - `new Traverse()` class instead of regular old `traverse()`
-- Legacy mode supporting ES2015 minimum
+- Legacy mode supporting ES5 and CJS
 
 There is a legacy mode that provides the same API as `traverse`, acting as a drop-in replacement:
+
+```js
+import traverse from 'neotraverse';
+
+const obj = { a: 1, b: 2, c: [3, 4] };
+
+traverse(obj).forEach(function (x) {
+  if (x < 0) this.update(x + 128);
+});
+```
+
+If you want to support really old browsers or NodeJS, supporting ES5, there's `neotraverse/legacy` which is compatible with ES5 and provides the same API as `traverse`, acting as a drop-in replacement for older browsers:
 
 ```js
 import traverse from 'neotraverse/legacy';
@@ -107,8 +191,6 @@ traverse(obj).forEach(function (x) {
   if (x < 0) this.update(x + 128);
 });
 ```
-
-> NOTE: legacy mode doesn't have methods attached to the function constructor. As in, traverse.map(obj, fn) won't work. Use `new Traverse(obj).map(fn)` or `traverse(obj).map(fn)` instead.
 
 # Migrating from `traverse`
 
