@@ -1,0 +1,23 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      neotraverse:
+        specifier: 0.0.5
+        version: 0.0.5
+
+packages:
+
+  neotraverse@0.0.5:
+    resolution: {integrity: sha512-GWBK3fovX/Gox6ssVrc7lq8qDIhiNLztLc1CO/dUrg2WBZz6YuGup+4SoG2HiBuktrn0Mzo7xo0KSdarM2aTnA==}
+    engines: {node: '>= 18'}
+
+snapshots:
+
+  neotraverse@0.0.5: {}

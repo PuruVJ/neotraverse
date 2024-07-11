@@ -1,0 +1,16 @@
+const traverse = require('neotraverse/legacy');
+
+const obj = {
+	a: 1,
+	b: 2,
+	c: {
+		d: 3,
+		e: 4,
+		f: {
+			g: 5,
+			h: 6,
+		},
+	},
+};
+
+traverse.forEach(obj, (node) => {});
