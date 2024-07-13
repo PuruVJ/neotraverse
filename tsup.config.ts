@@ -22,6 +22,27 @@ export default defineConfig([
 		outDir: 'dist/min',
 	},
 	{
+		entry: ['src/modern.ts'],
+		format: ['esm'],
+		dts: true,
+		sourcemap: false,
+		clean: true,
+		platform: 'browser',
+		target: 'es2022',
+		outDir: 'dist/modern',
+	},
+	{
+		entry: ['src/modern.ts'],
+		format: ['esm'],
+		dts: false,
+		sourcemap: false,
+		clean: false,
+		platform: 'browser',
+		target: 'es2022',
+		minify: 'terser',
+		outDir: 'dist/modern/min',
+	},
+	{
 		entry: ['src/legacy.cts'],
 		format: ['cjs', 'esm'],
 		outExtension(ctx) {
