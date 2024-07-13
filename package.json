@@ -1,6 +1,6 @@
 {
 	"name": "neotraverse",
-	"version": "0.6.9-test.1",
+	"version": "0.6.9",
 	"description": "traverse and transform objects by visiting every node on a recursive walk",
 	"main": "dist/legacy/legacy.cjs",
 	"type": "module",
