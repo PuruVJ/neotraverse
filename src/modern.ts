@@ -382,7 +382,6 @@ function walk(
 }
 
 export class Traverse {
-	// ! Have to keep these public as legacy mode requires them
 	#value: any;
 	#options: TraverseOptions;
 

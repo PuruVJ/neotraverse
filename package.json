@@ -18,6 +18,15 @@
 			},
 			"default": "./dist/min/index.js"
 		},
+		"./modern": {
+			"types": "./dist/modern/modern.d.ts",
+			"import": {
+				"production": "./dist/modern/min/modern.js",
+				"development": "./dist/modern/modern.js",
+				"default": "./dist/modern/modern.js"
+			},
+			"default": "./dist/min/index.js"
+		},
 		"./legacy": {
 			"node": "./dist/legacy/legacy.cjs",
 			"types": "./dist/legacy.d.ts",

@@ -145,8 +145,6 @@ export interface TraverseContext {
 	block(): void;
 }
 
-type InternalTraverseOptions = TraverseOptions & { __proto__: null };
-
 const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
 
 const is_typed_array = (value: unknown): value is TypedArray =>
@@ -181,7 +179,7 @@ function is_writable(object: any, key: PropertyKey) {
 	return !gopd(object, key)?.writable;
 }
 
-function copy(src: any, options: InternalTraverseOptions) {
+function copy(src: any, options: TraverseOptions) {
 	if (typeof src === 'object' && src !== null) {
 		let dst: any;
 
@@ -212,8 +210,7 @@ function copy(src: any, options: InternalTraverseOptions) {
 	return src;
 }
 
-const empty_null: InternalTraverseOptions = {
-	__proto__: null,
+const empty_null: TraverseOptions = {
 	includeSymbols: false,
 	immutable: false,
 };
@@ -221,7 +218,7 @@ const empty_null: InternalTraverseOptions = {
 function walk(
 	root: any,
 	cb: (this: TraverseContext, v: any) => void,
-	options: InternalTraverseOptions = empty_null,
+	options: TraverseOptions = empty_null,
 ) {
 	const path: PropertyKey[] = [];
 	const parents: any[] = [];
@@ -465,7 +462,6 @@ export class Traverse {
 	 */
 	map(cb: (this: TraverseContext, v: any) => void): any {
 		return walk(this.#value, cb, {
-			__proto__: null,
 			immutable: true,
 			includeSymbols: !!this.#options.includeSymbols,
 		});
@@ -475,7 +471,7 @@ export class Traverse {
 	 * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
 	 */
 	forEach(cb: (this: TraverseContext, v: any) => void): any {
-		this.#value = walk(this.#value, cb, this.#options as InternalTraverseOptions);
+		this.#value = walk(this.#value, cb, this.#options);
 		return this.#value;
 	}
 
@@ -544,7 +540,7 @@ export class Traverse {
 			}
 
 			if (typeof src === 'object' && src !== null) {
-				const dst = copy(src, options as InternalTraverseOptions);
+				const dst = copy(src, options);
 
 				parents.push(src);
 				nodes.push(dst);
