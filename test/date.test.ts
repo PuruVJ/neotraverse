@@ -1,13 +1,14 @@
 import { expect, test } from 'vitest';
-import { Traverse } from '../src';
+import traverse from '../src';
+import { Traverse } from '../src/modern';
 
-test('dateEach', function (t) {
-	var obj = { x: new Date(), y: 10, z: 5 };
+test('dateEach', () => {
+	const obj = { x: new Date(), y: 10, z: 5 };
 
-	var counts = {};
+	const counts: Record<string, number> = {};
 
-	new Traverse(obj).forEach(function (node) {
-		var type = (node instanceof Date && 'Date') || typeof node;
+	traverse(obj).forEach(function (node) {
+		const type = (node instanceof Date && 'Date') || typeof node;
 		counts[type] = (counts[type] || 0) + 1;
 	});
 
@@ -18,12 +19,46 @@ test('dateEach', function (t) {
 	});
 });
 
-test('dateMap', function (t) {
-	var obj = { x: new Date(), y: 10, z: 5 };
+test('dateEach_modern', () => {
+	const obj = { x: new Date(), y: 10, z: 5 };
 
-	var res = new Traverse(obj).map(function (node) {
+	const counts: Record<string, number> = {};
+
+	new Traverse(obj).forEach((_, node) => {
+		const type = (node instanceof Date && 'Date') || typeof node;
+		counts[type] = (counts[type] || 0) + 1;
+	});
+
+	expect(counts).toEqual({
+		object: 1,
+		Date: 1,
+		number: 2,
+	});
+});
+
+test('dateMap', () => {
+	const obj = { x: new Date(), y: 10, z: 5 };
+
+	const res = traverse(obj).map(function (node) {
 		if (typeof node === 'number') {
 			this.update(node + 100);
+		}
+	});
+
+	expect(obj.x).not.toBe(res.x);
+	expect(res).toEqual({
+		x: obj.x,
+		y: 110,
+		z: 105,
+	});
+});
+
+test('dateMap_modern', () => {
+	const obj = { x: new Date(), y: 10, z: 5 };
+
+	const res = new Traverse(obj).map((ctx, node) => {
+		if (typeof node === 'number') {
+			ctx.update(node + 100);
 		}
 	});
 
