@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import traverse from '../src';
 import { Traverse } from '../src/modern';
 
-test('siblings', function (t) {
+test('siblings', () => {
 	const obj = { a: 1, b: 2, c: [4, 5, 6] };
 
 	const res = traverse(obj).reduce(function (acc) {
@@ -35,7 +35,7 @@ test('siblings', function (t) {
 	});
 });
 
-test('siblings_modern', function (t) {
+test('siblings_modern', () => {
 	const obj = { a: 1, b: 2, c: [4, 5, 6] };
 
 	const res = new Traverse(obj).reduce((ctx, acc) => {

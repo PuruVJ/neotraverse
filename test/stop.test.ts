@@ -63,11 +63,11 @@ test('stopMap_modern', () => {
 });
 
 test('stopReduce', () => {
-	var obj = {
+	const obj = {
 		a: [4, 5],
 		b: [6, [7, 8, 9]],
 	};
-	var xs = traverse(obj).reduce(function (acc, node) {
+	const xs = traverse(obj).reduce(function (acc, node) {
 		if (this.isLeaf) {
 			if (node === 7) {
 				this.stop();
@@ -82,11 +82,11 @@ test('stopReduce', () => {
 });
 
 test('stopReduce_modern', () => {
-	var obj = {
+	const obj = {
 		a: [4, 5],
 		b: [6, [7, 8, 9]],
 	};
-	var xs = new Traverse(obj).reduce((ctx, acc, node) => {
+	const xs = new Traverse(obj).reduce((ctx, acc, node) => {
 		if (ctx.isLeaf) {
 			if (node === 7) {
 				ctx.stop();

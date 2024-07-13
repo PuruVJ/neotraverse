@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import traverse from '../src';
 import { Traverse } from '../src/modern';
 
-test('new Traverse an object with nested functions', function (t) {
+test('new Traverse an object with nested functions', () => {
 	function Cons(x: number) {
 		expect(x).toBe(10);
 	}

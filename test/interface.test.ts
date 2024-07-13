@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import traverse from '../src';
 import { Traverse } from '../src/modern';
 
-test('interface map', function (t) {
+test('interface map', () => {
 	const obj = { a: [5, 6, 7], b: { c: [8] } };
 
 	expect(
@@ -37,7 +37,7 @@ test('interface map', function (t) {
 		}),
 	).toEqual({ a: '5 6 7', b: { c: '8' } });
 
-	var nodes = 0;
+	let nodes = 0;
 	traverse(obj).forEach(function () {
 		nodes += 1;
 	});
@@ -45,7 +45,7 @@ test('interface map', function (t) {
 	expect(nodes).toBe(8);
 });
 
-test('interface map_modern', function (t) {
+test('interface map_modern', () => {
 	const obj = { a: [5, 6, 7], b: { c: [8] } };
 
 	expect(
@@ -80,7 +80,7 @@ test('interface map_modern', function (t) {
 		}),
 	).toEqual({ a: '5 6 7', b: { c: '8' } });
 
-	var nodes = 0;
+	let nodes = 0;
 	new Traverse(obj).forEach(function () {
 		nodes += 1;
 	});

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import traverse from '../src';
 import { Traverse } from '../src/modern';
 
-describe('negative update test', function (t) {
+describe('negative update test', () => {
 	const obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
 	const fixed = traverse(obj).map(function (x) {
 		if (x < 0) {

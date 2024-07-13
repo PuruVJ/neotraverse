@@ -27,7 +27,7 @@ test('circular_modern', () => {
 	});
 });
 
-test('deepCirc', function (t) {
+test('deepCirc', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -53,7 +53,7 @@ test('deepCirc_modern', () => {
 	});
 });
 
-test('doubleCirc', function (t) {
+test('doubleCirc', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -76,7 +76,7 @@ test('doubleCirc', function (t) {
 	expect(circs.length).toEqual(2);
 });
 
-test('doubleCirc_modern', function (t) {
+test('doubleCirc_modern', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -99,7 +99,7 @@ test('doubleCirc_modern', function (t) {
 	expect(circs.length).toEqual(2);
 });
 
-test('circDubForEach', function (t) {
+test('circDubForEach', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -115,7 +115,7 @@ test('circDubForEach', function (t) {
 	expect(obj).toEqual({ x: [1, 2, 3, [4, 5, '...']], y: [4, 5, '...'] });
 });
 
-test('circDubForEach_modern', function (t) {
+test('circDubForEach_modern', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -131,7 +131,7 @@ test('circDubForEach_modern', function (t) {
 	expect(obj).toEqual({ x: [1, 2, 3, [4, 5, '...']], y: [4, 5, '...'] });
 });
 
-test('circDubMap', function (t) {
+test('circDubMap', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -147,7 +147,7 @@ test('circDubMap', function (t) {
 	expect(c).toEqual({ x: [1, 2, 3, [4, 5, '...']], y: [4, 5, '...'] });
 });
 
-test('circMapScrub_modern', function (t) {
+test('circMapScrub_modern', () => {
 	const obj = { a: 1, b: 2 };
 	// @ts-expect-error
 	obj.c = obj;
@@ -164,7 +164,7 @@ test('circMapScrub_modern', function (t) {
 	expect(obj.c).toBe(obj);
 });
 
-test('circClone', function (t) {
+test('circClone', () => {
 	const obj = { x: [1, 2, 3], y: [4, 5] };
 	// @ts-expect-error
 	obj.y[2] = obj;
@@ -200,7 +200,7 @@ test('clone_modern', () => {
 	expect(clone.y.slice(0, 2)).toEqual([4, 5]);
 });
 
-test('circMapScrub', function (t) {
+test('circMapScrub', () => {
 	const obj = { a: 1, b: 2 };
 	// @ts-expect-error
 	obj.c = obj;

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import traverse from '../src';
 import { Traverse } from '../src/modern';
 
-describe('has', function (t) {
+describe('has', () => {
 	const obj: any = { a: 2, b: [4, 5, { c: 6 }] };
 
 	expect(traverse(obj).has(['b', 2, 'c'])).toBe(true);
@@ -40,7 +40,7 @@ describe('has', function (t) {
 	});
 });
 
-describe('has_modern', function (t) {
+describe('has_modern', () => {
 	const obj: any = { a: 2, b: [4, 5, { c: 6 }] };
 
 	expect(new Traverse(obj).has(['b', 2, 'c'])).toBe(true);
