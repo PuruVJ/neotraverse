@@ -41,9 +41,9 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/puruvj/neotraverse.git"
+		"url": "https://github.com/PuruVJ/neotraverse.git"
 	},
-	"homepage": "https://github.com/puruvj/neotraverse",
+	"homepage": "https://github.com/PuruVJ/neotraverse",
 	"keywords": [
 		"traverse",
 		"walk",
