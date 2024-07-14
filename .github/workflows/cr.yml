@@ -20,6 +20,5 @@ jobs:
       - name: Compile
         run: pnpm compile
 
-        # Release the package
       - name: Release
-        run: pnpm dlx pkg-pr-new publish --compact
+        run: pnpm dlx pkg-pr-new publish
