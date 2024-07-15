@@ -1,4 +1,4 @@
-import { Traverse } from 'neotraverse/modern';
+import traverse from 'neotraverse/legacy';
 
 const obj = {
 	a: 1,
@@ -13,8 +13,8 @@ const obj = {
 	},
 };
 
-new Traverse(obj).forEach((ctx, node) => {
-	if (node === 6) ctx.update(68);
+traverse(obj).forEach(function (node) {
+	if (node === 6) this.update(68);
 });
 
 console.log(obj);
