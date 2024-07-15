@@ -10,6 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "neotraverse": "0.0.5"
+    "neotraverse": "https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c"
   }
 }

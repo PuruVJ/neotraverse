@@ -1,2 +1,3 @@
-const traverse = require('./index.ts');
+const traverse = require('./index.js');
+
 module.exports = traverse.default;

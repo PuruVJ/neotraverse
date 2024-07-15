@@ -9,15 +9,16 @@ importers:
   .:
     dependencies:
       neotraverse:
-        specifier: 0.0.5
-        version: 0.0.5
+        specifier: https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c
+        version: https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c
 
 packages:
 
-  neotraverse@0.0.5:
-    resolution: {integrity: sha512-GWBK3fovX/Gox6ssVrc7lq8qDIhiNLztLc1CO/dUrg2WBZz6YuGup+4SoG2HiBuktrn0Mzo7xo0KSdarM2aTnA==}
+  neotraverse@https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c:
+    resolution: {tarball: https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c}
+    version: 0.6.9-next.0
     engines: {node: '>= 18'}
 
 snapshots:
 
-  neotraverse@0.0.5: {}
+  neotraverse@https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c: {}

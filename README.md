@@ -464,6 +464,19 @@ Call this function before each of the children are traversed.
 
 Call this function after each of the children are traversed.
 
+# Troubleshooting
+
+## Next.js
+
+Next.js with Webpack automatically looks for CommonJS version of `neotraverse` and fails to build. Only option is to use `neotraverse/legacy` instead of `neotraverse`.
+
+CAVEAT: `neotraverse/legacy` does not provide additional types, so you need to import `TraverseContext` and `TraverseOptions` from `neotraverse` instead of `traverse`.
+
+```ts
+import traverse from 'neotraverse';
+import type { TraverseContext, TraverseOptions } from 'neotraverse';
+```
+
 # license
 
 MIT

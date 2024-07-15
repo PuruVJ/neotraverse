@@ -13,4 +13,6 @@ const obj = {
 	},
 };
 
-traverse.forEach(obj, (node) => {});
+traverse(obj).forEach((node) => {});
+
+console.log(obj);
