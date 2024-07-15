@@ -43,13 +43,13 @@ export default defineConfig([
 		outDir: 'dist/modern/min',
 	},
 	{
-		entry: ['src/legacy.ts'],
+		entry: ['src/legacy.cts'],
 		format: ['cjs', 'esm'],
 		outExtension(ctx) {
 			return { js: ctx.format === 'cjs' ? '.cjs' : '.mjs' };
 		},
 		dts: {
-			banner: `export type { TraverseContext, TraverseOptions } from '..';`,
+			banner: `export type { TraverseContext, TraverseOptions } from '..';\nexport { default } from '..';`,
 		},
 		sourcemap: false,
 		clean: true,
