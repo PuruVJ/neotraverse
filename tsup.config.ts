@@ -43,7 +43,7 @@ export default defineConfig([
 		outDir: 'dist/modern/min',
 	},
 	{
-		entry: ['src/legacy.cts'],
+		entry: ['src/legacy.ts'],
 		format: ['cjs', 'esm'],
 		outExtension(ctx) {
 			return { js: ctx.format === 'cjs' ? '.cjs' : '.mjs' };
