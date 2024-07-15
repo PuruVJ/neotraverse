@@ -41,7 +41,7 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"compile": "tsup && bun legacy-dts.ts",
+		"compile": "tsup && tsx legacy-dts.ts",
 		"test": "vitest run"
 	},
 	"repository": {
@@ -70,6 +70,7 @@
 		"@types/node": "^20.14.10",
 		"terser": "^5.31.2",
 		"tsup": "^8.1.0",
+		"tsx": "^4.16.2",
 		"typescript": "^5.5.3",
 		"vitest": "^2.0.1"
 	}
