@@ -25,7 +25,7 @@
 				"development": "./dist/modern/modern.js",
 				"default": "./dist/modern/modern.js"
 			},
-			"default": "./dist/min/index.js"
+			"default": "./dist/modern/index.js"
 		},
 		"./legacy": {
 			"require": {
