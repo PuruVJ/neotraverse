@@ -19,7 +19,7 @@
 			"default": "./dist/min/index.js"
 		},
 		"./modern": {
-			"types": "./dist/modern/modern.d.ts",
+			"types": "./dist/index.d.ts",
 			"import": {
 				"production": "./dist/modern/min/modern.js",
 				"development": "./dist/modern/modern.js",
@@ -29,11 +29,11 @@
 		},
 		"./legacy": {
 			"require": {
-				"types": "./dist/legacy/legacy.d.cts",
+				"types": "./dist/index.d.ts",
 				"default": "./dist/legacy/legacy.cjs"
 			},
 			"import": {
-				"types": "./dist/legacy/legacy.d.ts",
+				"types": "./dist/index.d.ts",
 				"default": "./dist/legacy/legacy.mjs"
 			},
 			"default": "./dist/legacy/index.cjs"
@@ -41,7 +41,7 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"compile": "tsup",
+		"compile": "tsup & tsx dts-bundle.ts",
 		"test": "vitest run"
 	},
 	"repository": {
@@ -68,8 +68,10 @@
 	"devDependencies": {
 		"@swc/core": "^1.6.13",
 		"@types/node": "^20.14.10",
+		"dts-buddy": "^0.5.1",
 		"terser": "^5.31.2",
 		"tsup": "^8.1.0",
+		"tsx": "^4.16.2",
 		"typescript": "^5.5.3",
 		"vitest": "^2.0.1"
 	}

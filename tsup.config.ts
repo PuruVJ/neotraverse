@@ -4,7 +4,7 @@ export default defineConfig([
 	{
 		entry: ['src/index.ts'],
 		format: ['esm'],
-		dts: true,
+		dts: false,
 		sourcemap: false,
 		clean: true,
 		platform: 'browser',
@@ -24,7 +24,7 @@ export default defineConfig([
 	{
 		entry: ['src/modern.ts'],
 		format: ['esm'],
-		dts: true,
+		dts: false,
 		sourcemap: false,
 		clean: true,
 		platform: 'browser',
@@ -48,9 +48,9 @@ export default defineConfig([
 		outExtension(ctx) {
 			return { js: ctx.format === 'cjs' ? '.cjs' : '.mjs' };
 		},
-		dts: {
-			banner: `export * from '..';`,
-		},
+		// dts: {
+		// 	banner: `export * from '..';`,
+		// },
 		sourcemap: false,
 		clean: true,
 		platform: 'neutral',
