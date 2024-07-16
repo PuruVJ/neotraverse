@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.11
+
+PINNED: traverse@0.6.9
+
+### Patch Changes
+
+Fix types for neotraverse/legacy. I am sacrificing types for CJS in favor of ESM.
+
+Use the following to get type-safety
+
+```ts
+const traverse = require('neotraverse/legacy');
+//    ^ It isn't typed
+
+const neoTraverse = traverse as traverse['default'];
+//    ^ It is typed
+```
+
 ## 0.6.10
 
 PINNED: traverse@0.6.9
