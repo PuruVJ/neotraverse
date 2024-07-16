@@ -1,6 +1,6 @@
 {
 	"name": "neotraverse",
-	"version": "0.6.10",
+	"version": "0.6.11",
 	"description": "traverse and transform objects by visiting every node on a recursive walk",
 	"main": "dist/legacy/legacy.cjs",
 	"type": "module",
@@ -25,7 +25,7 @@
 				"development": "./dist/modern/modern.js",
 				"default": "./dist/modern/modern.js"
 			},
-			"default": "./dist/modern/index.js"
+			"default": "./dist/modern/modern.js"
 		},
 		"./legacy": {
 			"require": {
@@ -36,7 +36,7 @@
 				"types": "./dist/legacy/legacy.d.ts",
 				"default": "./dist/legacy/legacy.mjs"
 			},
-			"default": "./dist/legacy/index.cjs"
+			"default": "./dist/legacy/legacy.cjs"
 		},
 		"./package.json": "./package.json"
 	},
