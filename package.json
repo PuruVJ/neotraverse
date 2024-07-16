@@ -36,7 +36,7 @@
 				"types": "./dist/legacy/legacy.d.ts",
 				"default": "./dist/legacy/legacy.mjs"
 			},
-			"default": "./dist/legacy/index.cjs"
+			"default": "./dist/legacy/legacy.cjs"
 		},
 		"./package.json": "./package.json"
 	},
