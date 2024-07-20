@@ -75,7 +75,7 @@ import { Traverse } from 'neotraverse/modern';
 const obj = { a: 1, b: 2, c: [3, 4] };
 
 new Traverse(obj).forEach((ctx, x) => {
-  if (x < 0) ctx.update(x + 128); // `this` is `ctx` in modern build
+  if (x < 0) ctx.update(x + 128); // `this` is same as `ctx` when using regular function
 });
 ```
 
