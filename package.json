@@ -6,7 +6,8 @@
 	"type": "module",
 	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"legacy.js"
 	],
 	"exports": {
 		".": {
