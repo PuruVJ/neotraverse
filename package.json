@@ -41,7 +41,7 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"compile": "tsup",
+		"compile": "tsup && cp dist/legacy/legacy.cjs legacy.js",
 		"test": "vitest run"
 	},
 	"repository": {
