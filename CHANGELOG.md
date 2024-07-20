@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.13
+
+PINNED: traverse@0.6.9
+
+### Patch Changes
+
+Fix types for neotraverse/legacy for pre-TypeScript 4.5(when export maps were not supported).
+
 ## 0.6.12
 
 PINNED: traverse@0.6.9
