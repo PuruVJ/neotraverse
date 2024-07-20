@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.12
+
+PINNED: traverse@0.6.9
+
+### Patch Changes
+
+Earlier, neotraverse/legacy did not work with WebPack 4, as it does not support export maps. Now this package provides direct fallback for CJS.
+
 ## 0.6.11
 
 PINNED: traverse@0.6.9
