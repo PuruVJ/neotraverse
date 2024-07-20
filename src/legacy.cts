@@ -1,3 +1,5 @@
-const traverse = require('./index.js');
+import traverse from './index';
 
-module.exports = traverse.default;
+export { default, TraverseContext, TraverseOptions } from './index';
+
+module.exports = traverse;

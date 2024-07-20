@@ -1,7 +1,9 @@
 {
-	"name": "try",
+	"name": "pre-ts-4.5",
 	"version": "1.0.0",
+	"private": true,
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -10,6 +12,9 @@
 	"license": "ISC",
 	"description": "",
 	"dependencies": {
-		"neotraverse": "https://pkg.pr.new/PuruVJ/neotraverse@10"
+		"neotraverse": "^0.6.12"
+	},
+	"devDependencies": {
+		"typescript": "^4.3.5"
 	}
 }

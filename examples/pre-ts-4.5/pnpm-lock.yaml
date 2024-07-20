@@ -1,0 +1,34 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      neotraverse:
+        specifier: ^0.6.12
+        version: 0.6.12
+    devDependencies:
+      typescript:
+        specifier: ^4.3.5
+        version: 4.3.5
+
+packages:
+
+  neotraverse@0.6.12:
+    resolution: {integrity: sha512-2+SB0CsPOjEs6f6PZ7ysDKANjn/jLPfJq65QWMQbEDPQWj/S/BzPkePhCDQRU5mmVquIl7FUt88DaCKGjfbZ3g==}
+    engines: {node: '>= 18'}
+
+  typescript@4.3.5:
+    resolution: {integrity: sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+
+snapshots:
+
+  neotraverse@0.6.12: {}
+
+  typescript@4.3.5: {}

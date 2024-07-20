@@ -5,7 +5,8 @@
 		"moduleResolution": "Bundler",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
-		"verbatimModuleSyntax": true,
+		// Do not reenable this, breaks types for pre-4.5 TS
+		// "verbatimModuleSyntax": true,
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
