@@ -1,15 +1,15 @@
 {
-  "name": "try",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "neotraverse": "https://pkg.pr.new/PuruVJ/neotraverse@d47bc4c"
-  }
+	"name": "try",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"neotraverse": "https://pkg.pr.new/PuruVJ/neotraverse@10"
+	}
 }

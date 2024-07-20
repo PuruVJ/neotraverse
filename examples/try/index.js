@@ -1,4 +1,6 @@
-const traverse = require('neotraverse/legacy');
+const traverse = /** @type {import('neotraverse/legacy')['default']} */ (
+	require('neotraverse/legacy')
+);
 
 const obj = {
 	a: 1,
