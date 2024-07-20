@@ -48,9 +48,7 @@ export default defineConfig([
 		outExtension(ctx) {
 			return { js: ctx.format === 'cjs' ? '.cjs' : '.mjs' };
 		},
-		dts: {
-			banner: `export { default, type TraverseContext, type TraverseOptions } from '..';`,
-		},
+		dts: true,
 		sourcemap: false,
 		clean: true,
 		platform: 'neutral',
