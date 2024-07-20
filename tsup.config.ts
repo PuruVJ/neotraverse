@@ -1,3 +1,4 @@
+import { readFile, writeFile } from 'fs/promises';
 import { defineConfig } from 'tsup';
 
 export default defineConfig([
@@ -55,5 +56,9 @@ export default defineConfig([
 		target: 'es5',
 		minify: false,
 		outDir: 'dist/legacy',
+		onSuccess: async () => {
+			const file = await readFile('dist/legacy/legacy.mjs', 'utf-8');
+			await writeFile('dist/legacy/legacy.mjs', file.replace(/module\.exports = (.+);/, ''));
+		},
 	},
 ]);
