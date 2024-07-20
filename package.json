@@ -1,12 +1,13 @@
 {
 	"name": "neotraverse",
-	"version": "0.6.11",
+	"version": "0.6.12",
 	"description": "traverse and transform objects by visiting every node on a recursive walk",
 	"main": "dist/legacy/legacy.cjs",
 	"type": "module",
 	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"legacy.js"
 	],
 	"exports": {
 		".": {
@@ -41,7 +42,7 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"compile": "tsup",
+		"compile": "tsup && cp dist/legacy/legacy.cjs legacy.js",
 		"test": "vitest run"
 	},
 	"repository": {

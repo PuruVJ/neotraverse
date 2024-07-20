@@ -4,3 +4,4 @@ node_modules/
 
 .npmignore
 dist
+/legacy.js
