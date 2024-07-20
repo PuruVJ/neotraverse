@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.14
+
+PINNED: traverse@0.6.9
+
+### Patch Changes
+
+Fix regression in legacy.mjs introduced in 0.6.13.
+
 ## 0.6.13
 
 PINNED: traverse@0.6.9
