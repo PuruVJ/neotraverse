@@ -43,7 +43,8 @@
 	},
 	"scripts": {
 		"compile": "tsup && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
-		"test": "vitest run"
+		"test": "vitest run",
+		"publish": "pnpm run compile && npm publish --access public --no-git-checks"
 	},
 	"repository": {
 		"type": "git",
