@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.15
+
+PINNED: traverse@0.6.9
+
+### Patch Changes
+
+Pin `engines` field to `>= 10`
+
 ## 0.6.14
 
 PINNED: traverse@0.6.9
