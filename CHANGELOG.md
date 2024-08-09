@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.17
+
+### Patch Changes
+
+- c73840d: fix: Actually add provenance
+
 ## 0.6.16
 
 ### Patch Changes
