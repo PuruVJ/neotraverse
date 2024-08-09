@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.18
+
+### Patch Changes
+
+- 07e5f02: fix: CI build
+
 ## 0.6.17
 
 ### Patch Changes
