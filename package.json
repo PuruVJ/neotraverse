@@ -44,7 +44,10 @@
 	"scripts": {
 		"compile": "tsup && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
 		"test": "vitest run",
-		"publish": "pnpm run compile && npm publish --access public --no-git-checks"
+		"pub": "pnpm run compile && npm publish --access public --no-git-checks",
+		"changeset": "changeset",
+		"ci:version": "changeset version",
+		"ci:release": "changeset publish"
 	},
 	"repository": {
 		"type": "git",
@@ -68,6 +71,7 @@
 		"node": ">= 10"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.27.7",
 		"@swc/core": "^1.6.13",
 		"@types/node": "^20.14.10",
 		"terser": "^5.31.2",
