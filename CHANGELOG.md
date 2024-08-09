@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.16
+
+### Patch Changes
+
+- af2405a: patch: Add changesets, provenance
+
 ## 0.6.15
 
 PINNED: traverse@0.6.9
