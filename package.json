@@ -66,6 +66,9 @@
 	"author": {
 		"name": "Puru Vijay, James Halliday"
 	},
+	"publishConfig": {
+		"provenance": true
+	},
 	"license": "MIT",
 	"engines": {
 		"node": ">= 10"
