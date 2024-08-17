@@ -44,6 +44,7 @@
 	"scripts": {
 		"compile": "tsup && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
 		"test": "vitest run",
+		"test:cov": "vitest run --coverage",
 		"pub": "pnpm run compile && npm publish --access public --no-git-checks",
 		"changeset": "changeset",
 		"ci:version": "changeset version",
@@ -77,9 +78,10 @@
 		"@changesets/cli": "^2.27.7",
 		"@swc/core": "^1.6.13",
 		"@types/node": "^20.14.10",
+		"@vitest/coverage-v8": "^2.0.5",
 		"terser": "^5.31.2",
 		"tsup": "^8.1.0",
 		"typescript": "^5.5.3",
-		"vitest": "^2.0.1"
+		"vitest": "^2.0.5"
 	}
 }
