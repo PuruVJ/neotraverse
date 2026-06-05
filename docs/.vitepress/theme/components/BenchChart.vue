@@ -83,7 +83,7 @@ function rows(suite) {
 					:class="{ win: row.fastest }"
 				>
 					<span class="bench-lib"
-						><img v-if="libDisplay(row.name).logo" src="/mark.svg" class="logo-n" alt="" />{{ libDisplay(row.name).text }}</span
+						><img v-if="libDisplay(row.name).logo" src="/logo.svg" class="logo-n" alt="" />{{ libDisplay(row.name).text }}</span
 					>
 					<span class="bench-track">
 						<span class="bench-fill" :style="{ width: row.pct + '%', '--bar': row.color }"></span>

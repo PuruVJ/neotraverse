@@ -72,13 +72,23 @@ Unlimited when omitted, so default behavior is unchanged.
 
 ## ⚡ Performance
 
-Traversal is now ~2–3× faster than `traverse`. Across the full benchmark matrix
-the geometric-mean speedup is **modern ≈ 2.9×** and **legacy ≈ 2.3×**; for the
-core traversal operations (`forEach` / `map` / `clone` / `reduce` / `paths` /
-`nodes`) both builds land at ~2.7–3.3×. The hot `copy()` / `clone()` paths now
-make 2–3 `toString` tag checks per node instead of 6–9, and child iteration no
-longer allocates a pairs array per node. Reproduce with `pnpm bench` (results in
-`bench/results.json`).
+Across the full benchmark matrix the geometric-mean speedup vs `traverse` is now
+**modern ≈ 4.3×** and **legacy ≈ 2.3×** — with individual traversal ops up to
+**~6.7× faster** and allocating **3–5× less memory** per op.
+
+The **modern build was re-architected** for this: visiting a node used to
+allocate a context object **plus a fresh closure for every method**
+(`update`/`remove`/`before`/…) **plus a `modifiers` object plus a per-node path
+copy**. The new modern context is a class whose methods live on the prototype
+(one allocation per node), and `ctx.path` is derived lazily from the parent
+chain — so `forEach`/`map`/`clone`/`reduce`/`nodes` never pay for a path copy.
+Shared wins (both builds): `copy()`/`clone()` make 2–3 `toString` tag checks per
+node instead of 6–9, and child iteration no longer allocates a pairs array.
+
+Reproduce with `pnpm bench` (results in `bench/results.json`). The default and
+legacy builds keep the original, battle-tested implementation; only the modern
+context was rewritten (behaviour is identical — the full test suite passes on
+both builds).
 
 > For the `get` / `has` / `set` path helpers, prefer the **modern** build — the
 > **legacy** (ES2015) build is slower there because private `#fields` are

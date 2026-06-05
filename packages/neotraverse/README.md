@@ -8,7 +8,7 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 - 🚥 Zero dependencies, no polyfills
 - 🎹 TypeScript — throw away `@types/traverse`
 - 🛡️ Safe on untrusted input ([prototype-pollution & injection hardened](#security))
-- ⚡ **~2.9× faster** than `traverse` (modern build, geometric mean)
+- ⚡ **~4.3× faster** than `traverse` (modern build, geometric mean; up to ~6.7×)
 - 🛸 ESM-first, with a legacy ES2015 CJS/ESM build
 
 ## Benchmarks (summary)
@@ -17,7 +17,7 @@ Geometric-mean speedup versus the original `traverse` across the full operation 
 
 | Build                  | Speedup vs `traverse` |
 | ---------------------- | --------------------- |
-| **neotraverse modern** | **≈ 2.9×**            |
+| **neotraverse modern** | **≈ 4.3×**            |
 | **neotraverse legacy** | **≈ 2.3×**            |
 
 Core traversal ops (`forEach` / `map` / `clone` / `reduce` / `paths` / `nodes`) land at ~2.7–3.3×. See the [full table](#benchmarks-full) at the bottom, or the [interactive benchmarks page](https://neotraverse.puruvj.dev/benchmarks). Reproduce with `pnpm bench`.

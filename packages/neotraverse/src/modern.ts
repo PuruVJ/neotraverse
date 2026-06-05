@@ -257,174 +257,226 @@ const empty_null: TraverseOptions = {
 	immutable: false,
 };
 
+// Shared per-walk state — one allocation per traversal, referenced by every node.
+interface WalkState {
+	alive: boolean;
+	immutable: boolean;
+	iter: (obj: object) => PropertyKey[];
+	max_depth: number | undefined;
+	path: PropertyKey[];
+	parents: WalkContext[];
+}
+
+// before/after/pre/post hooks — lazily allocated, so the common path that uses
+// none of them carries a single `null` field instead of four.
+interface Modifiers {
+	before?: (ctx: TraverseContext, value: any) => void;
+	after?: (ctx: TraverseContext, value: any) => void;
+	pre?: (ctx: TraverseContext, child: any, key: any) => void;
+	post?: (ctx: TraverseContext, child: any) => void;
+}
+
+/**
+ * The traversal context. Every method lives on the prototype, so visiting a
+ * node allocates a *single* object — not a context object plus a fresh closure
+ * for each of `update`/`remove`/`before`/… and a separate `modifiers` object.
+ * That, plus the lazily-derived {@link path}, is what makes the modern build
+ * dramatically faster and lighter on the GC than the classic design.
+ */
+class WalkContext implements TraverseContext {
+	node: any;
+	node_: any;
+	parent: TraverseContext | undefined;
+	parents: TraverseContext[];
+	key: PropertyKey | undefined;
+	isRoot: boolean;
+	notRoot: boolean;
+	isLeaf = false;
+	notLeaf = true;
+	isFirst = false;
+	isLast = false;
+	level: number;
+	circular: TraverseContext | undefined = undefined;
+	keys: PropertyKey[] | null = null;
+
+	// internal (kept as plain fields for a monomorphic shape)
+	w: WalkState;
+	keep_going = true;
+	mods: Modifiers | null = null;
+
+	constructor(w: WalkState, node_: any, node: any) {
+		const { path, parents } = w;
+		const level = path.length;
+		this.w = w;
+		this.node = node;
+		this.node_ = node_;
+		this.parent = parents[level - 1];
+		this.parents = parents;
+		this.key = path[level - 1];
+		this.isRoot = level === 0;
+		this.notRoot = level !== 0;
+		this.level = level;
+	}
+
+	// `path` is derived from the parent chain on demand, so the common ops
+	// (forEach/map/clone/reduce/nodes) never pay for a per-node array copy.
+	get path(): PropertyKey[] {
+		// Fill a pre-sized array back-to-front — no push, no reverse()/toReversed().
+		const out = new Array<PropertyKey>(this.level);
+		let c: WalkContext = this;
+		for (let i = this.level - 1; i >= 0; i--) {
+			out[i] = c.key as PropertyKey;
+			c = c.parent as WalkContext;
+		}
+		return out;
+	}
+	set path(_v: PropertyKey[]) {
+		/* derived — assignment is intentionally a no-op */
+	}
+
+	update(x: any, stopHere: boolean = false): void {
+		if (!this.isRoot) {
+			safe_set((this.parent as WalkContext).node, this.key as PropertyKey, x);
+		}
+		this.node = x;
+		if (stopHere) this.keep_going = false;
+	}
+
+	delete(stopHere?: boolean): void {
+		delete (this.parent as WalkContext).node[this.key as PropertyKey];
+		if (stopHere) this.keep_going = false;
+	}
+
+	remove(stopHere?: boolean): void {
+		const parent = (this.parent as WalkContext).node;
+		if (is_array(parent)) {
+			parent.splice(this.key as number, 1);
+		} else {
+			delete parent[this.key as PropertyKey];
+		}
+		if (stopHere) this.keep_going = false;
+	}
+
+	before(f: (ctx: TraverseContext, value: any) => void): void {
+		(this.mods ??= {}).before = f;
+	}
+	after(f: (ctx: TraverseContext, value: any) => void): void {
+		(this.mods ??= {}).after = f;
+	}
+	pre(f: (ctx: TraverseContext, child: any, key: any) => void): void {
+		(this.mods ??= {}).pre = f;
+	}
+	post(f: (ctx: TraverseContext, child: any) => void): void {
+		(this.mods ??= {}).post = f;
+	}
+	stop(): void {
+		this.w.alive = false;
+	}
+	block(): void {
+		this.keep_going = false;
+	}
+}
+
+function update_state(ctx: WalkContext, scan_circular: boolean): void {
+	const node = ctx.node;
+	if (typeof node === 'object' && node !== null) {
+		if (!ctx.keys || ctx.node_ !== node) {
+			ctx.keys = ctx.w.iter(node);
+		}
+		ctx.isLeaf = ctx.keys.length === 0;
+		if (scan_circular) {
+			const { parents } = ctx.w;
+			const node_ = ctx.node_;
+			for (let i = 0; i < parents.length; i++) {
+				if (parents[i].node_ === node_) {
+					ctx.circular = parents[i];
+					break;
+				}
+			}
+		}
+	} else {
+		ctx.isLeaf = true;
+		ctx.keys = null;
+	}
+	ctx.notLeaf = !ctx.isLeaf;
+	ctx.notRoot = !ctx.isRoot;
+}
+
 function walk(
 	root: any,
 	cb: (ctx: TraverseContext, v: any) => void,
 	options: TraverseOptions = empty_null,
 ) {
-	const path: PropertyKey[] = [];
-	const parents: any[] = [];
-	let alive = true;
+	const w: WalkState = {
+		alive: true,
+		immutable: !!options.immutable,
+		iter: options.includeSymbols ? own_enumerable_keys : object_keys,
+		max_depth: options.maxDepth,
+		path: [],
+		parents: [],
+	};
 
-	const iterator_function = options.includeSymbols ? own_enumerable_keys : object_keys;
-	const immutable = !!options.immutable;
-	const max_depth = options.maxDepth;
+	const { immutable, max_depth, path, parents } = w;
 
-	return (function walker(node_) {
-		assert_within_depth(path.length, max_depth);
-
-		const node = immutable ? copy(node_, options) : node_;
-		const modifiers = {} as {
-			before?: (ctx: TraverseContext, value: any) => void;
-			after?: (ctx: TraverseContext, value: any) => void;
-			pre?: (ctx: TraverseContext, child: any, key: any) => void;
-			post?: (ctx: TraverseContext, child: any) => void;
-			stop?: () => void;
-		};
-
-		let keep_going = true;
-
-		const state = {
-			node,
-			node_,
-			path: path.slice(),
-			parent: parents[parents.length - 1],
-			parents,
-			key: path[path.length - 1],
-			isRoot: path.length === 0,
-			level: path.length,
-			circular: undefined,
-			isLeaf: false as boolean,
-			notLeaf: true as boolean,
-			notRoot: true as boolean,
-			isFirst: false as boolean,
-			isLast: false as boolean,
-			update: function (x: any, stopHere: boolean = false) {
-				if (!state.isRoot) {
-					safe_set(state.parent.node, state.key, x);
-				}
-				state.node = x;
-				if (stopHere) {
-					keep_going = false;
-				}
-			},
-			delete: function (stopHere: boolean) {
-				delete state.parent.node[state.key];
-				if (stopHere) {
-					keep_going = false;
-				}
-			},
-			remove: function (stopHere: boolean) {
-				if (is_array(state.parent.node)) {
-					state.parent.node.splice(state.key, 1);
-				} else {
-					delete state.parent.node[state.key];
-				}
-				if (stopHere) {
-					keep_going = false;
-				}
-			},
-			keys: null as PropertyKey[] | null,
-			before: function (f: (ctx: TraverseContext, value: any) => void) {
-				modifiers.before = f;
-			},
-			after: function (f: (ctx: TraverseContext, value: any) => void) {
-				modifiers.after = f;
-			},
-			pre: function (f: (ctx: TraverseContext, child: any, key: any) => void) {
-				modifiers.pre = f;
-			},
-			post: function (f: (ctx: TraverseContext, child: any) => void) {
-				modifiers.post = f;
-			},
-			stop: function () {
-				alive = false;
-			},
-			block: function () {
-				keep_going = false;
-			},
-		} satisfies TraverseContext & { node_: any };
-
-		if (!alive) {
-			return state;
+	const walker = (node_: any): WalkContext => {
+		if (max_depth !== undefined && path.length > max_depth) {
+			throw new RangeError(`neotraverse: maximum traversal depth (${max_depth}) exceeded`);
 		}
 
-		function update_state() {
-			if (typeof state.node === 'object' && state.node !== null) {
-				if (!state.keys || state.node_ !== state.node) {
-					state.keys = iterator_function(state.node);
-				}
+		const ctx = new WalkContext(w, node_, immutable ? copy(node_, options) : node_);
 
-				state.isLeaf = state.keys.length === 0;
+		if (!w.alive) return ctx;
 
-				for (let i = 0; i < parents.length; i++) {
-					if (parents[i].node_ === node_) {
-						state.circular = parents[i];
-						break;
-					}
-				}
-			} else {
-				state.isLeaf = true;
-				state.keys = null;
-			}
+		update_state(ctx, true);
 
-			state.notLeaf = !state.isLeaf;
-			state.notRoot = !state.isRoot;
-		}
+		const node_before = ctx.node;
+		const ret = cb(ctx, node_before);
+		if (ret !== undefined) ctx.update(ret);
 
-		update_state();
+		const mods = ctx.mods;
+		if (mods !== null && mods.before !== undefined) mods.before(ctx, ctx.node);
 
-		// use return values to update if defined
-		const ret = cb(state, state.node);
-		if (ret !== undefined && state.update) {
-			state.update(ret);
-		}
+		if (!ctx.keep_going) return ctx;
 
-		if (modifiers.before) {
-			modifiers.before(state, state.node);
-		}
+		const node = ctx.node;
+		if (typeof node === 'object' && node !== null && ctx.circular === undefined) {
+			parents.push(ctx);
 
-		if (!keep_going) {
-			return state;
-		}
+			// recompute keys only if the cb/before replaced the node
+			if (node !== node_before) update_state(ctx, false);
 
-		if (typeof state.node === 'object' && state.node !== null && !state.circular) {
-			parents.push(state);
+			const keys = ctx.keys as PropertyKey[];
+			const last = keys.length - 1;
+			const pre = mods !== null ? mods.pre : undefined;
+			const post = mods !== null ? mods.post : undefined;
 
-			update_state();
-
-			const keys = state.keys ?? [];
-			for (let index = 0; index < keys.length; index++) {
+			for (let index = 0; index <= last; index++) {
 				const key = keys[index];
 				path.push(key);
 
-				if (modifiers.pre) {
-					modifiers.pre(state, state.node[key], key);
+				if (pre !== undefined) pre(ctx, node[key], key);
+
+				const child = walker(node[key]);
+				if (immutable && has_own_property.call(node, key) && !is_non_writable(node, key)) {
+					safe_set(node, key, child.node);
 				}
 
-				const child = walker(state.node[key]);
-				if (immutable && has_own_property.call(state.node, key) && !is_non_writable(state.node, key)) {
-					safe_set(state.node, key, child.node);
-				}
-
-				child.isLast = index === keys.length - 1;
+				child.isLast = index === last;
 				child.isFirst = index === 0;
 
-				if (modifiers.post) {
-					modifiers.post(state, child);
-				}
+				if (post !== undefined) post(ctx, child);
 
 				path.pop();
 			}
 			parents.pop();
 		}
 
-		if (modifiers.after) {
-			modifiers.after(state, state.node);
-		}
+		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
 
-		return state;
-	})(root).node;
+		return ctx;
+	};
+
+	return walker(root).node;
 }
 
 export class Traverse {
