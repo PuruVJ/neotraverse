@@ -1,7 +1,7 @@
 /**
  * Benchmarks the original `traverse` package against the two shipped
  * neotraverse builds — legacy (ES2015 CJS, the `traverse`-compatible API) and
- * modern (`new Traverse`) — across a matrix of operations × dataset shapes.
+ * modern (`new Traverse` and tree-shakeable functions) — across a matrix of operations × dataset shapes.
  *
  * It runs against the BUILT artifacts in `dist/` (so `pnpm bench` builds first),
  * which is why the legacy build can differ from modern: ES2015 downlevels the
@@ -22,7 +22,8 @@ const require = createRequire(import.meta.url);
 // The three contenders — exactly what npm consumers get.
 const traverseOrig = require('traverse'); // original `traverse`
 const traverseLegacy = require('../dist/legacy/legacy.cjs'); // neotraverse legacy (ES2015 CJS)
-const { Traverse } = await import('../dist/modern/modern.js'); // neotraverse modern (ES2022 ESM)
+const modern = await import('../dist/modern/modern.js'); // neotraverse modern (ES2022 ESM)
+const { Traverse } = modern;
 
 // ---------------------------------------------------------------------------
 // datasets — a spread of realistic shapes
@@ -76,7 +77,7 @@ const datasets: Record<string, { description: string; value: any }> = {
 // sink prevents the optimizer from eliminating benchmarked work
 let sink = 0;
 
-type Contender = 'traverse' | 'neotraverse legacy' | 'neotraverse modern';
+type Contender = 'traverse' | 'neotraverse legacy' | 'neotraverse modern' | 'neotraverse modern (fn)';
 type Factory = (d: any) => () => void;
 
 // `traverse` and the legacy build share the classic this-bound API.
@@ -85,6 +86,7 @@ const operations: Record<string, Record<Contender, Factory>> = {
 		traverse: (d) => () => traverseOrig(d).forEach(function (this: any, n: any) { if (typeof n === 'number') sink += n; }),
 		'neotraverse legacy': (d) => () => traverseLegacy(d).forEach(function (this: any, n: any) { if (typeof n === 'number') sink += n; }),
 		'neotraverse modern': (d) => () => new Traverse(d).forEach((_c: any, n: any) => { if (typeof n === 'number') sink += n; }),
+		'neotraverse modern (fn)': (d) => () => modern.forEach(d, (_c: any, n: any) => { if (typeof n === 'number') sink += n; }),
 	},
 	map: {
 		traverse: (d) => () => traverseOrig(d).map(function (this: any, n: any) {
@@ -99,26 +101,34 @@ const operations: Record<string, Record<Contender, Factory>> = {
 			if (typeof n === 'number') c.update(n + 1);
 			else if (typeof n === 'string') c.update(n.toUpperCase());
 		}),
+		'neotraverse modern (fn)': (d) => () => modern.map(d, (c: any, n: any) => {
+			if (typeof n === 'number') c.update(n + 1);
+			else if (typeof n === 'string') c.update(n.toUpperCase());
+		}),
 	},
 	clone: {
 		traverse: (d) => () => { sink += traverseOrig(d).clone() ? 1 : 0; },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).clone() ? 1 : 0; },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).clone() ? 1 : 0; },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.clone(d) ? 1 : 0; },
 	},
 	reduce: {
 		traverse: (d) => () => { sink += traverseOrig(d).reduce(function (this: any, acc: any[], n: any) { if (this.isLeaf) acc.push(n); return acc; }, []).length; },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).reduce(function (this: any, acc: any[], n: any) { if (this.isLeaf) acc.push(n); return acc; }, []).length; },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).reduce((c: any, acc: any[], n: any) => { if (c.isLeaf) acc.push(n); return acc; }, []).length; },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.reduce(d, (c: any, acc: any[], n: any) => { if (c.isLeaf) acc.push(n); return acc; }, []).length; },
 	},
 	paths: {
 		traverse: (d) => () => { sink += traverseOrig(d).paths().length; },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).paths().length; },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).paths().length; },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.paths(d).length; },
 	},
 	nodes: {
 		traverse: (d) => () => { sink += traverseOrig(d).nodes().length; },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).nodes().length; },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).nodes().length; },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.nodes(d).length; },
 	},
 };
 
@@ -129,20 +139,23 @@ const path_operations: Record<string, Record<Contender, Factory>> = {
 		traverse: (d) => () => { sink += traverseOrig(d).get(DEEP_PATH); },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).get(DEEP_PATH); },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).get(DEEP_PATH); },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.get(d, DEEP_PATH); },
 	},
 	has: {
 		traverse: (d) => () => { sink += traverseOrig(d).has(DEEP_PATH) ? 1 : 0; },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).has(DEEP_PATH) ? 1 : 0; },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).has(DEEP_PATH) ? 1 : 0; },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.has(d, DEEP_PATH) ? 1 : 0; },
 	},
 	set: {
 		traverse: (d) => () => { sink += traverseOrig(d).set(DEEP_PATH, 1); },
 		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).set(DEEP_PATH, 1); },
 		'neotraverse modern': (d) => () => { sink += new Traverse(d).set(DEEP_PATH, 1); },
+		'neotraverse modern (fn)': (d) => () => { sink += modern.set(d, DEEP_PATH, 1); },
 	},
 };
 
-const CONTENDERS: Contender[] = ['traverse', 'neotraverse legacy', 'neotraverse modern'];
+const CONTENDERS: Contender[] = ['traverse', 'neotraverse legacy', 'neotraverse modern', 'neotraverse modern (fn)'];
 
 const hasGc = typeof (globalThis as any).gc === 'function';
 
@@ -211,7 +224,7 @@ async function run_suite(operation: string, dataset: string, factories: Record<C
 }
 
 async function main() {
-	console.log('traverse  vs  neotraverse legacy  vs  neotraverse modern\n' + '='.repeat(56));
+	console.log('traverse  vs  neotraverse legacy  vs  neotraverse modern (class + fn)\n' + '='.repeat(56));
 	const suites: any[] = [];
 
 	for (const [operation, factories] of Object.entries(operations)) {
@@ -228,6 +241,7 @@ async function main() {
 	const summary = {
 		'neotraverse legacy': +geomean(suites.map((s) => s.speedupVsTraverse['neotraverse legacy'])).toFixed(2),
 		'neotraverse modern': +geomean(suites.map((s) => s.speedupVsTraverse['neotraverse modern'])).toFixed(2),
+		'neotraverse modern (fn)': +geomean(suites.map((s) => s.speedupVsTraverse['neotraverse modern (fn)'])).toFixed(2),
 	};
 
 	const output = {
@@ -245,8 +259,9 @@ async function main() {
 	await writeFile(join(here, 'results.json'), JSON.stringify(output, null, 2) + '\n');
 	console.log(`\n${'='.repeat(56)}`);
 	console.log('Overall (geometric mean vs traverse):');
-	console.log(`  neotraverse legacy  ${summary['neotraverse legacy']}×`);
-	console.log(`  neotraverse modern  ${summary['neotraverse modern']}×`);
+	console.log(`  neotraverse legacy       ${summary['neotraverse legacy']}×`);
+	console.log(`  neotraverse modern       ${summary['neotraverse modern']}×`);
+	console.log(`  neotraverse modern (fn)  ${summary['neotraverse modern (fn)']}×`);
 	console.log(`\nWrote ${join('bench', 'results.json')}  ·  sink=${sink}`);
 }
 

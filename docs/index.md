@@ -25,7 +25,7 @@ features:
     details: Prototype-pollution & injection safe on untrusted input, with an opt-in maxDepth DoS guard.
   - icon: ⚡
     title: Fast
-    details: ~4.5× faster than traverse on average — up to ~7× — with 3–5× less allocation (modern build).
+    details: ~4.5× faster than traverse on average — up to ~7×. Tree-shakeable `import * as t` on the modern build.
   - icon: 🎹
     title: TypeScript
     details: Types included by default. Throw away the @types/traverse package.

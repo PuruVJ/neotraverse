@@ -4,18 +4,20 @@ import results from '../../../../packages/neotraverse/bench/results.json';
 
 const metric = ref('throughput'); // 'throughput' | 'memory'
 
-const ORDER = ['traverse', 'neotraverse legacy', 'neotraverse modern'];
+const ORDER = ['traverse', 'neotraverse legacy', 'neotraverse modern', 'neotraverse modern (fn)'];
 const COLOR = {
 	traverse: 'var(--vp-c-text-3)',
 	'neotraverse legacy': 'color-mix(in oklch, var(--vp-c-brand-1) 62%, var(--vp-c-text-3))',
 	'neotraverse modern': 'var(--vp-c-brand-1)',
+	'neotraverse modern (fn)': 'color-mix(in oklch, var(--vp-c-brand-1) 72%, var(--vp-c-bg))',
 };
 
 // compact label: a boxed `n` mark (the neotraverse logo) + build name
-const libDisplay = (name) =>
-	name === 'traverse'
-		? { logo: false, text: 'traverse' }
-		: { logo: true, text: name.replace('neotraverse ', '') };
+const libDisplay = (name) => {
+	if (name === 'traverse') return { logo: false, text: 'traverse' };
+	const text = name.replace('neotraverse ', '').replace('(fn)', '· fn');
+	return { logo: true, text };
+};
 
 const groups = computed(() => {
 	const out = [];
@@ -181,7 +183,7 @@ function rows(suite) {
 }
 .bench-row {
 	display: grid;
-	grid-template-columns: 7rem 1fr 9rem;
+	grid-template-columns: 8.5rem 1fr 9rem;
 	align-items: center;
 	gap: 0.7rem;
 	margin: 0.3rem 0;
