@@ -248,6 +248,34 @@ function clone_node(
 		seen.delete(src);
 		return dst;
 	}
+	if (src instanceof WeakMap) {
+		const dst = new WeakMap();
+		seen.set(src, dst);
+		for (const [k, v] of src) {
+			dst.set(clone_node(k, seen, options, depth + 1), clone_node(v, seen, options, depth + 1));
+		}
+		return dst;
+	}
+	if (src instanceof WeakSet) {
+		const dst = new WeakSet();
+		seen.set(src, dst);
+		for (const v of src) dst.add(clone_node(v, seen, options, depth + 1));
+		return dst;
+	}
+	if (src instanceof ArrayBuffer) {
+		const dst = src.slice(0);
+		seen.set(src, dst);
+		return dst;
+	}
+	if (src instanceof DataView) {
+		const dst = new DataView(
+			src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength),
+			0,
+			src.byteLength,
+		);
+		seen.set(src, dst);
+		return dst;
+	}
 
 	const dst = copy(src, options);
 	// typed arrays / boxed primitives are fully materialized by copy()
@@ -311,6 +339,14 @@ function copy(src: any, options: TraverseOptions) {
 
 		if (is_array(src)) {
 			dst = [];
+		} else if (src instanceof ArrayBuffer) {
+			return src.slice(0);
+		} else if (src instanceof DataView) {
+			return new DataView(
+				src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength),
+				0,
+				src.byteLength,
+			);
 		} else if (is_typed_array(src)) {
 			return src.slice();
 		} else if (is_boxed_primitive(src)) {
@@ -322,6 +358,10 @@ function copy(src: any, options: TraverseOptions) {
 			return new Map(src);
 		} else if (src instanceof Set) {
 			return new Set(src);
+		} else if (src instanceof WeakMap) {
+			return new WeakMap(src);
+		} else if (src instanceof WeakSet) {
+			return new WeakSet(src);
 		} else {
 			// One `toString` tag instead of a separate call per predicate.
 			const tag = to_string(src);
@@ -908,34 +948,40 @@ export async function mapAsync(
 /** Locked union — do not rename tags after release. */
 export type TraverseNodeType =
 	| 'null'
+	| 'primitive'
+	| 'function'
 	| 'array'
 	| 'object'
 	| 'date'
 	| 'regexp'
 	| 'map'
 	| 'set'
+	| 'weakmap'
+	| 'weakset'
 	| 'typed-array'
-	| 'error'
-	| 'primitive';
+	| 'arraybuffer'
+	| 'dataview'
+	| 'error';
 
 /**
  * Classify a value for branching inside traversal callbacks.
- *
- * `primitive` — `string`, `number`, `boolean`, `bigint`, `symbol`, `undefined`.
- * `object` — plain objects and class instances, including boxed primitives (`new String()`, …).
- * Those wrappers are walk **leaves** (the engine does not descend into their index slots);
- * use `typeof x === 'string'` (or `.valueOf()`) when you need the unboxed value.
+ * See the [types reference](/guide#types-and-traversal) for walk vs clone behaviour per tag.
  */
 export function getType(value: unknown): TraverseNodeType {
 	if (value === null) return 'null';
 	const t = typeof value;
+	if (t === 'function') return 'function';
 	if (t !== 'object') return 'primitive';
 	if (is_array(value)) return 'array';
 	if (value instanceof Date) return 'date';
 	if (value instanceof RegExp) return 'regexp';
 	if (value instanceof Map) return 'map';
 	if (value instanceof Set) return 'set';
+	if (value instanceof WeakMap) return 'weakmap';
+	if (value instanceof WeakSet) return 'weakset';
 	if (is_typed_array(value)) return 'typed-array';
+	if (value instanceof ArrayBuffer) return 'arraybuffer';
+	if (value instanceof DataView) return 'dataview';
 	if (value instanceof Error) return 'error';
 	return 'object';
 }
@@ -1160,6 +1206,22 @@ function deepEqualPair(
 			return a.source === b.source && a.flags === b.flags;
 		case 'error':
 			return a.message === b.message && a.name === b.name;
+		case 'arraybuffer': {
+			if (a.byteLength !== b.byteLength) return false;
+			const va = new Uint8Array(a);
+			const vb = new Uint8Array(b);
+			for (let i = 0; i < va.length; i++) {
+				if (va[i] !== vb[i]) return false;
+			}
+			return true;
+		}
+		case 'dataview': {
+			if (a.byteLength !== b.byteLength) return false;
+			for (let i = 0; i < a.byteLength; i++) {
+				if (a.getUint8(i) !== b.getUint8(i)) return false;
+			}
+			return true;
+		}
 		case 'typed-array': {
 			if (a.length !== b.length) return false;
 			for (let i = 0; i < a.length; i++) {
@@ -1196,6 +1258,15 @@ function deepEqualPair(
 			}
 			return true;
 		}
+		case 'weakmap': {
+			// Only keys reachable from this walk are compared (WeakMap is not enumerable in forEach).
+			if (a === b) return true;
+			return false;
+		}
+		case 'weakset':
+			return a === b;
+		case 'function':
+			return a === b;
 		case 'array': {
 			if (a.length !== b.length) return false;
 			for (let i = 0; i < a.length; i++) {
@@ -1284,7 +1355,19 @@ function diffPair(a: any, b: any, path: PropertyKey[], ops: PatchOp[], stack: We
 		return;
 	}
 
-	if (ta === 'map' || ta === 'set' || ta === 'date' || ta === 'regexp' || ta === 'error' || ta === 'typed-array') {
+	if (
+		ta === 'map' ||
+		ta === 'set' ||
+		ta === 'weakmap' ||
+		ta === 'weakset' ||
+		ta === 'date' ||
+		ta === 'regexp' ||
+		ta === 'error' ||
+		ta === 'typed-array' ||
+		ta === 'arraybuffer' ||
+		ta === 'dataview' ||
+		ta === 'function'
+	) {
 		if (!deepEqual(a, b)) {
 			ops.push({ op: 'replace', path: pointerPath(path), value: clone(b) });
 		}

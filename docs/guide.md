@@ -115,6 +115,83 @@ Pass options as the **last** argument (for example `t.forEach(obj, cb, { maxDept
 }
 ```
 
+## Types and traversal {#types-and-traversal}
+
+How neotraverse treats different JavaScript values. Use `t.getType(node)` inside callbacks; use `typeof` when you
+need finer detail inside the `'primitive'` bucket (`'string'` vs `'number'`, etc.).
+
+### JSON-like trees (the common case)
+
+If your data looks like **`JSON.parse` output** — plain objects, arrays, `null`, strings, numbers, booleans, and
+nested combinations — you are on the supported path:
+
+- **`forEach` / `map` / `reduce`** visit every own enumerable property.
+- **`clone`** deep-copies structure and handles circular references.
+- **`get` / `set` / `has`** and **`getPath`** follow own keys only (no prototype chain).
+- **`includeSymbols: false`** (default) matches JSON (no symbol keys).
+
+Typical API/config/document trees need nothing special. Add **`Date`**, **`RegExp`**, **`Map`**, or **`Set`** when
+your runtime actually uses them; see the table below for walk vs clone differences.
+
+### Full type reference
+
+| Kind | `getType()` | `forEach` / `map` walk | `clone()` | Notes |
+|------|-------------|------------------------|-----------|--------|
+| `null` | `'null'` | Visited | Copied | |
+| `string`, `number`, `boolean`, `bigint`, `symbol`, `undefined` | `'primitive'` | Visited as values | Copied | Use `typeof` to branch |
+| `function` | `'function'` | Node value only; not invoked | Same reference on properties | Stripped by `toJSON()` |
+| Plain object, class instance | `'object'` | Descends into **own enumerable** keys | Deep clone; keeps prototype | Boxed `new String()` etc. are `'object'` **leaves** |
+| `Array` | `'array'` | Descends indices | Deep clone | |
+| `Date` | `'date'` | Leaf (no keys) | Cloned via `getTime()` | |
+| `RegExp` | `'regexp'` | Leaf | Cloned | |
+| `Map` | `'map'` | **Leaf** — entries not visited | **Deep-clones entries** | Transform entries via `clone` or manual loop |
+| `Set` | `'set'` | **Leaf** | **Deep-clones values** | Same as `Map` |
+| `WeakMap` / `WeakSet` | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk) | Cloned via constructor iteration | Cannot query weak refs after GC |
+| Typed array (`Uint8Array`, …) | `'typed-array'` | Descends index keys; `copy` uses `.slice()` | Leaf in deep clone (buffer copied) | |
+| `ArrayBuffer` | `'arraybuffer'` | Leaf | `.slice(0)` | |
+| `DataView` | `'dataview'` | Leaf | Clones viewed byte range | |
+| `Error` | `'error'` | Leaf | Deep clone; shallow `map` copy is lossy (`message` only) | `deepEqual`: `message` + `name` |
+| `Promise`, `URL`, DOM nodes, … | `'object'` | Own enumerable keys only, if any | Generic object copy | Host objects may behave oddly |
+
+### Deliberate limits
+
+- **No prototype walking** — only own properties (`get`/`has` never follow the chain). Safer on untrusted input.
+- **No non-enumerable / getter-only keys** unless you add your own logic.
+- **`Map` / `Set` vs walk** — the walker sees the collection as one node; **`clone`** still copies entries. Do not
+  assume `map(fn)` runs `fn` on each Map entry.
+- **Boxed primitives** (`new String('x')`) — classified as `'object'`, treated as **leaves**; unwrap with
+  `.valueOf()` when needed.
+- **`diff` / `patch`** — acyclic trees only; circular graphs are unsupported.
+- **Cross-realm** — `instanceof` may fail; `copy()` falls back to tag checks for `Date` / `RegExp`.
+
+### Quick checks in callbacks
+
+```ts
+import * as t from 'neotraverse/modern';
+
+t.forEach(data, (ctx, x) => {
+  switch (t.getType(x)) {
+    case 'primitive':
+      if (typeof x === 'string') { /* … */ }
+      break;
+    case 'function':
+      // present on the tree, but not called by neotraverse
+      break;
+    case 'map':
+    case 'set':
+      // walk leaf — use t.clone(x) or iterate x yourself
+      break;
+    case 'arraybuffer':
+    case 'dataview':
+    case 'typed-array':
+      // binary data; clone copies bytes
+      break;
+    default:
+      break;
+  }
+});
+```
+
 ## Examples
 
 ### Transform negative numbers in place
@@ -363,9 +440,8 @@ String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Po
 
 #### t.getType {#t-get-type}
 
-`getType(value)` returns a stable tag (`'map'`, `'date'`, `'primitive'`, `'object'`, …) for branching inside
-callbacks. Real primitives (`3`, `'hi'`) are `'primitive'`. Boxed wrappers (`new String('hi')`) are `'object'`
-because the walker treats them as **leaves** — use `typeof` / `.valueOf()` when you need the inner value.
+`getType(value)` returns a stable tag for branching inside callbacks. See
+[Types and traversal](#types-and-traversal) for the full matrix (walk vs clone vs JSON-like data).
 
 ### Structural helpers
 

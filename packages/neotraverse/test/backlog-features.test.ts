@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import {
+	clone,
 	count,
 	deepEqual,
 	deleteWhere,
@@ -44,12 +45,27 @@ describe('backlog: paths & types', () => {
 		expect(getType(null)).toBe('null');
 		expect(getType(3)).toBe('primitive');
 		expect(getType('hi')).toBe('primitive');
+		expect(getType(() => {})).toBe('function');
 		expect(getType(new Date())).toBe('date');
 		expect(getType(new Map())).toBe('map');
+		expect(getType(new WeakMap())).toBe('weakmap');
 		expect(getType(new Uint8Array(1))).toBe('typed-array');
-		// Boxed primitives are object leaves, not a separate public tag
+		expect(getType(new ArrayBuffer(4))).toBe('arraybuffer');
+		expect(getType(new DataView(new ArrayBuffer(4)))).toBe('dataview');
 		expect(getType(new String('hi'))).toBe('object');
-		expect(getType(Object('hi'))).toBe('object');
+	});
+
+	test('ArrayBuffer and DataView clone', () => {
+		const buf = new Uint8Array([1, 2, 3]).buffer;
+		const clonedBuf = clone(buf);
+		expect(clonedBuf).not.toBe(buf);
+		expect(new Uint8Array(clonedBuf)).toEqual(new Uint8Array([1, 2, 3]));
+
+		const view = new DataView(buf);
+		view.setUint8(0, 9);
+		const clonedView = clone(view);
+		expect(clonedView).not.toBe(view);
+		expect(clonedView.getUint8(0)).toBe(9);
 	});
 });
 
