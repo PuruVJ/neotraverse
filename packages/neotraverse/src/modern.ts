@@ -191,11 +191,39 @@ function safe_set(dst: any, key: PropertyKey, value: any): void {
 }
 
 // Bound recursion when a `maxDepth` is configured, throwing a catchable error
-// before the native stack overflow. No-op when `max_depth` is undefined.
+// before the native stack overflow. A tiny hot helper — V8 inlines it, so it's
+// DRY at no per-node cost. No-op when `max_depth` is undefined.
 function assert_within_depth(depth: number, max_depth: number | undefined): void {
 	if (max_depth !== undefined && depth > max_depth) {
 		throw new RangeError(`neotraverse: maximum traversal depth (${max_depth}) exceeded`);
 	}
+}
+
+// Deep clone with O(1) circular detection (a Map of ancestor → its clone) and
+// no per-call closure. `typeof`-first, so primitive leaves never touch the Map.
+// `seen` holds only the current ancestry (set on descend, deleted on ascend),
+// matching the classic push/pop semantics.
+function clone_node(src: any, seen: Map<object, any>, options: TraverseOptions, depth: number): any {
+	if (typeof src !== 'object' || src === null) return src;
+
+	assert_within_depth(depth, options.maxDepth);
+
+	const existing = seen.get(src);
+	if (existing !== undefined) return existing; // circular reference back to an ancestor
+
+	const dst = copy(src, options);
+	// typed arrays / boxed primitives are fully materialized by copy()
+	if (is_typed_array(src) || is_boxed_primitive(src)) return dst;
+
+	seen.set(src, dst);
+	const keys = options.includeSymbols ? own_enumerable_keys(src) : object_keys(src);
+	for (let i = 0; i < keys.length; i++) {
+		const key = keys[i];
+		safe_set(dst, key, clone_node(src[key], seen, options, depth + 1));
+	}
+	seen.delete(src);
+
+	return dst;
 }
 
 function own_enumerable_keys(obj: object): PropertyKey[] {
@@ -293,7 +321,6 @@ class WalkContext implements TraverseContext {
 	node: any;
 	node_: any;
 	parent: TraverseContext | undefined;
-	parents: TraverseContext[];
 	key: PropertyKey | undefined;
 	isRoot: boolean;
 	isLeaf = false;
@@ -315,21 +342,23 @@ class WalkContext implements TraverseContext {
 		this.node = node;
 		this.node_ = node_;
 		this.parent = parents[level - 1];
-		this.parents = parents;
 		this.key = path[level - 1];
 		this.isRoot = level === 0;
 		this.level = level;
+	}
+
+	// the live ancestor stack — shared, so it's read straight off the walk state
+	get parents(): TraverseContext[] {
+		return this.w.parents;
 	}
 
 	// derived flags — no per-node storage
 	get notRoot(): boolean {
 		return !this.isRoot;
 	}
-	set notRoot(_v: boolean) {}
 	get notLeaf(): boolean {
 		return !this.isLeaf;
 	}
-	set notLeaf(_v: boolean) {}
 
 	// `path` is derived from the parent chain on demand, so the common ops
 	// (forEach/map/clone/reduce/nodes) never pay for a per-node array copy.
@@ -342,9 +371,6 @@ class WalkContext implements TraverseContext {
 			c = c.parent as WalkContext;
 		}
 		return out;
-	}
-	set path(_v: PropertyKey[]) {
-		/* derived — assignment is intentionally a no-op */
 	}
 
 	update(x: any, stopHere: boolean = false): void {
@@ -421,9 +447,7 @@ function walk(
 	const { immutable, max_depth, path, parents, iter } = w;
 
 	const walker = (node_: any): WalkContext => {
-		if (max_depth !== undefined && path.length > max_depth) {
-			throw new RangeError(`neotraverse: maximum traversal depth (${max_depth}) exceeded`);
-		}
+		assert_within_depth(path.length, max_depth);
 
 		const node0 = immutable ? copy(node_, options) : node_;
 		const ctx = new WalkContext(w, node_, node0);
@@ -644,49 +668,6 @@ export class Traverse {
 	 * Create a deep clone of the object.
 	 */
 	clone(): any {
-		const parents: any[] = [];
-		const nodes: any[] = [];
-		const options = this.#options;
-		const max_depth = options.maxDepth;
-
-		if (is_typed_array(this.#value)) {
-			return this.#value.slice();
-		}
-
-		return (function clone(src) {
-			assert_within_depth(parents.length, max_depth);
-
-			for (let i = 0; i < parents.length; i++) {
-				if (parents[i] === src) {
-					return nodes[i];
-				}
-			}
-
-			if (typeof src === 'object' && src !== null) {
-				const dst = copy(src, options);
-
-				// Typed arrays and boxed primitives are fully materialized by copy()
-				// and have no child references to recurse into (boxed-primitive index
-				// slots are read-only — re-writing onto them would throw).
-				if (is_typed_array(src) || is_boxed_primitive(src)) {
-					return dst;
-				}
-
-				parents.push(src);
-				nodes.push(dst);
-
-				const keys = options.includeSymbols ? own_enumerable_keys(src) : object_keys(src);
-				for (let i = 0; i < keys.length; i++) {
-					const key = keys[i];
-					safe_set(dst, key, clone(src[key]));
-				}
-
-				parents.pop();
-				nodes.pop();
-				return dst;
-			}
-
-			return src;
-		})(this.#value);
+		return clone_node(this.#value, new Map(), this.#options, 0);
 	}
 }
