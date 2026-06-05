@@ -184,7 +184,12 @@ const is_unsafe_key = (key: PropertyKey): boolean =>
 // silently dropped — and the clone keeps its real prototype.
 function safe_set(dst: any, key: PropertyKey, value: any): void {
 	if (key === '__proto__') {
-		Object.defineProperty(dst, key, { value, writable: true, enumerable: true, configurable: true });
+		Object.defineProperty(dst, key, {
+			value,
+			writable: true,
+			enumerable: true,
+			configurable: true,
+		});
 	} else {
 		dst[key] = value;
 	}
@@ -203,7 +208,12 @@ function assert_within_depth(depth: number, max_depth: number | undefined): void
 // no per-call closure. `typeof`-first, so primitive leaves never touch the Map.
 // `seen` holds only the current ancestry (set on descend, deleted on ascend),
 // matching the classic push/pop semantics.
-function clone_node(src: any, seen: Map<object, any>, options: TraverseOptions, depth: number): any {
+function clone_node(
+	src: any,
+	seen: Map<object, any>,
+	options: TraverseOptions,
+	depth: number,
+): any {
 	if (typeof src !== 'object' || src === null) return src;
 
 	assert_within_depth(depth, options.maxDepth);
@@ -481,8 +491,7 @@ function walk(
 
 		const node = ctx.node;
 		// reuse the object-ness check when the node wasn't replaced by the cb
-		const descend =
-			node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
+		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
 		if (descend && ctx.circular === undefined) {
 			parents.push(ctx);
 
