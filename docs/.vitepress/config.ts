@@ -42,7 +42,7 @@ export default defineConfig({
 		nav: [
 			{ text: 'Docs', link: '/guide' },
 			{ text: 'Benchmarks', link: '/benchmarks' },
-			{ text: 'Security audit', link: '/blog/the-vulnerability-run' },
+			{ text: 'Blog ↗', link: 'https://puruvj.dev/blog/neotraverse-0-7' },
 			{ text: 'npm', link: 'https://www.npmjs.com/package/neotraverse' },
 		],
 		sidebar: [
@@ -53,10 +53,6 @@ export default defineConfig({
 					{ text: 'Migrating from traverse', link: '/migration' },
 					{ text: 'Benchmarks', link: '/benchmarks' },
 				],
-			},
-			{
-				text: 'Blog',
-				items: [{ text: 'The vulnerability run', link: '/blog/the-vulnerability-run' }],
 			},
 			{
 				text: 'Reference',
@@ -82,7 +78,7 @@ export default defineConfig({
 	// Generate a single /llms.txt that combines the docs as plain Markdown.
 	buildEnd: async (siteConfig) => {
 		const src = siteConfig.srcDir;
-		const files = ['guide.md', 'migration.md', 'benchmarks.md', 'blog/the-vulnerability-run.md'];
+		const files = ['guide.md', 'migration.md', 'benchmarks.md'];
 		const parts = [
 			'# neotraverse',
 			'',

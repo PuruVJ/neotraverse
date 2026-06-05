@@ -13,8 +13,8 @@ hero:
       text: Benchmarks
       link: /benchmarks
     - theme: alt
-      text: Security audit ↗
-      link: /blog/the-vulnerability-run
+      text: Blog ↗
+      link: https://puruvj.dev/blog/neotraverse-0-7
 
 features:
   - icon: 🤌

@@ -106,8 +106,8 @@ Object.getPrototypeOf(safe);          // Object.prototype
 ({}).isAdmin;                         // undefined — global prototype untouched
 ```
 
-Read the story of the audit that produced these guarantees in
-[**The vulnerability run**](/blog/the-vulnerability-run).
+Read the story of the audit that produced these guarantees in the
+[**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
 
 ### DoS guard — `maxDepth`
 
