@@ -23,7 +23,7 @@ function toPlain(md: string): string {
 
 // Combine the docs into a single plain-Markdown llms.txt.
 function generate_llms(): string {
-	const files = ['guide.md', 'migration.md', 'benchmarks.md'];
+	const files = ['guide.md', 'legacy.md', 'migration.md', 'benchmarks.md'];
 	const parts = [
 		'# neotraverse',
 		'',
@@ -70,6 +70,7 @@ export default defineConfig({
 				text: 'Guide',
 				items: [
 					{ text: 'Documentation', link: '/guide' },
+					{ text: 'Legacy / Classic API', link: '/legacy' },
 					{ text: 'Migrating from traverse', link: '/migration' },
 					{ text: 'Benchmarks', link: '/benchmarks' },
 				],

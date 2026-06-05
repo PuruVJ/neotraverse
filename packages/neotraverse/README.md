@@ -4,7 +4,7 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 
 > 📖 **Full docs, security audit & live benchmarks:** **[neotraverse.puruvj.dev](https://neotraverse.puruvj.dev)**
 
-- 🤌 ~1.5–1.6 KB min+brotli
+- 🤌 ~2.2 KB min+brotli (modern build)
 - 🚥 Zero dependencies, no polyfills
 - 🎹 TypeScript — throw away `@types/traverse`
 - 🛡️ Safe on untrusted input ([prototype-pollution & injection hardened](#security))

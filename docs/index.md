@@ -19,7 +19,7 @@ hero:
 features:
   - icon: 🤌
     title: Tiny
-    details: ~1.5–1.6 KB min+brotli. Zero dependencies, no polyfills.
+    details: ~2.2 KB min+brotli (modern build). Zero dependencies, no polyfills.
   - icon: 🛡️
     title: Hardened
     details: Prototype-pollution & injection safe on untrusted input, with an opt-in maxDepth DoS guard.

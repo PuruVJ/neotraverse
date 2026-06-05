@@ -28,7 +28,8 @@ The default build keeps the exact `traverse` API (`this`-bound callbacks):
  });
 ```
 
-That's it — same behaviour, now zero-dependency, prototype-pollution-safe, and faster.
+That's it — same behaviour, now zero-dependency, prototype-pollution-safe, and faster. Full reference for this
+classic `this`-bound API: [**Legacy / Classic API**](/legacy).
 
 ## Step 3 (optional) — go modern
 

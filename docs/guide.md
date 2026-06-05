@@ -7,14 +7,22 @@ outline: deep
 
 Traverse and transform objects by visiting every node on a recursive walk. A TypeScript rewrite of
 [`traverse`](https://github.com/ljharb/js-traverse) with **0 dependencies**, **prototype-pollution hardening**,
-and **~4.5× the throughput** (modern build).
+and **~4.5× the throughput** (up to ~7×).
 
-- 🤌 ~1.5–1.6 KB min+brotli
+::: tip This page documents the **modern** build
+`neotraverse/modern` is the recommended API for new code: an explicit `ctx` argument (great with arrow functions
+and TypeScript), the new query / iteration / async helpers, and the fastest path operations.
+
+**Looking for a drop-in replacement for `traverse`?** That's the classic `this`-bound API — see the
+[**Legacy / Classic API**](/legacy).
+:::
+
+- 🤌 ~2.2 KB min+brotli
 - 🚥 Zero dependencies, no polyfills
 - 🎹 Types included — drop `@types/traverse`
 - 🛡️ Safe on untrusted input (see [Security](#security))
-- ⚡ ~4.5× faster than `traverse` — up to ~7× (modern; see [benchmarks](/benchmarks))
-- 🛸 ESM-first, with a legacy ES2015 CJS/ESM build
+- ⚡ ~4.5× faster than `traverse` — up to ~7× (see [benchmarks](/benchmarks))
+- 🧰 Query helpers, lazy iteration, async traversal, `Map`/`Set` clone
 
 ## Install
 
@@ -25,7 +33,7 @@ npm install neotraverse
 
 ## Quick start
 
-The modern build gives every callback a `ctx` argument:
+The modern build exports a `Traverse` class; every callback receives a `ctx` argument:
 
 ```ts
 import { Traverse } from 'neotraverse/modern';
@@ -35,51 +43,8 @@ const obj = { a: 1, b: 2, c: [3, 4] };
 new Traverse(obj).forEach((ctx, x) => {
   if (typeof x === 'number') ctx.update(x * 10);
 });
+// → { a: 10, b: 20, c: [30, 40] }
 ```
-
-Or use the classic `this`-bound API (a drop-in for `traverse`):
-
-```ts
-import traverse from 'neotraverse';
-
-const obj = { a: 1, b: 2, c: [3, 4] };
-
-traverse(obj).forEach(function (x) {
-  if (typeof x === 'number') this.update(x * 10);
-});
-```
-
-## Which build to use?
-
-`neotraverse` ships three builds:
-
-| Build       | Import                  | Module       | Notes                                                   |
-| ----------- | ----------------------- | ------------ | ------------------------------------------------------- |
-| **default** | `neotraverse`           | ESM (ES2022) | Classic `traverse`-compatible API (`this`-bound).       |
-| **modern**  | `neotraverse/modern`    | ESM (ES2022) | New `Traverse` class; state on a `ctx` argument.        |
-| **legacy**  | `neotraverse/legacy`    | CJS + ESM    | ES2015 drop-in for `traverse` (old bundlers / runtimes). |
-
-```js
-// modern (recommended for new code)
-import { Traverse } from 'neotraverse/modern';
-
-// classic API, ESM
-import traverse from 'neotraverse';
-
-// legacy, CommonJS
-const traverse = require('neotraverse/legacy');
-```
-
-### Browser & runtime support
-
-The **default** and **modern** builds are **ES2022** (Chrome/Edge 94+, Firefox 93+, Safari 15+, Node 18+, Deno,
-Bun). The **legacy** build is **ES2015 (ES6)** — Chrome 51+, Firefox 54+, Safari 10+, Edge 15+, Node 6+ — and
-remains a CJS + ESM drop-in for `traverse`.
-
-::: warning Breaking change in 0.7
-The legacy build now targets **ES2015** instead of ES5 (it is built with rolldown/oxc, whose floor is ES2015).
-Environments that required literal ES5 output — e.g. IE11 — are no longer supported by the prebuilt bundle.
-:::
 
 ## Security
 
@@ -89,17 +54,17 @@ Environments that required literal ES5 output — e.g. IE11 — are no longer su
   `constructor`, or `prototype`, so an attacker-controlled path can't reach `Object.prototype`.
 - **No prototype injection.** `clone()`, `map()`, and `forEach()` assign keys without ever triggering the
   `__proto__` setter. An object parsed from hostile JSON such as `{"__proto__":{"isAdmin":true}}` is cloned with
-  its real prototype intact — `result.isAdmin` is `undefined`, and the injected value is preserved as an inert own
-  data property.
+  its real prototype intact — `result.isAdmin` is `undefined`, and the injected value is preserved as an inert
+  own data property.
 - **Prototype preservation still works.** Legitimate class instances keep their prototype (`instanceof` is
   unaffected) after `clone()`/`map()`.
 - **No prototype-chain disclosure.** `get()` and `has()` only ever follow **own** properties.
 
 ```ts
-import traverse from 'neotraverse';
+import { Traverse } from 'neotraverse/modern';
 
 const evil = JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
-const safe = traverse(evil).clone();
+const safe = new Traverse(evil).clone();
 
 safe.isAdmin;                         // undefined — not polluted
 Object.getPrototypeOf(safe);          // Object.prototype
@@ -116,10 +81,10 @@ catchable `RangeError` is thrown before the native overflow. Unlimited when omit
 unchanged).
 
 ```ts
-import traverse from 'neotraverse';
+import { Traverse } from 'neotraverse/modern';
 
 try {
-  traverse(untrusted, { maxDepth: 1000 }).clone();
+  new Traverse(untrusted, { maxDepth: 1000 }).clone();
 } catch (e) {
   // RangeError: neotraverse: maximum traversal depth (1000) exceeded
 }
@@ -128,10 +93,11 @@ try {
 ## Options
 
 ```ts
-traverse(obj, {
+new Traverse(obj, {
   immutable: false,      // if true, never mutate the original object
   includeSymbols: false, // if true, also traverse own enumerable symbol keys
   maxDepth: undefined,   // bound recursion depth (throws RangeError when exceeded)
+  signal: undefined,     // AbortSignal — cancels forEachAsync()/mapAsync()
 });
 ```
 
@@ -155,13 +121,7 @@ new Traverse(obj).forEach((ctx, x) => {
 ```ts
 import { Traverse } from 'neotraverse/modern';
 
-const leaves = new Traverse({ a: [1, 2, 3], b: 4, d: { e: [7, 8], f: 9 } }).reduce(
-  (ctx, acc, x) => {
-    if (ctx.isLeaf) acc.push(x);
-    return acc;
-  },
-  [],
-);
+const leaves = new Traverse({ a: [1, 2, 3], b: 4, d: { e: [7, 8], f: 9 } }).filter((ctx) => ctx.isLeaf);
 // → [ 1, 2, 3, 4, 7, 8, 9 ]
 ```
 
@@ -179,57 +139,140 @@ const scrubbed = new Traverse(obj).map((ctx) => {
 // → { a: 1, b: 2, c: [ 3, 4 ] }
 ```
 
-## Migrating from `traverse`
+### Transform every node asynchronously
 
-It's a drop-in replacement — swap the import and you're done:
+```ts
+import { Traverse } from 'neotraverse/modern';
 
-```diff
--import traverse from 'traverse';
-+import traverse from 'neotraverse';
+const translated = await new Traverse(doc).mapAsync(async (ctx, x) => {
+  if (typeof x === 'string') ctx.update(await translate(x));
+});
 ```
-
-See the dedicated [**Migration guide**](/migration) for the full
-`traverse → neotraverse → neotraverse/modern` path and a side-by-side diff.
 
 ## Methods
 
 Each method that takes an `fn` runs with the [context](#context) below.
 
-### `.map(fn)`
+### Core
+
+#### `.map(fn)`
 
 Run `fn` for each node and return a **new** object with the results. Update nodes in the result with
-`ctx.update(value)` (modern) / `this.update(value)` (classic).
+`ctx.update(value)`.
 
-### `.forEach(fn)`
+#### `.forEach(fn)`
 
 Like `.map()`, but `update()` mutates the object **in place**.
 
-### `.reduce(fn, acc)`
+#### `.reduce(fn, acc)`
 
 A [left-fold](<https://en.wikipedia.org/wiki/Fold_(higher-order_function)>) over every node. If `acc` is omitted,
 it starts as the root object and the root node is skipped.
 
-### `.paths()`
+#### `.paths()`
 
 Return an array of every non-cyclic path (each path an array of keys).
 
-### `.nodes()`
+#### `.nodes()`
 
 Return an array of every node.
 
-### `.clone()`
+#### `.clone()`
 
-Create a deep clone. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and is
-prototype-pollution-safe.
+Create a deep clone. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and `Map`/`Set` (with
+their entries deep-cloned), and is prototype-pollution-safe.
 
-### `.get(path)` · `.set(path, value)` · `.has(path)`
+#### `.get(path)` · `.set(path, value)` · `.has(path)`
 
 Read / write / test the element at an array `path`. `get`/`has` only follow own properties; `set` refuses
 prototype-polluting keys.
 
+### Query helpers
+
+Array-style queries over every node (the root included).
+
+#### `.find(fn)`
+
+Return the first node for which `fn(ctx, value)` is truthy, or `undefined`. Stops walking as soon as it matches.
+
+#### `.filter(fn)`
+
+Return an array of every node for which `fn(ctx, value)` is truthy.
+
+#### `.some(fn)` · `.every(fn)`
+
+Return a boolean. `some` stops at the first match; `every` stops at the first node that fails.
+
+```ts
+const tree = { a: 1, b: { c: 2, d: 3 } };
+
+new Traverse(tree).find((ctx, x) => x === 2); // 2
+new Traverse(tree).filter((ctx) => ctx.isLeaf); // [1, 2, 3]
+new Traverse(tree).some((ctx, x) => x > 2); // true
+new Traverse(tree).every((ctx, x) => typeof x !== 'string'); // true
+```
+
+### Iteration — `for…of` / `.entries()`
+
+`Traverse` is iterable, so you can pull nodes lazily without materializing `.nodes()` / `.paths()` first.
+Circular references are visited once and not descended into.
+
+#### `[Symbol.iterator]`
+
+`for (const node of t)` and `[...t]` yield every node, depth-first (equivalent to `.nodes()`, but lazy).
+
+#### `.entries()`
+
+A generator yielding `[path, node]` pairs.
+
+```ts
+for (const node of new Traverse(tree)) {
+  // every node
+}
+
+const all = [...new Traverse(tree)]; // same as .nodes()
+
+for (const [path, node] of new Traverse(tree).entries()) {
+  // path: PropertyKey[], node: the value at that path
+}
+```
+
+### Async traversal
+
+Async twins of `.forEach()` / `.map()` — the callback may be `async` and is awaited at each node.
+
+#### `.forEachAsync(fn)`
+
+Like `.forEach()`, but awaits the callback and mutates in place. Returns a promise of the (mutated) root.
+
+#### `.mapAsync(fn)`
+
+Like `.map()`, but awaits the callback and returns a new object, leaving the original intact.
+
+Pass an [`AbortSignal`](https://developer.mozilla.org/docs/Web/API/AbortSignal) via the `signal` option to cancel
+a long walk — it rejects on the next visited node.
+
+```ts
+const out = await new Traverse(tree).mapAsync(async (ctx, x) => {
+  if (typeof x === 'number') ctx.update(await slowDouble(x));
+});
+
+const controller = new AbortController();
+const walking = new Traverse(big, { signal: controller.signal }).forEachAsync(async (ctx) => {
+  /* … */
+});
+controller.abort(); // → `walking` rejects with the abort reason
+```
+
+::: info `Map` / `Set` are leaf nodes
+The traversal methods (`forEach`, `map`, `paths`, `nodes`, iteration) treat `Map`/`Set` as **leaf nodes** — their
+entries use arbitrary-typed keys with no path semantics. Only `clone()` (and `map()`'s shallow copy) descend
+into their entries.
+:::
+
 ## Context
 
-Every callback receives a context — the `ctx` argument (modern) or `this` (classic):
+Every callback receives a context — the `ctx` argument:
 
 | Property                            | Description                                                              |
 | ----------------------------------- | ------------------------------------------------------------------------ |
@@ -250,6 +293,16 @@ Every callback receives a context — the `ctx` argument (modern) or `this` (cla
 | `pre(fn)` / `post(fn)`              | Run before / after **each** child is traversed.                         |
 | `stop()`                            | Stop the entire traversal.                                               |
 | `block()`                           | Don't descend into the current node's children.                         |
+
+## Builds & browser support
+
+The **modern** build is **ES2022** (Chrome/Edge 94+, Firefox 93+, Safari 15+, Node 18+, Deno, Bun). For the
+classic `this`-bound API and an ES2015 build for older targets, see the [**Legacy / Classic API**](/legacy).
+
+## Migrating from `traverse`
+
+It's a drop-in replacement — see the dedicated [**Migration guide**](/migration) for the full
+`traverse → neotraverse → neotraverse/modern` path and a side-by-side diff.
 
 ## License
 
