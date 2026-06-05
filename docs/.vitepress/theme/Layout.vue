@@ -8,15 +8,7 @@ const { Layout } = DefaultTheme;
 <template>
 	<Layout>
 		<template #nav-bar-title-after>
-			<a
-				class="nt-version"
-				href="https://www.npmjs.com/package/neotraverse"
-				target="_blank"
-				rel="noreferrer"
-				:title="`neotraverse v${pkg.version} on npm`"
-			>
-				v{{ pkg.version }}
-			</a>
+			<span class="nt-version">v{{ pkg.version }}</span>
 		</template>
 	</Layout>
 </template>

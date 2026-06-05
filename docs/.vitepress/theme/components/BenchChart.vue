@@ -42,19 +42,44 @@ const fmtMem = (b) => {
 };
 
 function rows(suite) {
+	const isThroughput = metric.value === 'throughput';
+	const traverse = suite.results.find((x) => x.name === 'traverse');
 	const vals = ORDER.map((name) => {
 		const r = suite.results.find((x) => x.name === name);
-		return metric.value === 'throughput' ? r.opsPerSec : (r.bytesPerOp ?? 0);
+		return isThroughput ? r.opsPerSec : (r.bytesPerOp ?? 0);
 	});
 	const max = Math.max(...vals, 1);
+
+	// winner: most throughput, or least memory (ignoring zero/▫ measurements)
+	let winnerIdx;
+	if (isThroughput) {
+		winnerIdx = vals.indexOf(Math.max(...vals));
+	} else {
+		winnerIdx = 0;
+		let best = Infinity;
+		vals.forEach((v, i) => {
+			if (v > 0 && v < best) {
+				best = v;
+				winnerIdx = i;
+			}
+		});
+	}
+
 	return ORDER.map((name, i) => {
 		const r = suite.results.find((x) => x.name === name);
+		// multiplier vs traverse (both: higher × = better)
+		let mult = null;
+		if (isThroughput) {
+			mult = suite.speedupVsTraverse[name];
+		} else if (traverse.bytesPerOp && r.bytesPerOp) {
+			mult = +(traverse.bytesPerOp / r.bytesPerOp).toFixed(2); // × less memory
+		}
 		return {
 			name,
 			pct: Math.max(2, (vals[i] / max) * 100),
-			label: metric.value === 'throughput' ? fmtOps(r.opsPerSec) : fmtMem(r.bytesPerOp),
-			speed: suite.speedupVsTraverse[name],
-			fastest: metric.value === 'throughput' && suite.fastest === name,
+			label: isThroughput ? fmtOps(r.opsPerSec) : fmtMem(r.bytesPerOp),
+			speed: mult,
+			fastest: i === winnerIdx,
 			color: COLOR[name],
 		};
 	});
@@ -90,7 +115,7 @@ function rows(suite) {
 					</span>
 					<span class="bench-val">
 						{{ row.label }}<span
-							v-if="metric === 'throughput' && row.name !== 'traverse'"
+							v-if="row.name !== 'traverse' && row.speed != null"
 							class="bench-x"
 						> · {{ row.speed }}×</span><span v-if="row.fastest" class="bench-crown"> 🏆</span>
 					</span>
