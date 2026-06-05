@@ -170,6 +170,8 @@ const is_property_enumerable = Object.prototype.propertyIsEnumerable;
 const get_own_property_symbols = Object.getOwnPropertySymbols;
 const has_own_property = Object.prototype.hasOwnProperty;
 const object_keys = Object.keys;
+const object_proto = Object.prototype;
+const get_proto = Object.getPrototypeOf;
 
 // Keys that can mutate an object's prototype chain. They must never be used as
 // navigation/write targets when handling untrusted input (prototype pollution).
@@ -237,12 +239,16 @@ function copy(src: any, options: TraverseOptions) {
 			} else if (tag === '[object Error]') {
 				dst = { message: src.message };
 			} else {
-				dst = Object.create(Object.getPrototypeOf(src));
+				// `{}` is faster than `Object.create(Object.prototype)` for the
+				// overwhelmingly common plain-object case.
+				const proto = get_proto(src);
+				dst = proto === object_proto ? {} : Object.create(proto);
 			}
 		}
 
-		const iterator_function = options.includeSymbols ? own_enumerable_keys : object_keys;
-		for (const key of iterator_function(src)) {
+		const keys = options.includeSymbols ? own_enumerable_keys(src) : object_keys(src);
+		for (let i = 0; i < keys.length; i++) {
+			const key = keys[i];
 			safe_set(dst, key, src[key]);
 		}
 
@@ -290,9 +296,7 @@ class WalkContext implements TraverseContext {
 	parents: TraverseContext[];
 	key: PropertyKey | undefined;
 	isRoot: boolean;
-	notRoot: boolean;
 	isLeaf = false;
-	notLeaf = true;
 	isFirst = false;
 	isLast = false;
 	level: number;
@@ -314,9 +318,18 @@ class WalkContext implements TraverseContext {
 		this.parents = parents;
 		this.key = path[level - 1];
 		this.isRoot = level === 0;
-		this.notRoot = level !== 0;
 		this.level = level;
 	}
+
+	// derived flags — no per-node storage
+	get notRoot(): boolean {
+		return !this.isRoot;
+	}
+	set notRoot(_v: boolean) {}
+	get notLeaf(): boolean {
+		return !this.isLeaf;
+	}
+	set notLeaf(_v: boolean) {}
 
 	// `path` is derived from the parent chain on demand, so the common ops
 	// (forEach/map/clone/reduce/nodes) never pay for a per-node array copy.
@@ -377,29 +390,18 @@ class WalkContext implements TraverseContext {
 	}
 }
 
-function update_state(ctx: WalkContext, scan_circular: boolean): void {
+// Recompute keys/isLeaf after the cb replaced the node (the uncommon path).
+function update_state(ctx: WalkContext): void {
 	const node = ctx.node;
 	if (typeof node === 'object' && node !== null) {
 		if (!ctx.keys || ctx.node_ !== node) {
 			ctx.keys = ctx.w.iter(node);
 		}
 		ctx.isLeaf = ctx.keys.length === 0;
-		if (scan_circular) {
-			const { parents } = ctx.w;
-			const node_ = ctx.node_;
-			for (let i = 0; i < parents.length; i++) {
-				if (parents[i].node_ === node_) {
-					ctx.circular = parents[i];
-					break;
-				}
-			}
-		}
 	} else {
 		ctx.isLeaf = true;
 		ctx.keys = null;
 	}
-	ctx.notLeaf = !ctx.isLeaf;
-	ctx.notRoot = !ctx.isRoot;
 }
 
 function walk(
@@ -416,21 +418,36 @@ function walk(
 		parents: [],
 	};
 
-	const { immutable, max_depth, path, parents } = w;
+	const { immutable, max_depth, path, parents, iter } = w;
 
 	const walker = (node_: any): WalkContext => {
 		if (max_depth !== undefined && path.length > max_depth) {
 			throw new RangeError(`neotraverse: maximum traversal depth (${max_depth}) exceeded`);
 		}
 
-		const ctx = new WalkContext(w, node_, immutable ? copy(node_, options) : node_);
+		const node0 = immutable ? copy(node_, options) : node_;
+		const ctx = new WalkContext(w, node_, node0);
 
 		if (!w.alive) return ctx;
 
-		update_state(ctx, true);
+		// --- inlined initial update_state (keys are null on a fresh ctx) ---
+		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
+		if (node0_is_obj) {
+			const keys0 = iter(node0);
+			ctx.keys = keys0;
+			ctx.isLeaf = keys0.length === 0;
+			for (let i = 0; i < parents.length; i++) {
+				if (parents[i].node_ === node_) {
+					ctx.circular = parents[i];
+					break;
+				}
+			}
+		} else {
+			ctx.isLeaf = true;
+		}
+		// -------------------------------------------------------------------
 
-		const node_before = ctx.node;
-		const ret = cb(ctx, node_before);
+		const ret = cb(ctx, node0);
 		if (ret !== undefined) ctx.update(ret);
 
 		const mods = ctx.mods;
@@ -439,11 +456,14 @@ function walk(
 		if (!ctx.keep_going) return ctx;
 
 		const node = ctx.node;
-		if (typeof node === 'object' && node !== null && ctx.circular === undefined) {
+		// reuse the object-ness check when the node wasn't replaced by the cb
+		const descend =
+			node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
+		if (descend && ctx.circular === undefined) {
 			parents.push(ctx);
 
 			// recompute keys only if the cb/before replaced the node
-			if (node !== node_before) update_state(ctx, false);
+			if (node !== node0) update_state(ctx);
 
 			const keys = ctx.keys as PropertyKey[];
 			const last = keys.length - 1;
@@ -493,14 +513,12 @@ export class Traverse {
 	 */
 	get(paths: PropertyKey[]): any {
 		let node = this.#value;
+		const symbols = this.#options.includeSymbols;
 
 		for (let i = 0; node && i < paths.length; i++) {
 			const key = paths[i];
 
-			if (
-				!has_own_property.call(node, key) ||
-				(!this.#options.includeSymbols && typeof key === 'symbol')
-			) {
+			if (!has_own_property.call(node, key) || (!symbols && typeof key === 'symbol')) {
 				return void undefined;
 			}
 
@@ -515,14 +533,12 @@ export class Traverse {
 	 */
 	has(paths: PropertyKey[]): boolean {
 		let node = this.#value;
+		const symbols = this.#options.includeSymbols;
 
 		for (let i = 0; node && i < paths.length; i++) {
 			const key = paths[i];
 
-			if (
-				!has_own_property.call(node, key) ||
-				(!this.#options.includeSymbols && typeof key === 'symbol')
-			) {
+			if (!has_own_property.call(node, key) || (!symbols && typeof key === 'symbol')) {
 				return false;
 			}
 
@@ -659,8 +675,9 @@ export class Traverse {
 				parents.push(src);
 				nodes.push(dst);
 
-				const iteratorFunction = options.includeSymbols ? own_enumerable_keys : object_keys;
-				for (const key of iteratorFunction(src)) {
+				const keys = options.includeSymbols ? own_enumerable_keys(src) : object_keys(src);
+				for (let i = 0; i < keys.length; i++) {
+					const key = keys[i];
 					safe_set(dst, key, clone(src[key]));
 				}
 

@@ -8,7 +8,7 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 - 🚥 Zero dependencies, no polyfills
 - 🎹 TypeScript — throw away `@types/traverse`
 - 🛡️ Safe on untrusted input ([prototype-pollution & injection hardened](#security))
-- ⚡ **~4.3× faster** than `traverse` (modern build, geometric mean; up to ~6.7×)
+- ⚡ **~4.5× faster** than `traverse` (modern build, geometric mean; up to ~7×)
 - 🛸 ESM-first, with a legacy ES2015 CJS/ESM build
 
 ## Benchmarks (summary)
@@ -17,7 +17,7 @@ Geometric-mean speedup versus the original `traverse` across the full operation 
 
 | Build                  | Speedup vs `traverse` |
 | ---------------------- | --------------------- |
-| **neotraverse modern** | **≈ 4.3×**            |
+| **neotraverse modern** | **≈ 4.5×**            |
 | **neotraverse legacy** | **≈ 2.3×**            |
 
 Core traversal ops (`forEach` / `map` / `clone` / `reduce` / `paths` / `nodes`) land at ~2.7–3.3×. See the [full table](#benchmarks-full) at the bottom, or the [interactive benchmarks page](https://neotraverse.puruvj.dev/benchmarks). Reproduce with `pnpm bench`.
@@ -112,39 +112,39 @@ Each callback gets a context (`ctx` in modern, `this` in classic) with `node`, `
 
 | Operation · shape | traverse | neotraverse legacy | neotraverse modern |
 | --- | ---: | ---: | ---: |
-| `forEach · small` | 831,077 | 1,717,543 (2.07×) | 2,604,048 (3.13×) |
-| `forEach · wide` | 84,801 | 241,875 (2.85×) | 278,832 (3.29×) |
-| `forEach · deep` | 52,315 | 152,616 (2.92×) | 169,491 (3.24×) |
-| `forEach · array` | 2,961 | 9,868 (3.33×) | 10,723 (3.62×) |
-| `forEach · json` | 56,543 | 178,507 (3.16×) | 202,302 (3.58×) |
-| `map · small` | 390,717 | 1,018,808 (2.61×) | 1,246,728 (3.19×) |
-| `map · wide` | 54,439 | 106,193 (1.95×) | 109,770 (2.02×) |
-| `map · deep` | 18,570 | 83,194 (4.48×) | 85,127 (4.58×) |
-| `map · array` | 1,402 | 4,222 (3.01×) | 4,227 (3.01×) |
-| `map · json` | 22,817 | 78,917 (3.46×) | 80,489 (3.53×) |
-| `clone · small` | 498,337 | 1,998,940 (4.01×) | 3,335,286 (6.69×) |
-| `clone · wide` | 193,050 | 256,511 (1.33×) | 268,254 (1.39×) |
-| `clone · deep` | 27,777 | 159,620 (5.75×) | 165,706 (5.97×) |
-| `clone · array` | 3,246 | 11,218 (3.46×) | 10,781 (3.32×) |
-| `clone · json` | 41,517 | 193,633 (4.66×) | 199,211 (4.8×) |
-| `reduce · small` | 792,363 | 1,592,037 (2.01×) | 2,272,080 (2.87×) |
-| `reduce · wide` | 81,592 | 213,525 (2.62×) | 232,483 (2.85×) |
-| `reduce · deep` | 49,783 | 135,452 (2.72×) | 147,388 (2.96×) |
-| `reduce · array` | 2,848 | 8,662 (3.04×) | 9,243 (3.25×) |
-| `reduce · json` | 53,716 | 158,756 (2.96×) | 173,288 (3.23×) |
-| `paths · small` | 801,645 | 1,580,402 (1.97×) | 2,275,629 (2.84×) |
-| `paths · wide` | 83,277 | 230,342 (2.77×) | 241,161 (2.9×) |
-| `paths · deep` | 50,744 | 142,429 (2.81×) | 150,907 (2.97×) |
-| `paths · array` | 2,915 | 9,491 (3.26×) | 9,679 (3.32×) |
-| `paths · json` | 55,138 | 166,981 (3.03×) | 177,126 (3.21×) |
-| `nodes · small` | 791,530 | 1,591,882 (2.01×) | 2,229,049 (2.82×) |
-| `nodes · wide` | 83,550 | 226,111 (2.71×) | 244,383 (2.92×) |
-| `nodes · deep` | 50,757 | 142,763 (2.81×) | 151,513 (2.99×) |
-| `nodes · array` | 2,892 | 9,375 (3.24×) | 9,607 (3.32×) |
-| `nodes · json` | 54,919 | 170,055 (3.1×) | 177,793 (3.24×) |
-| `get · json` | 18,856,221 | 4,167,337 (0.22×) | 21,813,545 (1.16×) |
-| `has · json` | 18,774,869 | 4,168,281 (0.22×) | 22,118,161 (1.18×) |
-| `set · json` | 23,517,677 | 4,663,282 (0.2×) | 23,406,023 (1×) |
+| `forEach · small` | 844,636 | 1,724,555 (2.04×) | 4,276,177 (5.06×) |
+| `forEach · wide` | 87,558 | 245,149 (2.8×) | 506,325 (5.78×) |
+| `forEach · deep` | 51,025 | 153,295 (3×) | 342,722 (6.72×) |
+| `forEach · array` | 3,030 | 10,078 (3.33×) | 22,559 (7.45×) |
+| `forEach · json` | 57,900 | 179,917 (3.11×) | 406,466 (7.02×) |
+| `map · small` | 389,729 | 1,041,374 (2.67×) | 1,694,084 (4.35×) |
+| `map · wide` | 54,777 | 107,000 (1.95×) | 147,779 (2.7×) |
+| `map · deep` | 19,052 | 86,199 (4.52×) | 126,824 (6.66×) |
+| `map · array` | 1,416 | 4,372 (3.09×) | 6,215 (4.39×) |
+| `map · json` | 22,987 | 81,242 (3.53×) | 116,027 (5.05×) |
+| `clone · small` | 496,931 | 2,083,655 (4.19×) | 3,346,248 (6.73×) |
+| `clone · wide` | 190,851 | 263,631 (1.38×) | 274,066 (1.44×) |
+| `clone · deep` | 26,389 | 152,845 (5.79×) | 167,602 (6.35×) |
+| `clone · array` | 3,057 | 10,886 (3.56×) | 11,360 (3.72×) |
+| `clone · json` | 40,994 | 200,627 (4.89×) | 212,878 (5.19×) |
+| `reduce · small` | 781,071 | 1,539,403 (1.97×) | 3,597,546 (4.61×) |
+| `reduce · wide` | 81,305 | 212,541 (2.61×) | 429,191 (5.28×) |
+| `reduce · deep` | 49,744 | 136,571 (2.75×) | 292,687 (5.88×) |
+| `reduce · array` | 2,826 | 8,818 (3.12×) | 18,537 (6.56×) |
+| `reduce · json` | 54,031 | 157,255 (2.91×) | 338,716 (6.27×) |
+| `paths · small` | 788,581 | 1,565,019 (1.98×) | 3,483,227 (4.42×) |
+| `paths · wide` | 80,869 | 221,737 (2.74×) | 413,740 (5.12×) |
+| `paths · deep` | 49,949 | 141,549 (2.83×) | 211,823 (4.24×) |
+| `paths · array` | 2,851 | 8,734 (3.06×) | 16,706 (5.86×) |
+| `paths · json` | 54,417 | 163,932 (3.01×) | 307,740 (5.66×) |
+| `nodes · small` | 794,648 | 1,548,765 (1.95×) | 3,624,941 (4.56×) |
+| `nodes · wide` | 82,751 | 221,385 (2.68×) | 435,618 (5.26×) |
+| `nodes · deep` | 50,785 | 140,446 (2.77×) | 294,410 (5.8×) |
+| `nodes · array` | 2,872 | 9,101 (3.17×) | 18,839 (6.56×) |
+| `nodes · json` | 54,490 | 164,949 (3.03×) | 347,059 (6.37×) |
+| `get · json` | 18,148,860 | 4,174,915 (0.23×) | 21,928,827 (1.21×) |
+| `has · json` | 18,810,892 | 4,214,651 (0.22×) | 21,965,423 (1.17×) |
+| `set · json` | 23,424,854 | 4,438,886 (0.19×) | 23,603,563 (1.01×) |
 
 > `get` / `has` / `set` are fastest on the **modern** build; the **legacy** (ES2015) build is slower for these because its private `#fields` downlevel to WeakMaps. Prefer `neotraverse/modern` for path-heavy hot code.
 

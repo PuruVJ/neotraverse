@@ -73,8 +73,8 @@ Unlimited when omitted, so default behavior is unchanged.
 ## ⚡ Performance
 
 Across the full benchmark matrix the geometric-mean speedup vs `traverse` is now
-**modern ≈ 4.3×** and **legacy ≈ 2.3×** — with individual traversal ops up to
-**~6.7× faster** and allocating **3–5× less memory** per op.
+**modern ≈ 4.5×** and **legacy ≈ 2.3×** — with individual traversal ops up to
+**~7× faster** and allocating **3–5× less memory** per op.
 
 The **modern build was re-architected** for this: visiting a node used to
 allocate a context object **plus a fresh closure for every method**
