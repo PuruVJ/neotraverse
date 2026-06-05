@@ -34,8 +34,11 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Audit dependencies
-        run: pnpm audit --audit-level=high
+      - name: Audit production dependencies
+        # neotraverse ships zero runtime deps — `--prod` audits exactly what
+        # reaches consumers. Dev-tooling advisories are handled by dependency
+        # review / Dependabot, not this release gate.
+        run: pnpm audit --prod --audit-level=high
 
   codeql:
     name: CodeQL

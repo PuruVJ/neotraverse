@@ -4,7 +4,7 @@ layout: home
 hero:
   name: neotraverse
   text: Traverse & transform objects
-  tagline: Zero-dependency, TypeScript-first, prototype-pollution-safe, and ~3× faster — a drop-in replacement for traverse.
+  tagline: Zero-dependency, TypeScript-first, prototype-pollution-safe, and up to ~7× faster — a drop-in replacement for traverse.
   actions:
     - theme: brand
       text: Get started
@@ -25,7 +25,7 @@ features:
     details: Prototype-pollution & injection safe on untrusted input, with an opt-in maxDepth DoS guard.
   - icon: ⚡
     title: Fast
-    details: ~2.9× faster than the original traverse (modern build, geometric mean).
+    details: ~4.5× faster than traverse on average — up to ~7× — with 3–5× less allocation (modern build).
   - icon: 🎹
     title: TypeScript
     details: Types included by default. Throw away the @types/traverse package.
