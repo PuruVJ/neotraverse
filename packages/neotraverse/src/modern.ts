@@ -651,6 +651,7 @@ async function walk_async(
 		if (descend && ctx.circular === undefined) {
 			parents.push(ctx);
 
+			// bleh
 			if (node !== node0) update_state(ctx);
 
 			const keys = ctx.keys as PropertyKey[];
