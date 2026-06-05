@@ -103,7 +103,7 @@ The API is identical. For old bundlers/runtimes use `neotraverse/legacy`.
 
 ## API
 
-**Modern (`neotraverse/modern`):** import functions such as `forEach`, `map`, `clone`, `reduce`, `find`, `filter`, `paths`, `nodes`, `get`, `set`, `has`, `entries`, `values`, `forEachAsync`, `mapAsync`. Pass options as the last argument. The `Traverse` class is deprecated in 0.7 and will be removed later.
+**Modern (`neotraverse/modern`):** `forEach`, `map`, `clone`, `reduce`, `find`, `filter`, `paths`, `nodes`, `get`, `set`, `has`, `entries`, `values`, `forEachAsync`, `mapAsync`, plus `findPaths`, `filterPaths`, `getPath`, `setPath`, `hasPath`, `count`, `size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`. Options are always the last argument. The `Traverse` class is deprecated in 0.7 and removed in 0.8.
 
 **Classic (`neotraverse`):** `.map(fn)` · `.forEach(fn)` · `.reduce(fn, acc)` · `.paths()` · `.nodes()` · `.clone()` · `.get(path)` · `.set(path, value)` · `.has(path)` on a traversal instance (`this`-bound context).
 

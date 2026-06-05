@@ -1116,3 +1116,33 @@ export class Traverse {
 		});
 	}
 }
+
+export {
+	count,
+	deepEqual,
+	deleteWhere,
+	diff,
+	filterPaths,
+	findPaths,
+	freeze,
+	getPath,
+	getType,
+	hasPath,
+	parseDotPath,
+	parseGlob,
+	parseJsonPointer,
+	parsePath,
+	patch,
+	pointerPath,
+	prune,
+	pruneDeep,
+	select,
+	setPath,
+	size,
+	toJSON,
+	type DeepEqualOptions,
+	type PatchOp,
+	type PathNode,
+	type ToJSONOptions,
+	type TraverseNodeType,
+} from './modern-backlog.ts';

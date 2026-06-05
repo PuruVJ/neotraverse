@@ -132,6 +132,14 @@ export default {
 };
 ```
 
+## New helpers (modern only)
+
+These ship as `import * as t from 'neotraverse/modern'` — no `traverse` equivalent:
+
+`t.findPaths` / `t.filterPaths`, `t.getPath` / `t.setPath` / `t.hasPath`, `t.count` / `t.size`, `t.getType`,
+`t.deleteWhere` / `t.prune`, `t.pruneDeep`, `t.deepEqual`, `t.toJSON`, `t.freeze`, `t.diff` / `t.patch`,
+`t.select`. See the [guide examples](/guide#examples).
+
 ## What you gain
 
 - 🛡️ [Prototype-pollution & injection safety](/guide#security) on untrusted input.

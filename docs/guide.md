@@ -130,6 +130,117 @@ t.forEach(obj, (ctx, x) => {
 // → [ 5, 6, 125, [ 7, 8, 126, 1 ], { f: 10, g: 115 } ]
 ```
 
+### Immutable map (original untouched)
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const input = { a: 1, nested: { b: 2 } };
+const out = t.map(input, (ctx, x) => {
+  if (typeof x === 'number') ctx.update(x * 10);
+});
+// out → { a: 10, nested: { b: 20 } }
+// input is unchanged
+```
+
+### Redact fields and strip secrets
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const apiPayload = {
+  user: 'alice',
+  token: 'secret',
+  profile: { email: 'a@example.com', password: 'hunter2' },
+};
+
+const safe = t.deleteWhere(structuredClone(apiPayload), (_, x) =>
+  x === 'secret' || x === 'hunter2',
+);
+// drops matching nodes; original apiPayload unchanged if you cloned first
+```
+
+### Dot-path read / write
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const config = { server: { host: 'localhost', port: 3000 } };
+
+t.getPath(config, 'server.port'); // 3000
+t.setPath(config, 'server.port', 8080);
+t.hasPath(config, 'server.tls'); // false
+
+// JSON Pointer (leading slash)
+t.getPath(config, '/server/host'); // 'localhost' after set
+```
+
+### Find where a value lives
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const tree = { users: [{ id: 1 }, { id: 2, flag: true }] };
+
+t.findPaths(tree, (_, x) => x === true); // ['users', '1', 'flag']
+t.filterPaths(tree, (ctx) => ctx.isLeaf && typeof ctx.node === 'number');
+// → [{ path: ['users','0','id'], node: 1 }, …]
+```
+
+### Glob-style `select`
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const data = { users: [{ email: 'a@x.com' }, { email: 'b@x.com' }] };
+
+t.select(data, 'users[*].email');
+// → [{ path: ['users','0','email'], node: 'a@x.com' }, …]
+```
+
+### Sum with `reduce`
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const nested = { a: 1, b: { c: 2, d: 3 } };
+const sum = t.reduce(nested, (_, acc, x) => (typeof x === 'number' ? acc + x : acc), 0);
+// 6
+```
+
+### Clone, then freeze for a read-only snapshot
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const snapshot = t.freeze(t.clone(liveConfig));
+// snapshot is deeply frozen; liveConfig can still change
+```
+
+### Cycle-safe JSON for logging
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const graph: any = { name: 'root' };
+graph.self = graph;
+
+console.log(t.toJSON(graph)); // {"name":"root","self":null}
+```
+
+### Diff and patch (config updates)
+
+```ts
+import * as t from 'neotraverse/modern';
+
+const v1 = { title: 'Hi', items: [1, 2] };
+const v2 = { title: 'Hello', items: [1, 3], extra: true };
+
+const ops = t.diff(v1, v2);
+const v2FromV1 = t.patch(structuredClone(v1), ops);
+// v2FromV1 deep-equals v2 (acyclic trees)
+```
+
 ### Collect leaf nodes
 
 ```ts
@@ -151,6 +262,36 @@ const scrubbed = t.map(obj, (ctx) => {
   if (ctx.circular) ctx.remove();
 });
 // → { a: 1, b: 2, c: [ 3, 4 ] }
+```
+
+### Skip a subtree with `block`
+
+```ts
+import * as t from 'neotraverse/modern';
+
+t.forEach(config, (ctx) => {
+  if (ctx.key === 'skipMe') ctx.block();
+  if (typeof ctx.node === 'number') ctx.update(ctx.node * 2);
+});
+// nodes under `skipMe` are not visited or updated
+```
+
+### Branch on node kind with `getType`
+
+```ts
+import * as t from 'neotraverse/modern';
+
+t.map(doc, (ctx) => {
+  switch (t.getType(ctx.node)) {
+    case 'date':
+      ctx.update(ctx.node.toISOString());
+      break;
+    case 'map':
+    case 'set':
+      // Map/Set are walk leaves — clone handles entries
+      break;
+  }
+});
 ```
 
 ### Transform every node asynchronously
@@ -198,6 +339,65 @@ over every node. Omit `init` to start from the root and skip the root node in th
 
 `t.get(obj, path, options?)`, `t.set(obj, path, value, options?)`, and `t.has(obj, path, options?)` read / write /
 test at an array `path`. `get`/`has` only follow own properties; `set` refuses prototype-polluting keys.
+
+### Paths & metrics
+
+#### t.findPaths · t.filterPaths {#t-find-paths}
+
+Return **where** a match occurred, not only the value. `findPaths` stops at the first hit; `filterPaths` returns
+`{ path, node }[]`.
+
+```ts
+t.findPaths(tree, (_, x) => x?.type === 'error');
+t.filterPaths(tree, (ctx) => ctx.level === 2);
+```
+
+#### t.getPath · t.setPath · t.hasPath {#t-string-paths}
+
+String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Pointer (`/a/b/0`). Unsafe segments
+(`__proto__`, etc.) throw at parse time.
+
+#### t.count · t.size {#t-count}
+
+`size(obj)` counts every visited node. `count(obj, fn)` counts nodes where the predicate is true.
+
+#### t.getType {#t-get-type}
+
+`getType(value)` returns a stable tag (`'map'`, `'date'`, `'primitive'`, …) for branching inside callbacks.
+
+### Structural helpers
+
+#### t.deleteWhere · t.prune {#t-prune}
+
+`deleteWhere` returns a new tree with matching nodes removed (`map` + `ctx.remove()`). `prune` keeps nodes where
+the predicate is true (inverse). Map/Set stay whole leaves.
+
+#### t.pruneDeep {#t-prune-deep}
+
+Replace nodes deeper than `maxDepth` with a sentinel (default `null`). Unlike the `maxDepth` **option**, this does
+not throw.
+
+#### t.deepEqual {#t-deep-equal}
+
+Structural compare with an explicit per-type contract (Dates by time, RegExp by source+flags, etc.). Optional
+`compareFn` can override pairs. Not guaranteed to match `clone()` byte-for-byte (e.g. `Error` fields).
+
+#### t.toJSON {#t-to-json}
+
+`JSON.stringify` after a walk; circular references become `null` (configurable via `cycle`).
+
+#### t.freeze {#t-freeze}
+
+Deep-freeze in place (children before parents). Pair with `clone` when you need an immutable snapshot.
+
+#### t.diff · t.patch {#t-diff}
+
+RFC 6902 subset (`add` / `remove` / `replace`). `diff(a, b)` returns ops; `patch(clone(a), ops)` applies them.
+Acyclic trees only.
+
+#### t.select {#t-select}
+
+Glob path query: `*`, `key[*]`, dot segments. For predicate search, use `filterPaths`.
 
 ### Query helpers
 
