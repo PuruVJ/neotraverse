@@ -915,10 +915,17 @@ export type TraverseNodeType =
 	| 'map'
 	| 'set'
 	| 'typed-array'
-	| 'boxed-primitive'
 	| 'error'
 	| 'primitive';
 
+/**
+ * Classify a value for branching inside traversal callbacks.
+ *
+ * `primitive` — `string`, `number`, `boolean`, `bigint`, `symbol`, `undefined`.
+ * `object` — plain objects and class instances, including boxed primitives (`new String()`, …).
+ * Those wrappers are walk **leaves** (the engine does not descend into their index slots);
+ * use `typeof x === 'string'` (or `.valueOf()`) when you need the unboxed value.
+ */
 export function getType(value: unknown): TraverseNodeType {
 	if (value === null) return 'null';
 	const t = typeof value;
@@ -930,7 +937,6 @@ export function getType(value: unknown): TraverseNodeType {
 	if (value instanceof Set) return 'set';
 	if (is_typed_array(value)) return 'typed-array';
 	if (value instanceof Error) return 'error';
-	if (is_boxed_primitive(value)) return 'boxed-primitive';
 	return 'object';
 }
 
@@ -1126,6 +1132,11 @@ function deepEqualPair(
 	if (typeof a !== typeof b) return false;
 	if (a === null || b === null) return a === b;
 
+	if (is_boxed_primitive(a) || is_boxed_primitive(b)) {
+		if (!is_boxed_primitive(a) || !is_boxed_primitive(b)) return false;
+		return Object(a).valueOf() === Object(b).valueOf();
+	}
+
 	const ta = getType(a);
 	const tb = getType(b);
 	if (ta !== tb) return false;
@@ -1149,8 +1160,6 @@ function deepEqualPair(
 			return a.source === b.source && a.flags === b.flags;
 		case 'error':
 			return a.message === b.message && a.name === b.name;
-		case 'boxed-primitive':
-			return Object(a).valueOf() === Object(b).valueOf();
 		case 'typed-array': {
 			if (a.length !== b.length) return false;
 			for (let i = 0; i < a.length; i++) {

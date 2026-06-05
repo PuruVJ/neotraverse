@@ -363,7 +363,9 @@ String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Po
 
 #### t.getType {#t-get-type}
 
-`getType(value)` returns a stable tag (`'map'`, `'date'`, `'primitive'`, …) for branching inside callbacks.
+`getType(value)` returns a stable tag (`'map'`, `'date'`, `'primitive'`, `'object'`, …) for branching inside
+callbacks. Real primitives (`3`, `'hi'`) are `'primitive'`. Boxed wrappers (`new String('hi')`) are `'object'`
+because the walker treats them as **leaves** — use `typeof` / `.valueOf()` when you need the inner value.
 
 ### Structural helpers
 

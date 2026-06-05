@@ -43,9 +43,13 @@ describe('backlog: paths & types', () => {
 	test('getType tags', () => {
 		expect(getType(null)).toBe('null');
 		expect(getType(3)).toBe('primitive');
+		expect(getType('hi')).toBe('primitive');
 		expect(getType(new Date())).toBe('date');
 		expect(getType(new Map())).toBe('map');
 		expect(getType(new Uint8Array(1))).toBe('typed-array');
+		// Boxed primitives are object leaves, not a separate public tag
+		expect(getType(new String('hi'))).toBe('object');
+		expect(getType(Object('hi'))).toBe('object');
 	});
 });
 
@@ -93,6 +97,8 @@ describe('backlog: transform & compare', () => {
 	test('deepEqual', () => {
 		expect(deepEqual({ a: 1 }, { a: 1 })).toBe(true);
 		expect(deepEqual(new Date(0), new Date(0))).toBe(true);
+		expect(deepEqual(new String('a'), new String('a'))).toBe(true);
+		expect(deepEqual(new String('a'), 'a')).toBe(false);
 		expect(deepEqual({ a: 1 }, { a: 2 })).toBe(false);
 		expect(deepEqual(1, 2, { compareFn: () => true })).toBe(true);
 	});
