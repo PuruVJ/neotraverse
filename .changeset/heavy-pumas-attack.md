@@ -9,6 +9,20 @@ processing untrusted data, adds an opt-in DoS guard, makes traversal ~2–3×
 faster than the original `traverse`, and modernizes the toolchain. The public
 API is unchanged — it remains a drop-in replacement for `traverse`.
 
+## ⚠️ Breaking change
+
+The **legacy** build now targets **ES2015** instead of ES5 (it is built with
+rolldown/oxc, whose minimum target is ES2015). It remains CJS + ESM and a
+drop-in `traverse` replacement; only environments that required literal ES5
+output — e.g. **Internet Explorer 11** — are affected.
+
+Browser / runtime support by build:
+
+| Build               | Target | Browsers                                         | Node    |
+| ------------------- | ------ | ------------------------------------------------ | ------- |
+| default / modern    | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+         | 18+     |
+| legacy              | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+    | 6+      |
+
 ## 🔒 Security — prototype pollution & injection
 
 When neotraverse runs on attacker-controlled objects or paths, three mutation

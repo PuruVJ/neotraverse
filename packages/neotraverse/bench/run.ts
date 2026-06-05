@@ -144,11 +144,40 @@ const path_operations: Record<string, Record<Contender, Factory>> = {
 
 const CONTENDERS: Contender[] = ['traverse', 'neotraverse legacy', 'neotraverse modern'];
 
+const hasGc = typeof (globalThis as any).gc === 'function';
+
+// Approximate bytes allocated per op (median of samples). Requires --expose-gc
+// (the `bench` script sets it); returns null otherwise. Memory in JS is noisy —
+// treat this as a rough allocation signal, not an exact figure.
+function measure_memory(fn: () => void): number | null {
+	if (!hasGc) return null;
+	const gc = (globalThis as any).gc as () => void;
+	for (let i = 0; i < 30; i++) fn(); // warm
+	gc();
+	const h0 = process.memoryUsage().heapUsed;
+	for (let i = 0; i < 200; i++) fn();
+	const per = Math.max(1, (process.memoryUsage().heapUsed - h0) / 200);
+	const N = Math.min(20000, Math.max(80, Math.round((8 * 1024 * 1024) / per)));
+	const samples: number[] = [];
+	for (let s = 0; s < 5; s++) {
+		gc();
+		const before = process.memoryUsage().heapUsed;
+		for (let i = 0; i < N; i++) fn();
+		samples.push((process.memoryUsage().heapUsed - before) / N);
+	}
+	gc();
+	samples.sort((a, b) => a - b);
+	return Math.max(0, Math.round(samples[2]));
+}
+
 async function run_suite(operation: string, dataset: string, factories: Record<Contender, Factory>) {
 	const d = datasets[dataset].value;
 	const bench = new Bench({ name: `${operation} · ${dataset}`, time: 250, warmupTime: 50 });
 	for (const c of CONTENDERS) bench.add(c, factories[c](d));
 	await bench.run();
+
+	const mem: Record<string, number | null> = {};
+	for (const c of CONTENDERS) mem[c] = measure_memory(factories[c](d));
 
 	const results = bench.tasks.map((t) => {
 		const r = t.result!;
@@ -158,6 +187,7 @@ async function run_suite(operation: string, dataset: string, factories: Record<C
 			meanMs: r.latency.mean,
 			rme: +r.latency.rme.toFixed(2),
 			samples: r.latency.samplesCount,
+			bytesPerOp: mem[t.name as Contender],
 		};
 	});
 
@@ -171,8 +201,9 @@ async function run_suite(operation: string, dataset: string, factories: Record<C
 	console.log(`\n${operation} · ${dataset}  (${datasets[dataset].description})`);
 	for (const r of results) {
 		const tag = r.name === fastest.name ? ' ⭐' : '';
+		const m = r.bytesPerOp != null ? `  ${fmt(r.bytesPerOp)} B/op` : '';
 		console.log(
-			`  ${r.name.padEnd(20)} ${fmt(r.opsPerSec).padStart(12)} ops/s  ±${r.rme}%  (${speedupVsTraverse[r.name]}× vs traverse)${tag}`,
+			`  ${r.name.padEnd(20)} ${fmt(r.opsPerSec).padStart(12)} ops/s  ±${r.rme}%  (${speedupVsTraverse[r.name]}× vs traverse)${m}${tag}`,
 		);
 	}
 

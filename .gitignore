@@ -4,6 +4,12 @@ node_modules/
 coverage/
 
 .npmignore
+
+# build output
 dist
-/legacy.js
-/legacy.d.ts
+packages/neotraverse/legacy.js
+packages/neotraverse/legacy.d.ts
+
+# docs build
+docs/.vitepress/dist
+docs/.vitepress/cache

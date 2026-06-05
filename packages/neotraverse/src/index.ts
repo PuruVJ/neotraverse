@@ -485,17 +485,14 @@ export class Traverse {
 	 * Set the element at the array `path` to `value`.
 	 */
 	set(path: PropertyKey[], value: any): any {
-		// Prevent prototype pollution: never navigate or write through
-		// __proto__/constructor/prototype. Neutralize silently (no mutation).
-		for (let j = 0; j < path.length; j++) {
-			if (is_unsafe_key(path[j])) return value;
-		}
-
 		let node = this.#value;
 
 		let i = 0;
 		for (i = 0; i < path.length - 1; i++) {
 			const key = path[i];
+
+			// Prevent prototype pollution: never navigate through these keys.
+			if (is_unsafe_key(key)) return value;
 
 			if (!has_own_property.call(node, key)) {
 				node[key] = {};
@@ -503,6 +500,9 @@ export class Traverse {
 
 			node = node[key];
 		}
+
+		// …and never write to them either.
+		if (is_unsafe_key(path[i])) return value;
 
 		node[path[i]] = value;
 

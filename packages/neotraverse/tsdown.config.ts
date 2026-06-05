@@ -10,7 +10,7 @@ export default defineConfig([
 		sourcemap: false,
 		clean: true,
 		platform: 'browser',
-		target: 'es2022',
+		target: 'es2026',
 	},
 	// default build — minified
 	{
@@ -20,7 +20,7 @@ export default defineConfig([
 		sourcemap: false,
 		clean: false,
 		platform: 'browser',
-		target: 'es2022',
+		target: 'es2026',
 		minify: true,
 		outDir: 'dist/min',
 	},
@@ -32,7 +32,7 @@ export default defineConfig([
 		sourcemap: false,
 		clean: false,
 		platform: 'browser',
-		target: 'es2022',
+		target: 'es2026',
 		outDir: 'dist/modern',
 	},
 	// modern build — minified
@@ -43,7 +43,7 @@ export default defineConfig([
 		sourcemap: false,
 		clean: false,
 		platform: 'browser',
-		target: 'es2022',
+		target: 'es2026',
 		minify: true,
 		outDir: 'dist/modern/min',
 	},
