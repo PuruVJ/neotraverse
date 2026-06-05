@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T14:51:20.177Z",
+  "generatedAt": "2026-06-05T15:52:00.318Z",
   "runtime": {
     "node": "v24.1.0",
     "v8": "13.6.233.10-node.16"
@@ -17,8 +17,8 @@
   "summary": {
     "metric": "geometric-mean speedup vs traverse",
     "neotraverse legacy": 2.2,
-    "neotraverse modern": 4.43,
-    "neotraverse modern (fn)": 4.4
+    "neotraverse modern": 4.46,
+    "neotraverse modern (fn)": 4.47
   },
   "suites": [
     {
@@ -29,44 +29,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 799176,
-          "meanMs": 0.0013080997870414262,
-          "rme": 0.35,
-          "samples": 191117,
-          "bytesPerOp": 11317
+          "opsPerSec": 787587,
+          "meanMs": 0.0013196948869814602,
+          "rme": 0.37,
+          "samples": 189438,
+          "bytesPerOp": 11315
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 1619373,
-          "meanMs": 0.0007320580199882146,
-          "rme": 2.46,
-          "samples": 341503,
+          "opsPerSec": 1580698,
+          "meanMs": 0.000770435964523004,
+          "rme": 2.71,
+          "samples": 324492,
           "bytesPerOp": 7726
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 3947626,
-          "meanMs": 0.0002653628865934896,
-          "rme": 1.65,
-          "samples": 942107,
-          "bytesPerOp": 1932
+          "opsPerSec": 3863646,
+          "meanMs": 0.0002733336241601371,
+          "rme": 1.15,
+          "samples": 914634,
+          "bytesPerOp": 1963
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 3935998,
-          "meanMs": 0.00026961799020327803,
-          "rme": 0.74,
-          "samples": 927238,
-          "bytesPerOp": 1880
+          "opsPerSec": 3888860,
+          "meanMs": 0.0002720744318818031,
+          "rme": 0.57,
+          "samples": 918867,
+          "bytesPerOp": 1916
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.03,
-        "neotraverse modern": 4.94,
-        "neotraverse modern (fn)": 4.93
+        "neotraverse legacy": 2.01,
+        "neotraverse modern": 4.91,
+        "neotraverse modern (fn)": 4.94
       }
     },
     {
@@ -77,44 +77,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 84270,
-          "meanMs": 0.01212192431148083,
-          "rme": 0.6,
-          "samples": 20624,
-          "bytesPerOp": 116047
+          "opsPerSec": 80584,
+          "meanMs": 0.012929219682473035,
+          "rme": 0.73,
+          "samples": 19337,
+          "bytesPerOp": 115639
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 237331,
-          "meanMs": 0.004450334982910654,
-          "rme": 1.2,
-          "samples": 56176,
-          "bytesPerOp": 79820
+          "opsPerSec": 224525,
+          "meanMs": 0.00474345149119354,
+          "rme": 1.26,
+          "samples": 52743,
+          "bytesPerOp": 79818
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 467908,
-          "meanMs": 0.00218540671876723,
-          "rme": 0.5,
-          "samples": 114396,
-          "bytesPerOp": 18027
+          "opsPerSec": 468780,
+          "meanMs": 0.0021943857260724457,
+          "rme": 0.51,
+          "samples": 113928,
+          "bytesPerOp": 11015
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 472722,
-          "meanMs": 0.002173092086505654,
-          "rme": 0.51,
-          "samples": 115044,
-          "bytesPerOp": 17362
+          "opsPerSec": 474342,
+          "meanMs": 0.0022100815431666684,
+          "rme": 0.59,
+          "samples": 113118,
+          "bytesPerOp": 10958
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.82,
-        "neotraverse modern": 5.55,
-        "neotraverse modern (fn)": 5.61
+        "neotraverse legacy": 2.79,
+        "neotraverse modern": 5.82,
+        "neotraverse modern (fn)": 5.89
       }
     },
     {
@@ -125,44 +125,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 51387,
-          "meanMs": 0.019850824202001748,
-          "rme": 0.63,
-          "samples": 12594,
-          "bytesPerOp": 185383
+          "opsPerSec": 50209,
+          "meanMs": 0.020565242329522115,
+          "rme": 0.78,
+          "samples": 12157,
+          "bytesPerOp": 185395
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 147754,
-          "meanMs": 0.007085842100786787,
-          "rme": 1.04,
-          "samples": 35282,
+          "opsPerSec": 139986,
+          "meanMs": 0.007589122154087879,
+          "rme": 1.25,
+          "samples": 32942,
           "bytesPerOp": 118201
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 313334,
-          "meanMs": 0.003240866257892366,
-          "rme": 0.33,
-          "samples": 77141,
-          "bytesPerOp": 17060
+          "opsPerSec": 314237,
+          "meanMs": 0.003273235146244803,
+          "rme": 0.48,
+          "samples": 76378,
+          "bytesPerOp": 17083
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 316794,
-          "meanMs": 0.0032405166236763624,
-          "rme": 0.5,
-          "samples": 77149,
-          "bytesPerOp": 17036
+          "opsPerSec": 312416,
+          "meanMs": 0.0033120670755925332,
+          "rme": 0.58,
+          "samples": 75482,
+          "bytesPerOp": 16997
         }
       ],
-      "fastest": "neotraverse modern (fn)",
+      "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.88,
-        "neotraverse modern": 6.1,
-        "neotraverse modern (fn)": 6.16
+        "neotraverse legacy": 2.79,
+        "neotraverse modern": 6.26,
+        "neotraverse modern (fn)": 6.22
       }
     },
     {
@@ -173,44 +173,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 2898,
-          "meanMs": 0.3483170264623974,
-          "rme": 0.8,
-          "samples": 718,
-          "bytesPerOp": 1484521
+          "opsPerSec": 2734,
+          "meanMs": 0.36953165583457903,
+          "rme": 0.93,
+          "samples": 677,
+          "bytesPerOp": 1484454
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 9650,
-          "meanMs": 0.10553043056140897,
-          "rme": 0.76,
-          "samples": 2369,
-          "bytesPerOp": 256574
+          "opsPerSec": 9344,
+          "meanMs": 0.10892533754354682,
+          "rme": 0.8,
+          "samples": 2296,
+          "bytesPerOp": 253231
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 20122,
-          "meanMs": 0.05024213926848633,
-          "rme": 0.5,
-          "samples": 4976,
-          "bytesPerOp": 304580
+          "opsPerSec": 20405,
+          "meanMs": 0.049601911723860914,
+          "rme": 0.53,
+          "samples": 5041,
+          "bytesPerOp": 302943
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 19937,
-          "meanMs": 0.0509336270116153,
-          "rme": 0.57,
-          "samples": 4909,
-          "bytesPerOp": 304550
+          "opsPerSec": 20686,
+          "meanMs": 0.04887862737048098,
+          "rme": 0.53,
+          "samples": 5115,
+          "bytesPerOp": 302811
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.33,
-        "neotraverse modern": 6.94,
-        "neotraverse modern (fn)": 6.88
+        "neotraverse legacy": 3.42,
+        "neotraverse modern": 7.46,
+        "neotraverse modern (fn)": 7.57
       }
     },
     {
@@ -221,44 +221,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 55578,
-          "meanMs": 0.018224932789035937,
-          "rme": 0.48,
-          "samples": 13718,
-          "bytesPerOp": 163998
+          "opsPerSec": 54064,
+          "meanMs": 0.018926639288415457,
+          "rme": 0.66,
+          "samples": 13210,
+          "bytesPerOp": 163988
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 172663,
-          "meanMs": 0.005976729948118574,
-          "rme": 0.79,
-          "samples": 41829,
-          "bytesPerOp": 101309
+          "opsPerSec": 165877,
+          "meanMs": 0.006397368740244204,
+          "rme": 1.25,
+          "samples": 39079,
+          "bytesPerOp": 101293
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 365924,
-          "meanMs": 0.002769134003831696,
-          "rme": 0.4,
-          "samples": 90281,
-          "bytesPerOp": 16009
+          "opsPerSec": 366810,
+          "meanMs": 0.0028143216408505647,
+          "rme": 0.79,
+          "samples": 88832,
+          "bytesPerOp": 15812
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 358712,
-          "meanMs": 0.002861422055625035,
+          "opsPerSec": 372027,
+          "meanMs": 0.0027520587283421365,
           "rme": 0.54,
-          "samples": 87370,
-          "bytesPerOp": 15971
+          "samples": 90842,
+          "bytesPerOp": 15694
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.11,
-        "neotraverse modern": 6.58,
-        "neotraverse modern (fn)": 6.45
+        "neotraverse legacy": 3.07,
+        "neotraverse modern": 6.78,
+        "neotraverse modern (fn)": 6.88
       }
     },
     {
@@ -269,44 +269,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 373889,
-          "meanMs": 0.002721533736121953,
-          "rme": 0.45,
-          "samples": 91860,
-          "bytesPerOp": 13844
+          "opsPerSec": 362222,
+          "meanMs": 0.002866968865034565,
+          "rme": 0.57,
+          "samples": 87201,
+          "bytesPerOp": 13856
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 959581,
-          "meanMs": 0.0011656663449434478,
-          "rme": 3.32,
-          "samples": 214470,
-          "bytesPerOp": 8557
+          "opsPerSec": 931589,
+          "meanMs": 0.0012224370788725585,
+          "rme": 3.56,
+          "samples": 204510,
+          "bytesPerOp": 8555
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 1660713,
-          "meanMs": 0.0006230010341808486,
-          "rme": 0.75,
-          "samples": 401284,
-          "bytesPerOp": 2907
+          "opsPerSec": 1599700,
+          "meanMs": 0.0006553227983811663,
+          "rme": 1.43,
+          "samples": 381492,
+          "bytesPerOp": 2710
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 1651498,
-          "meanMs": 0.0006213771303869848,
-          "rme": 2.44,
-          "samples": 402333,
-          "bytesPerOp": 2852
+          "opsPerSec": 1631817,
+          "meanMs": 0.0006305497200382045,
+          "rme": 0.46,
+          "samples": 396480,
+          "bytesPerOp": 2632
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
         "neotraverse legacy": 2.57,
-        "neotraverse modern": 4.44,
-        "neotraverse modern (fn)": 4.42
+        "neotraverse modern": 4.42,
+        "neotraverse modern (fn)": 4.51
       }
     },
     {
@@ -317,44 +317,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 54449,
-          "meanMs": 0.018588747416157948,
-          "rme": 0.45,
-          "samples": 13449,
-          "bytesPerOp": 137674
+          "opsPerSec": 51203,
+          "meanMs": 0.0199839530013616,
+          "rme": 0.58,
+          "samples": 12511,
+          "bytesPerOp": 137508
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 103476,
-          "meanMs": 0.009960830909603724,
-          "rme": 0.89,
-          "samples": 25099,
+          "opsPerSec": 97949,
+          "meanMs": 0.010636776335945855,
+          "rme": 1.1,
+          "samples": 23504,
           "bytesPerOp": 94688
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 141883,
-          "meanMs": 0.007198736416243024,
-          "rme": 0.47,
-          "samples": 34729,
-          "bytesPerOp": 34122
+          "opsPerSec": 151892,
+          "meanMs": 0.006722943286639755,
+          "rme": 0.44,
+          "samples": 37187,
+          "bytesPerOp": 32261
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 143327,
-          "meanMs": 0.007041402196877692,
-          "rme": 0.31,
-          "samples": 35505,
-          "bytesPerOp": 31705
+          "opsPerSec": 155776,
+          "meanMs": 0.006530871995823307,
+          "rme": 0.44,
+          "samples": 38280,
+          "bytesPerOp": 34178
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 1.9,
-        "neotraverse modern": 2.61,
-        "neotraverse modern (fn)": 2.63
+        "neotraverse legacy": 1.91,
+        "neotraverse modern": 2.97,
+        "neotraverse modern (fn)": 3.04
       }
     },
     {
@@ -365,44 +365,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 17774,
-          "meanMs": 0.05686080077325198,
-          "rme": 0.5,
-          "samples": 4397,
-          "bytesPerOp": 235264
+          "opsPerSec": 17248,
+          "meanMs": 0.05913036589403936,
+          "rme": 0.65,
+          "samples": 4228,
+          "bytesPerOp": 235288
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 79370,
-          "meanMs": 0.013095088204491468,
-          "rme": 1.08,
-          "samples": 19092,
-          "bytesPerOp": 133441
+          "opsPerSec": 79475,
+          "meanMs": 0.013238281758003042,
+          "rme": 1.17,
+          "samples": 18885,
+          "bytesPerOp": 133437
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 125497,
-          "meanMs": 0.008063394775041484,
-          "rme": 0.45,
-          "samples": 31005,
-          "bytesPerOp": 31401
+          "opsPerSec": 119056,
+          "meanMs": 0.008623379738543754,
+          "rme": 0.6,
+          "samples": 28991,
+          "bytesPerOp": 31378
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 126255,
-          "meanMs": 0.00800448884193286,
-          "rme": 0.4,
-          "samples": 31233,
-          "bytesPerOp": 31365
+          "opsPerSec": 120525,
+          "meanMs": 0.00847517221506433,
+          "rme": 0.48,
+          "samples": 29498,
+          "bytesPerOp": 31298
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 4.47,
-        "neotraverse modern": 7.06,
-        "neotraverse modern (fn)": 7.1
+        "neotraverse legacy": 4.61,
+        "neotraverse modern": 6.9,
+        "neotraverse modern (fn)": 6.99
       }
     },
     {
@@ -413,44 +413,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 1351,
-          "meanMs": 0.743074163204733,
-          "rme": 0.76,
-          "samples": 337,
-          "bytesPerOp": 447131
+          "opsPerSec": 1333,
+          "meanMs": 0.7530377379518084,
+          "rme": 0.72,
+          "samples": 332,
+          "bytesPerOp": 447115
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 4136,
-          "meanMs": 0.24360935735153336,
-          "rme": 0.63,
-          "samples": 1027,
+          "opsPerSec": 4130,
+          "meanMs": 0.2442282412109515,
+          "rme": 0.7,
+          "samples": 1024,
           "bytesPerOp": 561045
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 5953,
-          "meanMs": 0.1688954861580111,
-          "rme": 0.48,
-          "samples": 1481,
-          "bytesPerOp": 573173
+          "opsPerSec": 5955,
+          "meanMs": 0.1689699101351244,
+          "rme": 0.51,
+          "samples": 1480,
+          "bytesPerOp": 576283
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 6003,
-          "meanMs": 0.16750153784327607,
-          "rme": 0.49,
-          "samples": 1493,
-          "bytesPerOp": 573116
+          "opsPerSec": 5978,
+          "meanMs": 0.16831293808883577,
+          "rme": 0.5,
+          "samples": 1486,
+          "bytesPerOp": 576202
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.06,
-        "neotraverse modern": 4.41,
-        "neotraverse modern (fn)": 4.44
+        "neotraverse legacy": 3.1,
+        "neotraverse modern": 4.47,
+        "neotraverse modern (fn)": 4.48
       }
     },
     {
@@ -461,44 +461,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 21907,
-          "meanMs": 0.04656794300614614,
-          "rme": 0.61,
-          "samples": 5369,
-          "bytesPerOp": 204439
+          "opsPerSec": 21636,
+          "meanMs": 0.04680194515163097,
+          "rme": 0.55,
+          "samples": 5342,
+          "bytesPerOp": 204404
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 78575,
-          "meanMs": 0.013199726187965782,
-          "rme": 0.98,
-          "samples": 18940,
-          "bytesPerOp": 116443
+          "opsPerSec": 78402,
+          "meanMs": 0.013209155809162404,
+          "rme": 1,
+          "samples": 18927,
+          "bytesPerOp": 116438
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 107544,
-          "meanMs": 0.00948106947551171,
-          "rme": 0.58,
-          "samples": 26369,
-          "bytesPerOp": 30624
+          "opsPerSec": 111939,
+          "meanMs": 0.009108939881949224,
+          "rme": 0.48,
+          "samples": 27446,
+          "bytesPerOp": 30689
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 109213,
-          "meanMs": 0.00926958479791889,
-          "rme": 0.44,
-          "samples": 26970,
-          "bytesPerOp": 30554
+          "opsPerSec": 112940,
+          "meanMs": 0.00900730407838624,
+          "rme": 0.47,
+          "samples": 27756,
+          "bytesPerOp": 30516
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.59,
-        "neotraverse modern": 4.91,
-        "neotraverse modern (fn)": 4.99
+        "neotraverse legacy": 3.62,
+        "neotraverse modern": 5.17,
+        "neotraverse modern (fn)": 5.22
       }
     },
     {
@@ -509,44 +509,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 470315,
-          "meanMs": 0.0021429856591824482,
-          "rme": 0.2,
-          "samples": 116660,
+          "opsPerSec": 460738,
+          "meanMs": 0.0022156126945340276,
+          "rme": 0.35,
+          "samples": 112836,
           "bytesPerOp": 3533
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 1822117,
-          "meanMs": 0.0006224160647911384,
-          "rme": 5.29,
-          "samples": 401661,
+          "opsPerSec": 1844823,
+          "meanMs": 0.0006208027726927424,
+          "rme": 6.89,
+          "samples": 402713,
           "bytesPerOp": 1443
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 3071228,
-          "meanMs": 0.0003346719415364065,
-          "rme": 0.56,
-          "samples": 747001,
-          "bytesPerOp": 905
+          "opsPerSec": 2977680,
+          "meanMs": 0.00034486921602941135,
+          "rme": 0.3,
+          "samples": 724913,
+          "bytesPerOp": 962
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 3155265,
-          "meanMs": 0.00032301639113264984,
-          "rme": 0.62,
-          "samples": 773955,
-          "bytesPerOp": 865
+          "opsPerSec": 2966248,
+          "meanMs": 0.00035633958162673425,
+          "rme": 0.85,
+          "samples": 701578,
+          "bytesPerOp": 864
         }
       ],
-      "fastest": "neotraverse modern (fn)",
+      "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.87,
-        "neotraverse modern": 6.53,
-        "neotraverse modern (fn)": 6.71
+        "neotraverse legacy": 4,
+        "neotraverse modern": 6.46,
+        "neotraverse modern (fn)": 6.44
       }
     },
     {
@@ -557,44 +557,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 182639,
-          "meanMs": 0.005564236879593049,
-          "rme": 0.39,
-          "samples": 44930,
+          "opsPerSec": 174557,
+          "meanMs": 0.005879983254137865,
+          "rme": 0.47,
+          "samples": 42518,
           "bytesPerOp": 14447
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 248971,
-          "meanMs": 0.004157164055997665,
-          "rme": 1.9,
-          "samples": 60138,
-          "bytesPerOp": 9069
+          "opsPerSec": 234335,
+          "meanMs": 0.00451730666930811,
+          "rme": 2.6,
+          "samples": 55343,
+          "bytesPerOp": 9068
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 282572,
-          "meanMs": 0.003580744750630636,
-          "rme": 0.69,
-          "samples": 69818,
-          "bytesPerOp": 8656
+          "opsPerSec": 276054,
+          "meanMs": 0.0036947982944870593,
+          "rme": 0.55,
+          "samples": 67663,
+          "bytesPerOp": 8749
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 283232,
-          "meanMs": 0.0035644667579157164,
-          "rme": 0.32,
-          "samples": 70137,
+          "opsPerSec": 273831,
+          "meanMs": 0.0037510277873681022,
+          "rme": 0.45,
+          "samples": 66649,
           "bytesPerOp": 8602
         }
       ],
-      "fastest": "neotraverse modern (fn)",
+      "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 1.36,
-        "neotraverse modern": 1.55,
-        "neotraverse modern (fn)": 1.55
+        "neotraverse legacy": 1.34,
+        "neotraverse modern": 1.58,
+        "neotraverse modern (fn)": 1.57
       }
     },
     {
@@ -605,34 +605,34 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 27045,
-          "meanMs": 0.03720478184528811,
-          "rme": 0.3,
-          "samples": 6720,
+          "opsPerSec": 25933,
+          "meanMs": 0.03907433348955684,
+          "rme": 0.74,
+          "samples": 6399,
           "bytesPerOp": 47074
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 154692,
-          "meanMs": 0.006617272869241423,
-          "rme": 1.69,
-          "samples": 37780,
-          "bytesPerOp": 11598
+          "opsPerSec": 154497,
+          "meanMs": 0.006725689004872267,
+          "rme": 2.34,
+          "samples": 37171,
+          "bytesPerOp": 11810
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 193880,
-          "meanMs": 0.0052230562415184,
-          "rme": 0.9,
-          "samples": 47865,
-          "bytesPerOp": 12323
+          "opsPerSec": 197244,
+          "meanMs": 0.005163829305568047,
+          "rme": 0.77,
+          "samples": 48414,
+          "bytesPerOp": 12378
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 193227,
-          "meanMs": 0.005296874867582856,
-          "rme": 0.56,
-          "samples": 47198,
+          "opsPerSec": 195105,
+          "meanMs": 0.005217040150239651,
+          "rme": 0.39,
+          "samples": 47920,
           "bytesPerOp": 12287
         }
       ],
@@ -640,9 +640,9 @@
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 5.72,
-        "neotraverse modern": 7.17,
-        "neotraverse modern (fn)": 7.14
+        "neotraverse legacy": 5.96,
+        "neotraverse modern": 7.61,
+        "neotraverse modern (fn)": 7.52
       }
     },
     {
@@ -653,34 +653,34 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 3112,
-          "meanMs": 0.3220604555984937,
-          "rme": 0.38,
-          "samples": 777,
+          "opsPerSec": 3021,
+          "meanMs": 0.3323250796811805,
+          "rme": 0.52,
+          "samples": 753,
           "bytesPerOp": 548097
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 10902,
-          "meanMs": 0.09238834848488243,
-          "rme": 0.6,
-          "samples": 2706,
-          "bytesPerOp": 202240
+          "opsPerSec": 11088,
+          "meanMs": 0.09117923085335122,
+          "rme": 0.66,
+          "samples": 2742,
+          "bytesPerOp": 205067
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 9803,
-          "meanMs": 0.10234557961521376,
-          "rme": 0.34,
-          "samples": 2443,
-          "bytesPerOp": 185817
+          "opsPerSec": 9295,
+          "meanMs": 0.10839975292594826,
+          "rme": 0.48,
+          "samples": 2307,
+          "bytesPerOp": 185868
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 9651,
-          "meanMs": 0.10392081379882452,
-          "rme": 0.29,
-          "samples": 2406,
+          "opsPerSec": 9012,
+          "meanMs": 0.11191045523727261,
+          "rme": 0.5,
+          "samples": 2234,
           "bytesPerOp": 185656
         }
       ],
@@ -688,9 +688,9 @@
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.5,
-        "neotraverse modern": 3.15,
-        "neotraverse modern (fn)": 3.1
+        "neotraverse legacy": 3.67,
+        "neotraverse modern": 3.08,
+        "neotraverse modern (fn)": 2.98
       }
     },
     {
@@ -701,34 +701,34 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 40294,
-          "meanMs": 0.024971047443066566,
-          "rme": 0.28,
-          "samples": 10012,
+          "opsPerSec": 38478,
+          "meanMs": 0.02631372623930862,
+          "rme": 0.41,
+          "samples": 9501,
           "bytesPerOp": 37302
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 193833,
-          "meanMs": 0.005302448790002673,
-          "rme": 1.74,
-          "samples": 47149,
-          "bytesPerOp": 13524
+          "opsPerSec": 190588,
+          "meanMs": 0.0055284433559754055,
+          "rme": 2.46,
+          "samples": 45221,
+          "bytesPerOp": 13414
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 182826,
-          "meanMs": 0.005559502746336526,
-          "rme": 0.79,
-          "samples": 44969,
-          "bytesPerOp": 9877
+          "opsPerSec": 179357,
+          "meanMs": 0.005675915474737219,
+          "rme": 0.58,
+          "samples": 44046,
+          "bytesPerOp": 9933
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 181832,
-          "meanMs": 0.0055747507470016375,
-          "rme": 0.36,
-          "samples": 44846,
+          "opsPerSec": 180566,
+          "meanMs": 0.005647897164805856,
+          "rme": 0.41,
+          "samples": 44265,
           "bytesPerOp": 9831
         }
       ],
@@ -736,9 +736,9 @@
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 4.81,
-        "neotraverse modern": 4.54,
-        "neotraverse modern (fn)": 4.51
+        "neotraverse legacy": 4.95,
+        "neotraverse modern": 4.66,
+        "neotraverse modern (fn)": 4.69
       }
     },
     {
@@ -749,44 +749,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 772585,
-          "meanMs": 0.0013203505313109211,
-          "rme": 0.45,
-          "samples": 189344,
-          "bytesPerOp": 11912
+          "opsPerSec": 759278,
+          "meanMs": 0.0013774047195242274,
+          "rme": 0.67,
+          "samples": 181501,
+          "bytesPerOp": 11952
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 1485168,
-          "meanMs": 0.0008027109794630581,
-          "rme": 4.48,
-          "samples": 311445,
-          "bytesPerOp": 7956
+          "opsPerSec": 1372665,
+          "meanMs": 0.0008968660371878403,
+          "rme": 5.44,
+          "samples": 278749,
+          "bytesPerOp": 7987
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 3582908,
-          "meanMs": 0.0002906419803169579,
-          "rme": 1.96,
-          "samples": 860165,
-          "bytesPerOp": 2078
+          "opsPerSec": 3374902,
+          "meanMs": 0.00031247139889175604,
+          "rme": 1.07,
+          "samples": 800074,
+          "bytesPerOp": 2257
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 3615259,
-          "meanMs": 0.0002924396720933179,
-          "rme": 5.09,
-          "samples": 854878,
-          "bytesPerOp": 2064
+          "opsPerSec": 3365805,
+          "meanMs": 0.00031835889583370076,
+          "rme": 5.79,
+          "samples": 785278,
+          "bytesPerOp": 2049
         }
       ],
-      "fastest": "neotraverse modern (fn)",
+      "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 1.92,
-        "neotraverse modern": 4.64,
-        "neotraverse modern (fn)": 4.68
+        "neotraverse legacy": 1.81,
+        "neotraverse modern": 4.44,
+        "neotraverse modern (fn)": 4.43
       }
     },
     {
@@ -797,44 +797,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 79527,
-          "meanMs": 0.012871440405704206,
-          "rme": 0.64,
-          "samples": 19423,
-          "bytesPerOp": 122340
+          "opsPerSec": 78942,
+          "meanMs": 0.013006171366148364,
+          "rme": 0.68,
+          "samples": 19222,
+          "bytesPerOp": 122305
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 210639,
-          "meanMs": 0.00519289684896458,
-          "rme": 1.96,
-          "samples": 48143,
-          "bytesPerOp": 78712
+          "opsPerSec": 203345,
+          "meanMs": 0.005404545224608266,
+          "rme": 2.01,
+          "samples": 46258,
+          "bytesPerOp": 77960
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 427702,
-          "meanMs": 0.002381053906818659,
-          "rme": 0.32,
-          "samples": 104996,
-          "bytesPerOp": 12143
+          "opsPerSec": 401513,
+          "meanMs": 0.002564377177149188,
+          "rme": 0.54,
+          "samples": 97490,
+          "bytesPerOp": 14531
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 388447,
-          "meanMs": 0.0026294641290679796,
-          "rme": 0.49,
-          "samples": 95077,
-          "bytesPerOp": 12061
+          "opsPerSec": 402283,
+          "meanMs": 0.002563115411423197,
+          "rme": 0.51,
+          "samples": 97538,
+          "bytesPerOp": 16337
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.65,
-        "neotraverse modern": 5.38,
-        "neotraverse modern (fn)": 4.88
+        "neotraverse legacy": 2.58,
+        "neotraverse modern": 5.09,
+        "neotraverse modern (fn)": 5.1
       }
     },
     {
@@ -845,44 +845,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 48817,
-          "meanMs": 0.020861345377169195,
-          "rme": 0.64,
-          "samples": 11984,
-          "bytesPerOp": 186062
+          "opsPerSec": 49176,
+          "meanMs": 0.020796218432881444,
+          "rme": 0.7,
+          "samples": 12022,
+          "bytesPerOp": 185853
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 134895,
-          "meanMs": 0.008090454910215704,
-          "rme": 1.83,
-          "samples": 30905,
-          "bytesPerOp": 118295
+          "opsPerSec": 133709,
+          "meanMs": 0.00816180898437089,
+          "rme": 1.87,
+          "samples": 30631,
+          "bytesPerOp": 118296
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 292593,
-          "meanMs": 0.0034950127776656216,
-          "rme": 0.51,
-          "samples": 71531,
-          "bytesPerOp": 18429
+          "opsPerSec": 269424,
+          "meanMs": 0.003829785011794096,
+          "rme": 0.57,
+          "samples": 65278,
+          "bytesPerOp": 18631
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 275085,
-          "meanMs": 0.003747904038739162,
-          "rme": 0.6,
-          "samples": 66704,
-          "bytesPerOp": 18375
+          "opsPerSec": 274343,
+          "meanMs": 0.003754338309049064,
+          "rme": 0.56,
+          "samples": 66590,
+          "bytesPerOp": 18335
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.76,
-        "neotraverse modern": 5.99,
-        "neotraverse modern (fn)": 5.64
+        "neotraverse legacy": 2.72,
+        "neotraverse modern": 5.48,
+        "neotraverse modern (fn)": 5.58
       }
     },
     {
@@ -893,44 +893,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 2765,
-          "meanMs": 0.36387166860455117,
-          "rme": 0.68,
-          "samples": 688,
-          "bytesPerOp": 1501375
+          "opsPerSec": 2750,
+          "meanMs": 0.36682452932559484,
+          "rme": 0.83,
+          "samples": 682,
+          "bytesPerOp": 1501372
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 8728,
-          "meanMs": 0.11919490562438464,
-          "rme": 1.36,
-          "samples": 2098,
-          "bytesPerOp": 264530
+          "opsPerSec": 8641,
+          "meanMs": 0.12048834746988928,
+          "rme": 1.4,
+          "samples": 2075,
+          "bytesPerOp": 264533
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 18218,
-          "meanMs": 0.05580591763396823,
-          "rme": 0.66,
-          "samples": 4480,
-          "bytesPerOp": 316969
+          "opsPerSec": 16923,
+          "meanMs": 0.059908991614761146,
+          "rme": 0.6,
+          "samples": 4174,
+          "bytesPerOp": 321126
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 16958,
-          "meanMs": 0.05957166833452342,
+          "opsPerSec": 15715,
+          "meanMs": 0.06450380469552801,
           "rme": 0.55,
-          "samples": 4197,
-          "bytesPerOp": 316685
+          "samples": 3876,
+          "bytesPerOp": 319721
         }
       ],
       "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.16,
-        "neotraverse modern": 6.59,
-        "neotraverse modern (fn)": 6.13
+        "neotraverse legacy": 3.14,
+        "neotraverse modern": 6.15,
+        "neotraverse modern (fn)": 5.71
       }
     },
     {
@@ -941,44 +941,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 53083,
-          "meanMs": 0.019223993002682446,
+          "opsPerSec": 52550,
+          "meanMs": 0.019467663629994775,
           "rme": 0.66,
-          "samples": 13005,
-          "bytesPerOp": 165059
+          "samples": 12843,
+          "bytesPerOp": 164638
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 157929,
-          "meanMs": 0.006843676630819437,
-          "rme": 1.76,
-          "samples": 36531,
-          "bytesPerOp": 100543
+          "opsPerSec": 153809,
+          "meanMs": 0.00710168016930312,
+          "rme": 1.89,
+          "samples": 35203,
+          "bytesPerOp": 100541
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 310468,
-          "meanMs": 0.003289031377034546,
-          "rme": 0.5,
-          "samples": 76011,
-          "bytesPerOp": 16833
+          "opsPerSec": 311421,
+          "meanMs": 0.003321344129873817,
+          "rme": 0.6,
+          "samples": 75271,
+          "bytesPerOp": 17075
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 292741,
-          "meanMs": 0.003556075843142208,
-          "rme": 0.58,
-          "samples": 70303,
-          "bytesPerOp": 16812
+          "opsPerSec": 311907,
+          "meanMs": 0.0033130676658794708,
+          "rme": 1.33,
+          "samples": 75459,
+          "bytesPerOp": 16773
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.98,
-        "neotraverse modern": 5.85,
-        "neotraverse modern (fn)": 5.51
+        "neotraverse legacy": 2.93,
+        "neotraverse modern": 5.93,
+        "neotraverse modern (fn)": 5.94
       }
     },
     {
@@ -989,44 +989,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 789850,
-          "meanMs": 0.001297789732969551,
-          "rme": 0.57,
-          "samples": 192636,
-          "bytesPerOp": 11782
+          "opsPerSec": 770478,
+          "meanMs": 0.001353053645657719,
+          "rme": 0.65,
+          "samples": 184768,
+          "bytesPerOp": 11784
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 1492370,
-          "meanMs": 0.0008070902907191577,
-          "rme": 5,
-          "samples": 309755,
-          "bytesPerOp": 7826
+          "opsPerSec": 1382879,
+          "meanMs": 0.0008952332719143627,
+          "rme": 5.88,
+          "samples": 280038,
+          "bytesPerOp": 7837
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 3439873,
-          "meanMs": 0.0003036991450270028,
-          "rme": 0.81,
-          "samples": 823184,
-          "bytesPerOp": 2266
+          "opsPerSec": 3374123,
+          "meanMs": 0.00031531593378849367,
+          "rme": 0.86,
+          "samples": 792856,
+          "bytesPerOp": 2329
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 3422308,
-          "meanMs": 0.00031049575490004497,
-          "rme": 4.3,
-          "samples": 805164,
-          "bytesPerOp": 2209
+          "opsPerSec": 3407568,
+          "meanMs": 0.0003157613553952046,
+          "rme": 5.25,
+          "samples": 791738,
+          "bytesPerOp": 2231
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 1.89,
-        "neotraverse modern": 4.36,
-        "neotraverse modern (fn)": 4.33
+        "neotraverse legacy": 1.79,
+        "neotraverse modern": 4.38,
+        "neotraverse modern (fn)": 4.42
       }
     },
     {
@@ -1037,44 +1037,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 81597,
-          "meanMs": 0.012558476063690956,
-          "rme": 0.64,
-          "samples": 19907,
-          "bytesPerOp": 121858
+          "opsPerSec": 79546,
+          "meanMs": 0.012888051190836641,
+          "rme": 0.62,
+          "samples": 19398,
+          "bytesPerOp": 121928
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 220688,
-          "meanMs": 0.00503005925316173,
-          "rme": 2.06,
-          "samples": 49702,
-          "bytesPerOp": 78903
+          "opsPerSec": 209284,
+          "meanMs": 0.005253483315116939,
+          "rme": 2.04,
+          "samples": 47588,
+          "bytesPerOp": 78727
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 405822,
-          "meanMs": 0.0025539278570512938,
-          "rme": 0.65,
-          "samples": 97889,
-          "bytesPerOp": 15578
+          "opsPerSec": 409884,
+          "meanMs": 0.0025265552804419294,
+          "rme": 0.61,
+          "samples": 98950,
+          "bytesPerOp": 23249
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 405427,
-          "meanMs": 0.0025341272832318435,
-          "rme": 0.58,
-          "samples": 98654,
-          "bytesPerOp": 15510
+          "opsPerSec": 411450,
+          "meanMs": 0.0025148973422578665,
+          "rme": 0.6,
+          "samples": 99408,
+          "bytesPerOp": 21243
         }
       ],
-      "fastest": "neotraverse modern",
+      "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.7,
-        "neotraverse modern": 4.97,
-        "neotraverse modern (fn)": 4.97
+        "neotraverse legacy": 2.63,
+        "neotraverse modern": 5.15,
+        "neotraverse modern (fn)": 5.17
       }
     },
     {
@@ -1085,44 +1085,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 49889,
-          "meanMs": 0.020481830657046157,
-          "rme": 0.68,
-          "samples": 12206,
-          "bytesPerOp": 187151
+          "opsPerSec": 48865,
+          "meanMs": 0.020920870460241915,
+          "rme": 0.67,
+          "samples": 11950,
+          "bytesPerOp": 187145
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 136996,
-          "meanMs": 0.007989742579619367,
-          "rme": 2.16,
-          "samples": 31299,
+          "opsPerSec": 133525,
+          "meanMs": 0.008263821009475179,
+          "rme": 1.91,
+          "samples": 30253,
           "bytesPerOp": 119344
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 210886,
-          "meanMs": 0.00492461226017184,
-          "rme": 0.67,
-          "samples": 50766,
-          "bytesPerOp": 37265
+          "opsPerSec": 208429,
+          "meanMs": 0.004922660812031779,
+          "rme": 0.47,
+          "samples": 50786,
+          "bytesPerOp": 37382
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 212914,
-          "meanMs": 0.004843202425486047,
-          "rme": 0.64,
-          "samples": 51619,
-          "bytesPerOp": 37284
+          "opsPerSec": 212194,
+          "meanMs": 0.004852926100635101,
+          "rme": 0.61,
+          "samples": 51516,
+          "bytesPerOp": 37276
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.75,
-        "neotraverse modern": 4.23,
-        "neotraverse modern (fn)": 4.27
+        "neotraverse legacy": 2.73,
+        "neotraverse modern": 4.27,
+        "neotraverse modern (fn)": 4.34
       }
     },
     {
@@ -1133,44 +1133,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 2842,
-          "meanMs": 0.3540541145687325,
-          "rme": 0.69,
-          "samples": 707,
-          "bytesPerOp": 1519484
+          "opsPerSec": 2814,
+          "meanMs": 0.3583645601717572,
+          "rme": 0.83,
+          "samples": 698,
+          "bytesPerOp": 1519483
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 9031,
-          "meanMs": 0.11618692146834327,
-          "rme": 1.52,
-          "samples": 2152,
-          "bytesPerOp": 281535
+          "opsPerSec": 8979,
+          "meanMs": 0.11646624359572566,
+          "rme": 1.5,
+          "samples": 2147,
+          "bytesPerOp": 281536
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 16595,
-          "meanMs": 0.06129875312569851,
+          "opsPerSec": 16928,
+          "meanMs": 0.060111543399885274,
           "rme": 0.68,
-          "samples": 4079,
-          "bytesPerOp": 450287
+          "samples": 4159,
+          "bytesPerOp": 452919
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 16745,
-          "meanMs": 0.06049873796278089,
-          "rme": 0.63,
-          "samples": 4133,
-          "bytesPerOp": 450287
+          "opsPerSec": 16864,
+          "meanMs": 0.06028028013496306,
+          "rme": 0.69,
+          "samples": 4148,
+          "bytesPerOp": 452592
         }
       ],
-      "fastest": "neotraverse modern (fn)",
+      "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.18,
-        "neotraverse modern": 5.84,
-        "neotraverse modern (fn)": 5.89
+        "neotraverse legacy": 3.19,
+        "neotraverse modern": 6.02,
+        "neotraverse modern (fn)": 5.99
       }
     },
     {
@@ -1181,44 +1181,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 53884,
-          "meanMs": 0.018988423211298917,
-          "rme": 0.67,
-          "samples": 13166,
-          "bytesPerOp": 166201
+          "opsPerSec": 54254,
+          "meanMs": 0.018824151118132224,
+          "rme": 0.65,
+          "samples": 13281,
+          "bytesPerOp": 165672
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 160770,
-          "meanMs": 0.00674946354364761,
-          "rme": 1.82,
-          "samples": 37058,
-          "bytesPerOp": 101649
+          "opsPerSec": 159403,
+          "meanMs": 0.006867672526992277,
+          "rme": 1.91,
+          "samples": 36403,
+          "bytesPerOp": 101598
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 302735,
-          "meanMs": 0.0034079971781850976,
-          "rme": 0.74,
-          "samples": 73357,
-          "bytesPerOp": 24574
+          "opsPerSec": 310137,
+          "meanMs": 0.0033179145045097117,
+          "rme": 0.62,
+          "samples": 75349,
+          "bytesPerOp": 24944
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 306560,
-          "meanMs": 0.0033319262714691274,
-          "rme": 0.56,
-          "samples": 75032,
-          "bytesPerOp": 24562
+          "opsPerSec": 310284,
+          "meanMs": 0.003322130675718199,
+          "rme": 0.62,
+          "samples": 75255,
+          "bytesPerOp": 24568
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.98,
-        "neotraverse modern": 5.62,
-        "neotraverse modern (fn)": 5.69
+        "neotraverse legacy": 2.94,
+        "neotraverse modern": 5.72,
+        "neotraverse modern (fn)": 5.72
       }
     },
     {
@@ -1229,44 +1229,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 775694,
-          "meanMs": 0.0013323922497558002,
-          "rme": 0.61,
-          "samples": 187633,
-          "bytesPerOp": 11762
+          "opsPerSec": 779309,
+          "meanMs": 0.001330916136522809,
+          "rme": 0.59,
+          "samples": 187841,
+          "bytesPerOp": 11764
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 1404552,
-          "meanMs": 0.0008764544949159416,
-          "rme": 5.33,
-          "samples": 286023,
-          "bytesPerOp": 7857
+          "opsPerSec": 1444553,
+          "meanMs": 0.0008528652979644306,
+          "rme": 5.46,
+          "samples": 293173,
+          "bytesPerOp": 7825
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 3569163,
-          "meanMs": 0.0002949323613978308,
-          "rme": 0.72,
-          "samples": 847652,
-          "bytesPerOp": 1938
+          "opsPerSec": 3551879,
+          "meanMs": 0.00029851289754922924,
+          "rme": 0.64,
+          "samples": 837485,
+          "bytesPerOp": 1991
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 3609083,
-          "meanMs": 0.00029397348242505504,
-          "rme": 4.48,
-          "samples": 850417,
-          "bytesPerOp": 1881
+          "opsPerSec": 3670108,
+          "meanMs": 0.00028061632489488793,
+          "rme": 0.16,
+          "samples": 890897,
+          "bytesPerOp": 1892
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 1.81,
-        "neotraverse modern": 4.6,
-        "neotraverse modern (fn)": 4.65
+        "neotraverse legacy": 1.85,
+        "neotraverse modern": 4.56,
+        "neotraverse modern (fn)": 4.71
       }
     },
     {
@@ -1277,44 +1277,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 79814,
-          "meanMs": 0.013108533924060478,
-          "rme": 0.81,
-          "samples": 19072,
-          "bytesPerOp": 121560
+          "opsPerSec": 80510,
+          "meanMs": 0.012721670364361856,
+          "rme": 0.64,
+          "samples": 19652,
+          "bytesPerOp": 121735
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 213111,
-          "meanMs": 0.005312980618433811,
-          "rme": 2.19,
-          "samples": 47055,
-          "bytesPerOp": 78640
+          "opsPerSec": 213523,
+          "meanMs": 0.005142698434574713,
+          "rme": 1.98,
+          "samples": 48613,
+          "bytesPerOp": 78909
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 430085,
-          "meanMs": 0.0024592669958779676,
-          "rme": 0.68,
-          "samples": 101657,
-          "bytesPerOp": 11999
+          "opsPerSec": 441055,
+          "meanMs": 0.002332049467351641,
+          "rme": 0.55,
+          "samples": 107202,
+          "bytesPerOp": 14196
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 431820,
-          "meanMs": 0.00237035611073342,
-          "rme": 0.51,
-          "samples": 105470,
-          "bytesPerOp": 11927
+          "opsPerSec": 441664,
+          "meanMs": 0.0023232728447008877,
+          "rme": 0.53,
+          "samples": 107607,
+          "bytesPerOp": 11935
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.67,
-        "neotraverse modern": 5.39,
-        "neotraverse modern (fn)": 5.41
+        "neotraverse legacy": 2.65,
+        "neotraverse modern": 5.48,
+        "neotraverse modern (fn)": 5.49
       }
     },
     {
@@ -1325,44 +1325,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 50115,
-          "meanMs": 0.02027255522218653,
-          "rme": 0.64,
-          "samples": 12332,
-          "bytesPerOp": 187210
+          "opsPerSec": 49477,
+          "meanMs": 0.020667009258505883,
+          "rme": 0.72,
+          "samples": 12097,
+          "bytesPerOp": 187107
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 137237,
-          "meanMs": 0.007889434107547963,
-          "rme": 1.78,
-          "samples": 31688,
+          "opsPerSec": 132451,
+          "meanMs": 0.008289135079588528,
+          "rme": 1.87,
+          "samples": 30160,
           "bytesPerOp": 119344
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 290865,
-          "meanMs": 0.003507727143887917,
-          "rme": 0.52,
-          "samples": 71272,
-          "bytesPerOp": 19440
+          "opsPerSec": 287368,
+          "meanMs": 0.0035793345646129788,
+          "rme": 0.54,
+          "samples": 69846,
+          "bytesPerOp": 19503
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 295072,
-          "meanMs": 0.003461053285907689,
-          "rme": 0.53,
-          "samples": 72233,
-          "bytesPerOp": 19411
+          "opsPerSec": 290934,
+          "meanMs": 0.0035328907919191513,
+          "rme": 0.55,
+          "samples": 70764,
+          "bytesPerOp": 19439
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.74,
-        "neotraverse modern": 5.8,
-        "neotraverse modern (fn)": 5.89
+        "neotraverse legacy": 2.68,
+        "neotraverse modern": 5.81,
+        "neotraverse modern (fn)": 5.88
       }
     },
     {
@@ -1373,44 +1373,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 2781,
-          "meanMs": 0.3631071712627333,
-          "rme": 0.86,
-          "samples": 689,
+          "opsPerSec": 2823,
+          "meanMs": 0.3571963600000475,
+          "rme": 0.87,
+          "samples": 700,
           "bytesPerOp": 1517193
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 9008,
-          "meanMs": 0.1159437885953034,
-          "rme": 1.45,
-          "samples": 2157,
-          "bytesPerOp": 280400
+          "opsPerSec": 8790,
+          "meanMs": 0.11897755851555433,
+          "rme": 1.5,
+          "samples": 2102,
+          "bytesPerOp": 280401
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 18525,
-          "meanMs": 0.05456628022702588,
-          "rme": 0.53,
-          "samples": 4582,
-          "bytesPerOp": 333027
+          "opsPerSec": 18375,
+          "meanMs": 0.05524276646043814,
+          "rme": 0.6,
+          "samples": 4526,
+          "bytesPerOp": 335340
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 18400,
-          "meanMs": 0.055022395466552035,
-          "rme": 0.57,
-          "samples": 4544,
-          "bytesPerOp": 332378
+          "opsPerSec": 18356,
+          "meanMs": 0.055402542433004846,
+          "rme": 0.63,
+          "samples": 4513,
+          "bytesPerOp": 334874
         }
       ],
       "fastest": "neotraverse modern",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 3.24,
-        "neotraverse modern": 6.66,
-        "neotraverse modern (fn)": 6.62
+        "neotraverse legacy": 3.11,
+        "neotraverse modern": 6.51,
+        "neotraverse modern (fn)": 6.5
       }
     },
     {
@@ -1421,44 +1421,44 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 54077,
-          "meanMs": 0.018997993465047998,
-          "rme": 0.71,
-          "samples": 13160,
-          "bytesPerOp": 166146
+          "opsPerSec": 53610,
+          "meanMs": 0.01905294093887826,
+          "rme": 0.64,
+          "samples": 13122,
+          "bytesPerOp": 165640
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 157055,
-          "meanMs": 0.007221808394484918,
-          "rme": 2,
-          "samples": 34618,
+          "opsPerSec": 157742,
+          "meanMs": 0.0069354133769647455,
+          "rme": 1.91,
+          "samples": 36047,
           "bytesPerOp": 101598
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 335384,
-          "meanMs": 0.003077641126646634,
-          "rme": 0.59,
-          "samples": 81232,
-          "bytesPerOp": 17837
+          "opsPerSec": 339330,
+          "meanMs": 0.0030411375186949986,
+          "rme": 0.63,
+          "samples": 82207,
+          "bytesPerOp": 17950
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 337082,
-          "meanMs": 0.0030232091929298117,
-          "rme": 0.53,
-          "samples": 82694,
-          "bytesPerOp": 17813
+          "opsPerSec": 341794,
+          "meanMs": 0.0030144456676403524,
+          "rme": 0.56,
+          "samples": 82934,
+          "bytesPerOp": 17835
         }
       ],
       "fastest": "neotraverse modern (fn)",
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 2.9,
-        "neotraverse modern": 6.2,
-        "neotraverse modern (fn)": 6.23
+        "neotraverse legacy": 2.94,
+        "neotraverse modern": 6.33,
+        "neotraverse modern (fn)": 6.38
       }
     },
     {
@@ -1469,34 +1469,34 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 18232465,
-          "meanMs": 0.00006286956351096098,
-          "rme": 1.3,
-          "samples": 3976487,
-          "bytesPerOp": 131
+          "opsPerSec": 18563588,
+          "meanMs": 0.00006251836813869084,
+          "rme": 1.38,
+          "samples": 3998826,
+          "bytesPerOp": 137
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 3064767,
-          "meanMs": 0.0005106960643718145,
-          "rme": 24.98,
-          "samples": 489528,
+          "opsPerSec": 3180301,
+          "meanMs": 0.0005097590742056087,
+          "rme": 26.47,
+          "samples": 490429,
           "bytesPerOp": 760
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 21792734,
-          "meanMs": 0.00005078730581414813,
-          "rme": 0.91,
-          "samples": 4922490,
-          "bytesPerOp": 73
+          "opsPerSec": 21548044,
+          "meanMs": 0.000051454402354510704,
+          "rme": 0.47,
+          "samples": 4858672,
+          "bytesPerOp": 128
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 22160320,
-          "meanMs": 0.000048522563086329544,
-          "rme": 0.13,
-          "samples": 5152243,
+          "opsPerSec": 21839495,
+          "meanMs": 0.0000500537643418262,
+          "rme": 0.15,
+          "samples": 4994630,
           "bytesPerOp": 32
         }
       ],
@@ -1505,8 +1505,8 @@
       "speedupVsTraverse": {
         "traverse": 1,
         "neotraverse legacy": 0.17,
-        "neotraverse modern": 1.2,
-        "neotraverse modern (fn)": 1.22
+        "neotraverse modern": 1.16,
+        "neotraverse modern (fn)": 1.18
       }
     },
     {
@@ -1517,34 +1517,34 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 18168476,
-          "meanMs": 0.00006330881762690689,
-          "rme": 0.26,
-          "samples": 3948897,
-          "bytesPerOp": 128
+          "opsPerSec": 18358595,
+          "meanMs": 0.00006266837826498063,
+          "rme": 0.15,
+          "samples": 3989253,
+          "bytesPerOp": 145
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 3104396,
-          "meanMs": 0.000483873983866888,
-          "rme": 18.58,
-          "samples": 516664,
+          "opsPerSec": 3278051,
+          "meanMs": 0.0004995055574997583,
+          "rme": 29.05,
+          "samples": 500495,
           "bytesPerOp": 760
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 21632315,
-          "meanMs": 0.000050645963274288264,
-          "rme": 0.28,
-          "samples": 4936228,
-          "bytesPerOp": 73
+          "opsPerSec": 22296723,
+          "meanMs": 0.00004910958860550527,
+          "rme": 0.61,
+          "samples": 5090657,
+          "bytesPerOp": 128
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 21056501,
-          "meanMs": 0.000052681145272106017,
-          "rme": 0.3,
-          "samples": 4745531,
+          "opsPerSec": 22214762,
+          "meanMs": 0.00004919664585179339,
+          "rme": 0.24,
+          "samples": 5081648,
           "bytesPerOp": 32
         }
       ],
@@ -1552,9 +1552,9 @@
       "baseline": "traverse",
       "speedupVsTraverse": {
         "traverse": 1,
-        "neotraverse legacy": 0.17,
-        "neotraverse modern": 1.19,
-        "neotraverse modern (fn)": 1.16
+        "neotraverse legacy": 0.18,
+        "neotraverse modern": 1.21,
+        "neotraverse modern (fn)": 1.21
       }
     },
     {
@@ -1565,34 +1565,34 @@
       "results": [
         {
           "name": "traverse",
-          "opsPerSec": 23324800,
-          "meanMs": 0.00004116197398297504,
-          "rme": 0.21,
-          "samples": 6073568,
-          "bytesPerOp": 128
+          "opsPerSec": 23586772,
+          "meanMs": 0.000040151739026947354,
+          "rme": 0.14,
+          "samples": 6226381,
+          "bytesPerOp": 79
         },
         {
           "name": "neotraverse legacy",
-          "opsPerSec": 3591093,
-          "meanMs": 0.0006001482173144535,
-          "rme": 54.36,
-          "samples": 416564,
+          "opsPerSec": 3474000,
+          "meanMs": 0.0004743061075420591,
+          "rme": 41.07,
+          "samples": 527086,
           "bytesPerOp": 40
         },
         {
           "name": "neotraverse modern",
-          "opsPerSec": 23545548,
-          "meanMs": 0.00004152369599290623,
-          "rme": 0.3,
-          "samples": 6020659,
-          "bytesPerOp": 57
+          "opsPerSec": 23564733,
+          "meanMs": 0.00004231750737773991,
+          "rme": 0.43,
+          "samples": 5907721,
+          "bytesPerOp": 112
         },
         {
           "name": "neotraverse modern (fn)",
-          "opsPerSec": 23603919,
-          "meanMs": 0.00004061630396817622,
-          "rme": 0.12,
-          "samples": 6155164,
+          "opsPerSec": 23608874,
+          "meanMs": 0.00004136295527409821,
+          "rme": 0.25,
+          "samples": 6044056,
           "bytesPerOp": 16
         }
       ],
@@ -1601,8 +1601,8 @@
       "speedupVsTraverse": {
         "traverse": 1,
         "neotraverse legacy": 0.15,
-        "neotraverse modern": 1.01,
-        "neotraverse modern (fn)": 1.01
+        "neotraverse modern": 1,
+        "neotraverse modern (fn)": 1
       }
     }
   ]

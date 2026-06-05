@@ -144,8 +144,8 @@ your runtime actually uses them; see the table below for walk vs clone differenc
 | `Array` | `'array'` | Descends indices | Deep clone | |
 | `Date` | `'date'` | Leaf (no keys) | Cloned via `getTime()` | |
 | `RegExp` | `'regexp'` | Leaf | Cloned | |
-| `Map` | `'map'` | **Leaf** — entries not visited | **Deep-clones entries** | Transform entries via `clone` or manual loop |
-| `Set` | `'set'` | **Leaf** | **Deep-clones values** | Same as `Map` |
+| `Map` | `'map'` | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each **value** at its key | **Deep-clones entries** | Transform entries via `clone`, `descendIntoMapSet`, or a manual loop |
+| `Set` | `'set'` | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each element at a numeric index | **Deep-clones values** | Same as `Map` |
 | `WeakMap` / `WeakSet` | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk) | **`clone` / `copy` return the same reference** (entries are not copied) | Cannot query weak refs after GC |
 | Typed array (`Uint8Array`, …) | `'typed-array'` | Descends index keys; `copy` uses `.slice()` | Leaf in deep clone (buffer copied) | |
 | `ArrayBuffer` | `'arraybuffer'` | Leaf | `.slice(0)` | |
@@ -157,8 +157,8 @@ your runtime actually uses them; see the table below for walk vs clone differenc
 
 - **No prototype walking** — only own properties (`get`/`has` never follow the chain). Safer on untrusted input.
 - **No non-enumerable / getter-only keys** unless you add your own logic.
-- **`Map` / `Set` vs walk** — the walker sees the collection as one node; **`clone`** still copies entries. Do not
-  assume `map(fn)` runs `fn` on each Map entry.
+- **`Map` / `Set` vs walk** — by default the walker sees the collection as one node; pass **`descendIntoMapSet: true`**
+  to visit entries. **`clone`** always deep-copies entries regardless.
 - **Boxed primitives** (`new String('x')`) — classified as `'object'`, treated as **leaves**; unwrap with
   `.valueOf()` when needed.
 - **`diff` / `patch`** — acyclic trees only; circular graphs are unsupported.
@@ -476,6 +476,58 @@ Acyclic trees only.
 #### t.select {#t-select}
 
 Glob path query: `*`, `key[*]`, dot segments. For predicate search, use `filterPaths`.
+
+### Walk variants
+
+#### t.walk {#t-walk}
+
+`t.walk(obj, cb, options?)` is the low-level depth-first walker behind `forEach` and `map`. It returns the (possibly
+mutated) root. Prefer `forEach` / `map` unless you need the same callback shape with a different return contract.
+
+#### t.breadthFirst · t.mapBfs {#t-bfs}
+
+Level-order traversal. `breadthFirst` mutates in place like `forEach`; `mapBfs` clones first like `map`. Visit order
+differs from DFS — do not assume `isFirst` / `isLast` match sibling order in the queue.
+
+#### t.skipWhere {#t-skip-where}
+
+Predicate helper that calls `ctx.block()` — equivalent to `if (pred(ctx, v)) ctx.block()` inside your callback.
+Compose with other logic in a single pass.
+
+```ts
+t.forEach(tree, (ctx, v) => {
+  t.skipWhere((c) => c.level > 2)(ctx, v);
+  // …
+});
+```
+
+#### t.groupBy {#t-group-by}
+
+One walk; buckets every visited value: `Map<PropertyKey, any[]>`. Usually combine with `ctx.isLeaf` or `typeof` so
+the root object does not land in a bucket.
+
+#### t.merge {#t-merge}
+
+`merge(target, source, options?)` returns a **new** tree (does not mutate `target`). Plain objects and `Map` entries
+merge recursively; arrays take indices from `source` (length follows `source`, default **`array: 'replace'`**). Use
+`{ array: 'concat' }` to append.
+
+#### t.dereference {#t-dereference}
+
+Resolve local JSON Pointer `$ref` objects (`{ "$ref": "#/definitions/Foo" }`) on a clone. External URL refs are left
+unchanged (`localOnly` defaults to `true`).
+
+### Context helpers
+
+#### ctx.nextSibling · ctx.prevSibling {#t-siblings}
+
+Return a lightweight sibling context (path snapshot only — not a full re-walk). Reads live `parent.keys`; unlike
+`isFirst` / `isLast`, safe when you need the adjacent key’s node.
+
+### Async concurrency
+
+`forEachAsync` / `mapAsync` accept `{ concurrency: n }` (default `1`) to run up to **n** sibling callbacks in
+parallel. Each branch gets an isolated path/parent snapshot — intended for I/O-bound work; pair with `signal` to abort.
 
 ### Query helpers
 

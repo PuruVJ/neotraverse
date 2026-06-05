@@ -12,6 +12,10 @@
 
 `findPaths`, `filterPaths`, `getPath`, `setPath`, `hasPath`, `parsePath`, `count`, `size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`.
 
+### 0.7 polish (functions only)
+
+`walk`, `breadthFirst`, `mapBfs`, `skipWhere`, `groupBy`, `merge`, `dereference`, `descendIntoMapSet`, async `concurrency`, `ctx.nextSibling` / `ctx.prevSibling`. `Traverse` class moved to `deprecated.ts` (still exported from `neotraverse/modern`).
+
 ### Type handling
 
 - `getType()` tags include `function`, `weakmap`, `weakset`, `arraybuffer`, `dataview`, and the existing built-ins.

@@ -14,6 +14,13 @@ describe('modern public exports', () => {
 		expect(typeof t.getPath).toBe('function');
 		expect(typeof t.diff).toBe('function');
 		expect(typeof t.select).toBe('function');
+		expect(typeof t.walk).toBe('function');
+		expect(typeof t.skipWhere).toBe('function');
+		expect(typeof t.groupBy).toBe('function');
+		expect(typeof t.merge).toBe('function');
+		expect(typeof t.dereference).toBe('function');
+		expect(typeof t.breadthFirst).toBe('function');
+		expect(typeof t.mapBfs).toBe('function');
 
 		expect(t.size(obj)).toBeGreaterThan(0);
 		expect(t.getPath(obj, 'a')).toBe(1);

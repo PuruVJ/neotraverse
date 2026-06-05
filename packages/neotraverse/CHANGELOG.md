@@ -84,6 +84,15 @@
 
   `count`, `size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`.
 
+  ### Walk variants & merge
+
+  - **`walk`**, **`breadthFirst`**, **`mapBfs`** — DFS vs level-order; `mapBfs` clones like `map`.
+  - **`skipWhere`**, **`groupBy`**, **`merge`**, **`dereference`** (local `#/…` JSON Pointer `$ref` only).
+  - **`descendIntoMapSet`** — opt-in descent into `Map` / `Set` entries during walks.
+  - **`forEachAsync` / `mapAsync`** — `{ concurrency }` for parallel sibling callbacks (isolated path state).
+  - **`ctx.nextSibling()` / `ctx.prevSibling()`** — adjacent sibling snapshots.
+  - Deprecated **`Traverse`** class lives in `deprecated.ts` (still re-exported from `neotraverse/modern`).
+
   `getType()` reports `function`, `arraybuffer`, `dataview`, `weakmap`, `weakset`, and the usual built-ins. See the docs **Types and traversal** section for JSON-like trees vs binary data vs Map walk/clone behaviour.
 
   ### CI

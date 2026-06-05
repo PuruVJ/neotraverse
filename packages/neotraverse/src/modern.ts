@@ -38,6 +38,19 @@ export interface TraverseOptions {
 	 * methods.
 	 */
 	signal?: AbortSignal;
+
+	/**
+	 * When true, {@link Map} and {@link Set} are not leaves — their entries are
+	 * visited (Map: each value at its key; Set: each element at a numeric index).
+	 * @default false
+	 */
+	descendIntoMapSet?: boolean;
+
+	/**
+	 * Max parallel sibling callbacks in {@link forEachAsync} / {@link mapAsync}.
+	 * @default 1
+	 */
+	concurrency?: number;
 }
 
 export interface TraverseContext {
@@ -158,6 +171,16 @@ export interface TraverseContext {
 	 * Prevents traversing descendents of the current node.
 	 */
 	block(): void;
+
+	/**
+	 * Next sibling context, or `undefined`. Reads live parent state (not `isLast`).
+	 */
+	nextSibling(): TraverseContext | undefined;
+
+	/**
+	 * Previous sibling context, or `undefined`. Reads live parent state (not `isFirst`).
+	 */
+	prevSibling(): TraverseContext | undefined;
 }
 
 const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
@@ -395,6 +418,8 @@ interface WalkState {
 	max_depth: number | undefined;
 	path: PropertyKey[];
 	parents: WalkContext[];
+	descend_map_set: boolean;
+	concurrency: number;
 }
 
 // before/after/pre/post hooks — lazily allocated, so the common path that uses
@@ -510,6 +535,147 @@ class WalkContext implements TraverseContext {
 	block(): void {
 		this.keep_going = false;
 	}
+
+	nextSibling(): WalkContext | undefined {
+		const parent = this.parent as WalkContext | undefined;
+		if (!parent?.keys || this.key === undefined) return undefined;
+		const keys = parent.keys;
+		const idx = keys.indexOf(this.key);
+		if (idx < 0 || idx >= keys.length - 1) return undefined;
+		const sibKey = keys[idx + 1];
+		const sibNode = get_child_at(parent.node, sibKey, this.w.descend_map_set);
+		const snap = this.w.path.slice();
+		snap.push(sibKey);
+		const w2: WalkState = {
+			alive: this.w.alive,
+			immutable: this.w.immutable,
+			iter: this.w.iter,
+			max_depth: this.w.max_depth,
+			path: snap,
+			parents: this.w.parents.slice(),
+			descend_map_set: this.w.descend_map_set,
+			concurrency: this.w.concurrency,
+		};
+		return new WalkContext(w2, sibNode, sibNode);
+	}
+
+	prevSibling(): WalkContext | undefined {
+		const parent = this.parent as WalkContext | undefined;
+		if (!parent?.keys || this.key === undefined) return undefined;
+		const keys = parent.keys;
+		const idx = keys.indexOf(this.key);
+		if (idx <= 0) return undefined;
+		const sibKey = keys[idx - 1];
+		const sibNode = get_child_at(parent.node, sibKey, this.w.descend_map_set);
+		const snap = this.w.path.slice();
+		snap.push(sibKey);
+		const w2: WalkState = {
+			alive: this.w.alive,
+			immutable: this.w.immutable,
+			iter: this.w.iter,
+			max_depth: this.w.max_depth,
+			path: snap,
+			parents: this.w.parents.slice(),
+			descend_map_set: this.w.descend_map_set,
+			concurrency: this.w.concurrency,
+		};
+		return new WalkContext(w2, sibNode, sibNode);
+	}
+}
+
+function make_walk_state(options: TraverseOptions = empty_null, immutable?: boolean): WalkState {
+	return {
+		alive: true,
+		immutable: immutable ?? !!options.immutable,
+		iter: options.includeSymbols ? own_enumerable_keys : object_keys,
+		max_depth: options.maxDepth,
+		path: [],
+		parents: [],
+		descend_map_set: !!options.descendIntoMapSet,
+		concurrency: Math.max(1, options.concurrency ?? 1),
+	};
+}
+
+function map_set_child_keys(node: Map<any, any> | Set<any>): PropertyKey[] {
+	if (node instanceof Map) {
+		const keys: PropertyKey[] = [];
+		for (const k of node.keys()) keys.push(k as PropertyKey);
+		return keys;
+	}
+	const keys: PropertyKey[] = [];
+	let i = 0;
+	for (const _ of node) {
+		keys.push(i);
+		i++;
+	}
+	return keys;
+}
+
+function get_child_at(node: any, key: PropertyKey, descend_map_set: boolean): any {
+	if (descend_map_set && node instanceof Map) return node.get(key);
+	if (descend_map_set && node instanceof Set) return [...node][key as number];
+	return node[key];
+}
+
+function descend_children(
+	w: WalkState,
+	ctx: WalkContext,
+	node: any,
+	walker: (node_: any) => WalkContext,
+	immutable: boolean,
+	mods: Modifiers | null,
+): void {
+	const { path, parents } = w;
+	const pre = mods !== null ? mods.pre : undefined;
+	const post = mods !== null ? mods.post : undefined;
+
+	if (w.descend_map_set && node instanceof Map) {
+		const entries = [...node.entries()];
+		const last = entries.length - 1;
+		for (let index = 0; index <= last; index++) {
+			const [key, val] = entries[index];
+			path.push(key);
+			if (pre !== undefined) pre(ctx, val, key);
+			const child = walker(val);
+			if (immutable && has_own_property.call(node, key)) safe_set(node, key as PropertyKey, child.node);
+			child.isLast = index === last;
+			child.isFirst = index === 0;
+			if (post !== undefined) post(ctx, child);
+			path.pop();
+		}
+		return;
+	}
+
+	if (w.descend_map_set && node instanceof Set) {
+		const vals = [...node];
+		const last = vals.length - 1;
+		for (let index = 0; index <= last; index++) {
+			path.push(index);
+			if (pre !== undefined) pre(ctx, vals[index], index);
+			const child = walker(vals[index]);
+			child.isLast = index === last;
+			child.isFirst = index === 0;
+			if (post !== undefined) post(ctx, child);
+			path.pop();
+		}
+		return;
+	}
+
+	const keys = ctx.keys as PropertyKey[];
+	const last = keys.length - 1;
+	for (let index = 0; index <= last; index++) {
+		const key = keys[index];
+		path.push(key);
+		if (pre !== undefined) pre(ctx, node[key], key);
+		const child = walker(node[key]);
+		if (immutable && has_own_property.call(node, key) && !is_non_writable(node, key)) {
+			safe_set(node, key, child.node);
+		}
+		child.isLast = index === last;
+		child.isFirst = index === 0;
+		if (post !== undefined) post(ctx, child);
+		path.pop();
+	}
 }
 
 // Recompute keys/isLeaf after the cb replaced the node (the uncommon path).
@@ -517,7 +683,13 @@ function update_state(ctx: WalkContext): void {
 	const node = ctx.node;
 	if (typeof node === 'object' && node !== null) {
 		if (!ctx.keys || ctx.node_ !== node) {
-			ctx.keys = ctx.w.iter(node);
+			if (ctx.w.descend_map_set && node instanceof Map) {
+				ctx.keys = map_set_child_keys(node);
+			} else if (ctx.w.descend_map_set && node instanceof Set) {
+				ctx.keys = map_set_child_keys(node);
+			} else {
+				ctx.keys = ctx.w.iter(node);
+			}
 		}
 		ctx.isLeaf = ctx.keys.length === 0;
 	} else {
@@ -526,34 +698,32 @@ function update_state(ctx: WalkContext): void {
 	}
 }
 
-function walk(
+function initial_keys(w: WalkState, node0: object, iter: (obj: object) => PropertyKey[]): PropertyKey[] {
+	if (w.descend_map_set && node0 instanceof Map) return map_set_child_keys(node0);
+	if (w.descend_map_set && node0 instanceof Set) return map_set_child_keys(node0);
+	return iter(node0);
+}
+
+/** Depth-first walk; {@link forEach} and {@link map} use this internally. */
+export function walk(
 	root: any,
 	cb: (ctx: TraverseContext, v: any) => void,
 	options: TraverseOptions = empty_null,
 ) {
-	const w: WalkState = {
-		alive: true,
-		immutable: !!options.immutable,
-		iter: options.includeSymbols ? own_enumerable_keys : object_keys,
-		max_depth: options.maxDepth,
-		path: [],
-		parents: [],
-	};
-
-	const { immutable, max_depth, path, parents, iter } = w;
+	const w = make_walk_state(options);
+	const { immutable, max_depth, parents, iter } = w;
 
 	const walker = (node_: any): WalkContext => {
-		assert_within_depth(path.length, max_depth);
+		assert_within_depth(w.path.length, max_depth);
 
 		const node0 = immutable ? copy(node_, options) : node_;
 		const ctx = new WalkContext(w, node_, node0);
 
 		if (!w.alive) return ctx;
 
-		// --- inlined initial update_state (keys are null on a fresh ctx) ---
 		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
 		if (node0_is_obj) {
-			const keys0 = iter(node0);
+			const keys0 = initial_keys(w, node0, iter);
 			ctx.keys = keys0;
 			ctx.isLeaf = keys0.length === 0;
 			for (let i = 0; i < parents.length; i++) {
@@ -565,7 +735,6 @@ function walk(
 		} else {
 			ctx.isLeaf = true;
 		}
-		// -------------------------------------------------------------------
 
 		const ret = cb(ctx, node0);
 		if (ret !== undefined) ctx.update(ret);
@@ -576,37 +745,11 @@ function walk(
 		if (!ctx.keep_going) return ctx;
 
 		const node = ctx.node;
-		// reuse the object-ness check when the node wasn't replaced by the cb
 		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
 		if (descend && ctx.circular === undefined) {
 			parents.push(ctx);
-
-			// recompute keys only if the cb/before replaced the node
 			if (node !== node0) update_state(ctx);
-
-			const keys = ctx.keys as PropertyKey[];
-			const last = keys.length - 1;
-			const pre = mods !== null ? mods.pre : undefined;
-			const post = mods !== null ? mods.post : undefined;
-
-			for (let index = 0; index <= last; index++) {
-				const key = keys[index];
-				path.push(key);
-
-				if (pre !== undefined) pre(ctx, node[key], key);
-
-				const child = walker(node[key]);
-				if (immutable && has_own_property.call(node, key) && !is_non_writable(node, key)) {
-					safe_set(node, key, child.node);
-				}
-
-				child.isLast = index === last;
-				child.isFirst = index === 0;
-
-				if (post !== undefined) post(ctx, child);
-
-				path.pop();
-			}
+			descend_children(w, ctx, node, walker, immutable, mods);
 			parents.pop();
 		}
 
@@ -629,43 +772,33 @@ async function walk_async(
 	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
 	options: TraverseOptions = empty_null,
 ): Promise<any> {
-	const w: WalkState = {
-		alive: true,
-		immutable: !!options.immutable,
-		iter: options.includeSymbols ? own_enumerable_keys : object_keys,
-		max_depth: options.maxDepth,
-		path: [],
-		parents: [],
-	};
-
-	const { immutable, max_depth, path, parents, iter } = w;
+	const w = make_walk_state(options);
+	const { immutable, parents, iter } = w;
 	const signal = options.signal;
 
-	const walker = async (node_: any): Promise<WalkContext> => {
+	const walker = async (node_: any, state: WalkState = w): Promise<WalkContext> => {
 		signal?.throwIfAborted();
-		assert_within_depth(path.length, max_depth);
+		assert_within_depth(state.path.length, state.max_depth);
 
 		const node0 = immutable ? copy(node_, options) : node_;
-		const ctx = new WalkContext(w, node_, node0);
+		const ctx = new WalkContext(state, node_, node0);
 
-		if (!w.alive) return ctx;
+		if (!state.alive) return ctx;
 
-		// --- inlined initial update_state (keys are null on a fresh ctx) ---
 		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
 		if (node0_is_obj) {
-			const keys0 = iter(node0);
+			const keys0 = initial_keys(state, node0, iter);
 			ctx.keys = keys0;
 			ctx.isLeaf = keys0.length === 0;
-			for (let i = 0; i < parents.length; i++) {
-				if (parents[i].node_ === node_) {
-					ctx.circular = parents[i];
+			for (let i = 0; i < state.parents.length; i++) {
+				if (state.parents[i].node_ === node_) {
+					ctx.circular = state.parents[i];
 					break;
 				}
 			}
 		} else {
 			ctx.isLeaf = true;
 		}
-		// -------------------------------------------------------------------
 
 		const ret = await cb(ctx, node0);
 		if (ret !== undefined) ctx.update(ret);
@@ -678,34 +811,10 @@ async function walk_async(
 		const node = ctx.node;
 		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
 		if (descend && ctx.circular === undefined) {
-			parents.push(ctx);
-
+			state.parents.push(ctx);
 			if (node !== node0) update_state(ctx);
-
-			const keys = ctx.keys as PropertyKey[];
-			const last = keys.length - 1;
-			const pre = mods !== null ? mods.pre : undefined;
-			const post = mods !== null ? mods.post : undefined;
-
-			for (let index = 0; index <= last; index++) {
-				const key = keys[index];
-				path.push(key);
-
-				if (pre !== undefined) pre(ctx, node[key], key);
-
-				const child = await walker(node[key]);
-				if (immutable && has_own_property.call(node, key) && !is_non_writable(node, key)) {
-					safe_set(node, key, child.node);
-				}
-
-				child.isLast = index === last;
-				child.isFirst = index === 0;
-
-				if (post !== undefined) post(ctx, child);
-
-				path.pop();
-			}
-			parents.pop();
+			await descend_children_async(state, ctx, node, walker, immutable, mods, options);
+			state.parents.pop();
 		}
 
 		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
@@ -714,6 +823,360 @@ async function walk_async(
 	};
 
 	return (await walker(root)).node;
+}
+
+async function descend_children_async(
+	w: WalkState,
+	ctx: WalkContext,
+	node: any,
+	walker: (node_: any, state?: WalkState) => Promise<WalkContext>,
+	immutable: boolean,
+	mods: Modifiers | null,
+	options: TraverseOptions,
+): Promise<void> {
+	const { path, parents } = w;
+	const pre = mods !== null ? mods.pre : undefined;
+	const post = mods !== null ? mods.post : undefined;
+	const limit = w.concurrency;
+
+	const visitOne = async (key: PropertyKey, childVal: any, index: number, last: number) => {
+		const childState: WalkState = {
+			alive: w.alive,
+			immutable: w.immutable,
+			iter: w.iter,
+			max_depth: w.max_depth,
+			path: path.slice(),
+			parents: parents.slice(),
+			descend_map_set: w.descend_map_set,
+			concurrency: w.concurrency,
+		};
+		childState.path.push(key);
+		if (pre !== undefined) pre(ctx, childVal, key);
+		const child = await walker(childVal, childState);
+		if (immutable && has_own_property.call(node, key) && !is_non_writable(node, key)) {
+			safe_set(node, key, child.node);
+		}
+		child.isLast = index === last;
+		child.isFirst = index === 0;
+		if (post !== undefined) post(ctx, child);
+	};
+
+	if (w.descend_map_set && node instanceof Map) {
+		const entries = [...node.entries()];
+		const last = entries.length - 1;
+		for (let start = 0; start <= last; start += limit) {
+			const end = Math.min(last, start + limit - 1);
+			const tasks: Promise<void>[] = [];
+			for (let index = start; index <= end; index++) {
+				const [key, val] = entries[index];
+				tasks.push(visitOne(key, val, index, last));
+			}
+			await Promise.all(tasks);
+		}
+		return;
+	}
+
+	if (w.descend_map_set && node instanceof Set) {
+		const vals = [...node];
+		const last = vals.length - 1;
+		for (let start = 0; start <= last; start += limit) {
+			const end = Math.min(last, start + limit - 1);
+			const tasks: Promise<void>[] = [];
+			for (let index = start; index <= end; index++) {
+				tasks.push(visitOne(index, vals[index], index, last));
+			}
+			await Promise.all(tasks);
+		}
+		return;
+	}
+
+	const keys = ctx.keys as PropertyKey[];
+	const last = keys.length - 1;
+	for (let start = 0; start <= last; start += limit) {
+		const end = Math.min(last, start + limit - 1);
+		const tasks: Promise<void>[] = [];
+		for (let index = start; index <= end; index++) {
+			const key = keys[index];
+			tasks.push(visitOne(key, node[key], index, last));
+		}
+		await Promise.all(tasks);
+	}
+}
+
+interface BfsQueueItem {
+	node_: any;
+	parents: WalkContext[];
+	path: PropertyKey[];
+}
+
+function walk_bfs(
+	root: any,
+	cb: (ctx: TraverseContext, v: any) => void,
+	options: TraverseOptions = empty_null,
+): any {
+	const w = make_walk_state(options);
+	const immutable = w.immutable;
+	const iter = w.iter;
+	const queue: BfsQueueItem[] = [{ node_: root, parents: [], path: [] }];
+	let head = 0;
+	let rootOut = root;
+
+	while (head < queue.length && w.alive) {
+		const item = queue[head++];
+		const { node_, parents, path } = item;
+		assert_within_depth(path.length, w.max_depth);
+
+		w.path = path;
+		w.parents = parents;
+
+		const node0 = immutable ? copy(node_, options) : node_;
+		const ctx = new WalkContext(w, node_, node0);
+
+		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
+		if (node0_is_obj) {
+			const keys0 = initial_keys(w, node0, iter);
+			ctx.keys = keys0;
+			ctx.isLeaf = keys0.length === 0;
+			for (let i = 0; i < parents.length; i++) {
+				if (parents[i].node_ === node_) {
+					ctx.circular = parents[i];
+					break;
+				}
+			}
+		} else {
+			ctx.isLeaf = true;
+		}
+
+		const ret = cb(ctx, node0);
+		if (ret !== undefined) ctx.update(ret);
+		if (path.length === 0) rootOut = ctx.node;
+
+		if (immutable && parents.length > 0) {
+			const par = parents[parents.length - 1] as WalkContext;
+			const key = path[path.length - 1];
+			if (has_own_property.call(par.node, key) && !is_non_writable(par.node, key)) {
+				safe_set(par.node, key, ctx.node);
+			}
+		}
+
+		const mods = ctx.mods;
+		if (mods !== null && mods.before !== undefined) mods.before(ctx, ctx.node);
+
+		if (!ctx.keep_going) {
+			if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
+			continue;
+		}
+
+		const node = ctx.node;
+		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
+		if (!descend || ctx.circular !== undefined) {
+			if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
+			continue;
+		}
+
+		if (node !== node0) update_state(ctx);
+		const keys = ctx.keys as PropertyKey[];
+		const childParents = parents.concat(ctx);
+		const last = keys.length - 1;
+		const pre = mods !== null ? mods.pre : undefined;
+
+		if (w.descend_map_set && node instanceof Map) {
+			const entries = [...node.entries()];
+			for (let index = 0; index <= last; index++) {
+				const [key, val] = entries[index];
+				if (pre !== undefined) pre(ctx, val, key);
+				queue.push({ node_: val, parents: childParents, path: path.concat(key) });
+			}
+		} else if (w.descend_map_set && node instanceof Set) {
+			const vals = [...node];
+			for (let index = 0; index <= last; index++) {
+				if (pre !== undefined) pre(ctx, vals[index], index);
+				queue.push({ node_: vals[index], parents: childParents, path: path.concat(index) });
+			}
+		} else {
+			for (let index = 0; index <= last; index++) {
+				const key = keys[index];
+				const childVal = node[key];
+				if (pre !== undefined) pre(ctx, childVal, key);
+				queue.push({ node_: childVal, parents: childParents, path: path.concat(key) });
+			}
+		}
+
+		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
+	}
+
+	return rootOut;
+}
+
+/** Breadth-first {@link forEach}; visit order is level-by-level, not depth-first. */
+export function breadthFirst(
+	obj: any,
+	cb: (ctx: TraverseContext, v: any) => void,
+	options?: TraverseOptions,
+): any {
+	return walk_bfs(obj, cb, options);
+}
+
+/** Breadth-first {@link map} (immutable clone with callback writeback). */
+export function mapBfs(
+	obj: any,
+	cb: (ctx: TraverseContext, v: any) => void,
+	options?: TraverseOptions,
+): any {
+	return walk_bfs(obj, cb, { ...options, immutable: true });
+}
+
+/**
+ * Callback helper: calls {@link TraverseContext.block} when `pred` is truthy.
+ * Compose with other callbacks in a single {@link forEach} / {@link map} pass.
+ */
+export function skipWhere(
+	pred: (ctx: TraverseContext, value: any) => unknown,
+): (ctx: TraverseContext, value: any) => void {
+	return (ctx, value) => {
+		if (pred(ctx, value)) ctx.block();
+	};
+}
+
+/** Bucket every visited value by `keyFn(ctx, value)` in one walk. */
+export function groupBy(
+	obj: any,
+	keyFn: (ctx: TraverseContext, value: any) => PropertyKey,
+	options?: TraverseOptions,
+): Map<PropertyKey, any[]> {
+	const buckets = new Map<PropertyKey, any[]>();
+	forEach(obj, (ctx, v) => {
+		const k = keyFn(ctx, v);
+		let arr = buckets.get(k);
+		if (!arr) {
+			arr = [];
+			buckets.set(k, arr);
+		}
+		arr.push(v);
+	}, options);
+	return buckets;
+}
+
+export interface MergeOptions extends TraverseOptions {
+	/** How to combine two arrays at the same path. @default `'replace'` */
+	array?: 'replace' | 'concat';
+}
+
+function mergeable_object_type(t: TraverseNodeType): boolean {
+	return t === 'object' || t === 'array';
+}
+
+function merge_pair(target: any, source: any, options: MergeOptions, depth: number): any {
+	if (source === undefined) return target;
+	const st = getType(source);
+	const tt = getType(target);
+	if (st === 'null' || st === 'primitive' || st === 'function') return clone(source, options);
+	if (!mergeable_object_type(st) || !mergeable_object_type(tt) || st !== tt) return clone(source, options);
+	if (options.maxDepth !== undefined && depth >= options.maxDepth) return clone(source, options);
+
+	if (st === 'array') {
+		if (options.array === 'concat') return target.concat(source.map((v: any) => clone(v, options)));
+		const out: any[] = [];
+		for (let i = 0; i < source.length; i++) {
+			if (
+				i < target.length &&
+				mergeable_object_type(getType(target[i])) &&
+				mergeable_object_type(getType(source[i]))
+			) {
+				out[i] = merge_pair(target[i], source[i], options, depth + 1);
+			} else {
+				out[i] = clone(source[i], options);
+			}
+		}
+		return out;
+	}
+
+	if (st === 'map') {
+		const out = new Map(target);
+		for (const [k, v] of source) {
+			const tk = out.get(k);
+			if (tk !== undefined && mergeable_object_type(getType(tk)) && mergeable_object_type(getType(v))) {
+				out.set(k, merge_pair(tk, v, options, depth + 1));
+			} else {
+				out.set(k, clone(v, options));
+			}
+		}
+		return out;
+	}
+
+	const out = { ...target };
+	const keys = object_keys(source);
+	for (let i = 0; i < keys.length; i++) {
+		const k = keys[i];
+		if (is_unsafe_key(k)) continue;
+		if (has_own_property.call(target, k) && mergeable_object_type(getType(target[k])) && mergeable_object_type(getType(source[k]))) {
+			out[k] = merge_pair(target[k], source[k], options, depth + 1);
+		} else {
+			out[k] = clone(source[k], options);
+		}
+	}
+	return out;
+}
+
+/**
+ * Deep-merge `source` into a clone of `target` (does not mutate `target`).
+ * Plain objects and Map entries merge recursively; arrays replace index-by-index
+ * unless `array: 'concat'`. Other types are replaced from `source`.
+ */
+export function merge(target: any, source: any, options?: MergeOptions): any {
+	const base = clone(target, options);
+	return merge_pair(base, source, options ?? empty_null, 0);
+}
+
+export interface DereferenceOptions extends TraverseOptions {
+	/** Only resolve refs whose string starts with `#` (JSON Pointer). @default true */
+	localOnly?: boolean;
+}
+
+function is_ref_object(node: any): node is { $ref: string } {
+	return (
+		node !== null &&
+		typeof node === 'object' &&
+		!is_array(node) &&
+		typeof node.$ref === 'string' &&
+		object_keys(node).length === 1
+	);
+}
+
+/**
+ * Resolve local JSON Pointer `$ref` objects (`"#/…"`) on a cloned tree.
+ * External / URL refs are left unchanged.
+ */
+export function dereference(obj: any, options?: DereferenceOptions): any {
+	const localOnly = options?.localOnly !== false;
+	const root = clone(obj, options);
+	const cache = new Map<string, any>();
+
+	const resolveRef = (ref: string): any => {
+		if (localOnly && !ref.startsWith('#')) return undefined;
+		const pointer = ref.startsWith('#') ? ref.slice(1) : ref;
+		if (!pointer.startsWith('/')) return undefined;
+		let hit = cache.get(pointer);
+		if (hit === undefined) {
+			hit = get(root, parseJsonPointer(pointer), options);
+			cache.set(pointer, hit);
+		}
+		return hit === undefined ? undefined : clone(hit, options);
+	};
+
+	return map(
+		root,
+		(ctx) => {
+			if (is_ref_object(ctx.node)) {
+				const resolved = resolveRef(ctx.node.$ref);
+				if (resolved !== undefined) {
+					ctx.update(resolved);
+					ctx.block();
+				}
+			}
+		},
+		options,
+	);
 }
 
 // Tree-shakeable functional API. Terminal ops take options as the last argument.
@@ -781,11 +1244,7 @@ export function map(
 	cb: (ctx: TraverseContext, v: any) => void,
 	options?: TraverseOptions,
 ): any {
-	return walk(obj, cb, {
-		immutable: true,
-		includeSymbols: !!options?.includeSymbols,
-		maxDepth: options?.maxDepth,
-	});
+	return walk(obj, cb, { ...options, immutable: true });
 }
 
 export function forEach(
@@ -926,12 +1385,7 @@ export async function mapAsync(
 	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
 	options?: TraverseOptions,
 ): Promise<any> {
-	return walk_async(obj, cb, {
-		immutable: true,
-		includeSymbols: !!options?.includeSymbols,
-		maxDepth: options?.maxDepth,
-		signal: options?.signal,
-	});
+	return walk_async(obj, cb, { ...options, immutable: true });
 }
 
 /** Locked union — do not rename tags after release. */
@@ -1464,217 +1918,4 @@ export function select(obj: any, glob: string, options?: TraverseOptions): PathN
 	return acc;
 }
 
-/**
- * @deprecated The `Traverse` class is deprecated and will be removed in a future release.
- * Import standalone functions from `neotraverse/modern` instead. See the migration guide.
- */
-export class Traverse {
-	/** @deprecated Use `getType(value)` instead. */
-	static getType = getType;
-
-	#value: any;
-	#options: TraverseOptions;
-
-	/** @deprecated Use standalone functions from `neotraverse/modern` instead. */
-	constructor(obj: any, options: TraverseOptions = empty_null) {
-		this.#value = obj;
-		this.#options = options;
-	}
-
-	/** @deprecated Use `get(obj, path, options)` instead. */
-	get(paths: PropertyKey[]): any {
-		let node = this.#value;
-		const symbols = this.#options.includeSymbols;
-
-		for (let i = 0; node && i < paths.length; i++) {
-			const key = paths[i];
-
-			if (!has_own_property.call(node, key) || (!symbols && typeof key === 'symbol')) {
-				return void undefined;
-			}
-
-			node = node[key];
-		}
-
-		return node;
-	}
-
-	/** @deprecated Use `has(obj, path, options)` instead. */
-	has(paths: PropertyKey[]): boolean {
-		let node = this.#value;
-		const symbols = this.#options.includeSymbols;
-
-		for (let i = 0; node && i < paths.length; i++) {
-			const key = paths[i];
-
-			if (!has_own_property.call(node, key) || (!symbols && typeof key === 'symbol')) {
-				return false;
-			}
-
-			node = node[key];
-		}
-
-		return true;
-	}
-
-	/** @deprecated Use `set(obj, path, value, options)` instead. */
-	set(path: PropertyKey[], value: any): any {
-		let node = this.#value;
-
-		let i = 0;
-		for (i = 0; i < path.length - 1; i++) {
-			const key = path[i];
-
-			// Prevent prototype pollution: never navigate through these keys.
-			if (is_unsafe_key(key)) return value;
-
-			if (!has_own_property.call(node, key)) {
-				node[key] = {};
-			}
-
-			node = node[key];
-		}
-
-		// …and never write to them either.
-		if (is_unsafe_key(path[i])) return value;
-
-		node[path[i]] = value;
-
-		return value;
-	}
-
-	/** @deprecated Use `map(obj, cb, options)` instead. */
-	map(cb: (ctx: TraverseContext, v: any) => void): any {
-		return walk(this.#value, cb, {
-			immutable: true,
-			includeSymbols: !!this.#options.includeSymbols,
-			maxDepth: this.#options.maxDepth,
-		});
-	}
-
-	/** @deprecated Use `forEach(obj, cb, options)` instead. */
-	forEach(cb: (ctx: TraverseContext, v: any) => void): any {
-		this.#value = walk(this.#value, cb, this.#options);
-		return this.#value;
-	}
-
-	/** @deprecated Use `reduce(obj, cb, init?, options?)` instead. */
-	reduce(cb: (ctx: TraverseContext, acc: any, v: any) => void, init?: any): any {
-		const skip = arguments.length === 1;
-		let acc = skip ? this.#value : init;
-
-		this.forEach((ctx, x) => {
-			if (!ctx.isRoot || !skip) {
-				acc = cb(ctx, acc, x);
-			}
-		});
-
-		return acc;
-	}
-
-	/** @deprecated Use `find(obj, fn, options)` instead. */
-	find(fn: (ctx: TraverseContext, v: any) => unknown): any {
-		let result: any;
-		this.forEach((ctx, x) => {
-			if (fn(ctx, x)) {
-				result = x;
-				ctx.stop();
-			}
-		});
-		return result;
-	}
-
-	/** @deprecated Use `filter(obj, fn, options)` instead. */
-	filter(fn: (ctx: TraverseContext, v: any) => unknown): any[] {
-		const acc: any[] = [];
-		this.forEach((ctx, x) => {
-			if (fn(ctx, x)) acc.push(x);
-		});
-		return acc;
-	}
-
-	/** @deprecated Use `some(obj, fn, options)` instead. */
-	some(fn: (ctx: TraverseContext, v: any) => unknown): boolean {
-		let result = false;
-		this.forEach((ctx, x) => {
-			if (fn(ctx, x)) {
-				result = true;
-				ctx.stop();
-			}
-		});
-		return result;
-	}
-
-	/** @deprecated Use `every(obj, fn, options)` instead. */
-	every(fn: (ctx: TraverseContext, v: any) => unknown): boolean {
-		let result = true;
-		this.forEach((ctx, x) => {
-			if (!fn(ctx, x)) {
-				result = false;
-				ctx.stop();
-			}
-		});
-		return result;
-	}
-
-	/** @deprecated Use `paths(obj, options)` instead. */
-	paths(): PropertyKey[][] {
-		const acc: PropertyKey[][] = [];
-
-		this.forEach((ctx) => {
-			acc.push(ctx.path);
-		});
-
-		return acc;
-	}
-
-	/** @deprecated Use `nodes(obj, options)` instead. */
-	nodes(): any[] {
-		const acc: any[] = [];
-
-		this.forEach((ctx) => {
-			acc.push(ctx.node);
-		});
-
-		return acc;
-	}
-
-	/** @deprecated Use `clone(obj, options)` instead. */
-	clone(): any {
-		return clone_node(this.#value, new Map(), this.#options, 0);
-	}
-
-	/** @deprecated Use `entries(obj, options)` instead. */
-	*entries(): Generator<[PropertyKey[], any]> {
-		const o = this.#options;
-		yield* iterate(
-			this.#value,
-			[],
-			o.includeSymbols ? own_enumerable_keys : object_keys,
-			new Set(),
-			o.maxDepth,
-			0,
-		);
-	}
-
-	/** @deprecated Use `values(obj, options)` or `entries(obj, options)` instead. */
-	*[Symbol.iterator](): Generator<any> {
-		for (const [, node] of this.entries()) yield node;
-	}
-
-	/** @deprecated Use `forEachAsync(obj, cb, options)` instead. */
-	async forEachAsync(cb: (ctx: TraverseContext, v: any) => void | Promise<void>): Promise<any> {
-		this.#value = await walk_async(this.#value, cb, this.#options);
-		return this.#value;
-	}
-
-	/** @deprecated Use `mapAsync(obj, cb, options)` instead. */
-	async mapAsync(cb: (ctx: TraverseContext, v: any) => void | Promise<void>): Promise<any> {
-		return walk_async(this.#value, cb, {
-			immutable: true,
-			includeSymbols: !!this.#options.includeSymbols,
-			maxDepth: this.#options.maxDepth,
-			signal: this.#options.signal,
-		});
-	}
-}
+export { Traverse } from './deprecated.js';

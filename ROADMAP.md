@@ -10,6 +10,8 @@ Last updated: 2026-06-05.
 
 **Backlog (same entry):** `findPaths`, `filterPaths`, `getPath`, `setPath`, `hasPath`, `parsePath`, `count`, `size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`, `parseGlob`.
 
+**0.7 polish:** `walk`, `breadthFirst`, `mapBfs`, `skipWhere`, `groupBy`, `merge`, `dereference`, `descendIntoMapSet`, `forEachAsync`/`mapAsync` `{ concurrency }`, `ctx.nextSibling` / `ctx.prevSibling`, `Traverse` in `deprecated.ts`.
+
 **Infra:** `sideEffects: false`, tree-shakeable functions, deprecated `Traverse` class (removed in **0.8**).
 
 ## Rules for new work
@@ -28,12 +30,12 @@ Last updated: 2026-06-05.
 
 ## Maybe later
 
-- `mapAsync({ concurrency })` — needs isolated path state per branch.
-- `groupBy`, sibling navigation helpers — userland `reduce` / `parent.node` first.
+- Full OpenAPI / URL `$ref` bundling beyond local `#/…` pointers.
+- `pipe()` — FP composition sugar over multiple walks (not planned).
 
 ## Out of scope
 
-`pipe()`, `merge()`, public `walk()`, BFS mode, descending into Map/Set during walk, `$ref` packages.
+`pipe()` — use one callback or nested `t.map` / `t.clone`.
 
 ## Releases
 
