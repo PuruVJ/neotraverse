@@ -23,6 +23,13 @@ export interface TraverseOptions {
 	 * @default false
 	 */
 	includeSymbols?: boolean;
+
+	/**
+	 * Maximum traversal/clone depth. When set, traversing or cloning an object
+	 * nested deeper than this throws a `RangeError` instead of overflowing the
+	 * call stack — useful for bounding untrusted input. Unlimited when omitted.
+	 */
+	maxDepth?: number;
 }
 
 export interface TraverseContext {
@@ -149,18 +156,44 @@ const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
 
 const is_typed_array = (value: unknown): value is TypedArray =>
 	ArrayBuffer.isView(value) && !(value instanceof DataView);
-const is_date = (obj: unknown): obj is Date => to_string(obj) === '[object Date]';
-const is_regexp = (obj: unknown): obj is RegExp => to_string(obj) === '[object RegExp]';
-const is_error = (obj: unknown): obj is Error => to_string(obj) === '[object Error]';
-const is_boolean = (obj: unknown): obj is boolean => to_string(obj) === '[object Boolean]';
-const is_number = (obj: unknown): obj is number => to_string(obj) === '[object Number]';
-const is_string = (obj: unknown): obj is string => to_string(obj) === '[object String]';
 const is_array = Array.isArray;
+
+// Boxed primitives (`new String()` / `new Number()` / `new Boolean()`), detected
+// by tag so they're still recognized when they originate from another realm.
+const is_boxed_primitive = (obj: unknown): boolean => {
+	const tag = to_string(obj);
+	return tag === '[object Boolean]' || tag === '[object Number]' || tag === '[object String]';
+};
 
 const gopd = Object.getOwnPropertyDescriptor;
 const is_property_enumerable = Object.prototype.propertyIsEnumerable;
 const get_own_property_symbols = Object.getOwnPropertySymbols;
 const has_own_property = Object.prototype.hasOwnProperty;
+
+// Keys that can mutate an object's prototype chain. They must never be used as
+// navigation/write targets when handling untrusted input (prototype pollution).
+const is_unsafe_key = (key: PropertyKey): boolean =>
+	key === '__proto__' || key === 'constructor' || key === 'prototype';
+
+// Assign `value` onto `dst` without ever triggering the `__proto__` setter or
+// otherwise mutating `dst`'s [[Prototype]]. The value is preserved as an
+// ordinary own enumerable data property, so injected data is neutralized — not
+// silently dropped — and the clone keeps its real prototype.
+function safe_set(dst: any, key: PropertyKey, value: any): void {
+	if (key === '__proto__') {
+		Object.defineProperty(dst, key, { value, writable: true, enumerable: true, configurable: true });
+	} else {
+		dst[key] = value;
+	}
+}
+
+// Bound recursion when a `maxDepth` is configured, throwing a catchable error
+// before the native stack overflow. No-op when `max_depth` is undefined.
+function assert_within_depth(depth: number, max_depth: number | undefined): void {
+	if (max_depth !== undefined && depth > max_depth) {
+		throw new RangeError(`neotraverse: maximum traversal depth (${max_depth}) exceeded`);
+	}
+}
 
 function own_enumerable_keys(obj: object): PropertyKey[] {
 	const res: PropertyKey[] = Object.keys(obj);
@@ -175,7 +208,7 @@ function own_enumerable_keys(obj: object): PropertyKey[] {
 	return res;
 }
 
-function is_writable(object: any, key: PropertyKey) {
+function is_non_writable(object: any, key: PropertyKey) {
 	return !gopd(object, key)?.writable;
 }
 
@@ -185,23 +218,31 @@ function copy(src: any, options: TraverseOptions) {
 
 		if (is_array(src)) {
 			dst = [];
-		} else if (is_date(src)) {
-			dst = new Date(src.getTime ? src.getTime() : src);
-		} else if (is_regexp(src)) {
-			dst = new RegExp(src);
-		} else if (is_error(src)) {
-			dst = { message: src.message };
-		} else if (is_boolean(src) || is_number(src) || is_string(src)) {
-			dst = Object(src);
 		} else if (is_typed_array(src)) {
 			return src.slice();
+		} else if (is_boxed_primitive(src)) {
+			// Boxed primitives have read-only index slots; copying onto them throws
+			// in strict mode. The wrapper already carries the primitive value.
+			return Object(src);
 		} else {
-			dst = Object.create(Object.getPrototypeOf(src));
+			// One `toString` tag instead of a separate call per predicate.
+			const tag = to_string(src);
+			if (tag === '[object Date]' && typeof src.getTime === 'function') {
+				// Guard on `getTime` so a `Symbol.toStringTag`-spoofed object falls
+				// through to the generic copy instead of becoming `Invalid Date`.
+				dst = new Date(src.getTime());
+			} else if (tag === '[object RegExp]' && typeof src.source === 'string') {
+				dst = new RegExp(src);
+			} else if (tag === '[object Error]') {
+				dst = { message: src.message };
+			} else {
+				dst = Object.create(Object.getPrototypeOf(src));
+			}
 		}
 
 		const iterator_function = options.includeSymbols ? own_enumerable_keys : Object.keys;
 		for (const key of iterator_function(src)) {
-			dst[key] = src[key];
+			safe_set(dst, key, src[key]);
 		}
 
 		return dst;
@@ -226,8 +267,11 @@ function walk(
 
 	const iterator_function = options.includeSymbols ? own_enumerable_keys : Object.keys;
 	const immutable = !!options.immutable;
+	const max_depth = options.maxDepth;
 
 	return (function walker(node_) {
+		assert_within_depth(path.length, max_depth);
+
 		const node = immutable ? copy(node_, options) : node_;
 		const modifiers = {} as {
 			before?: (this: TraverseContext, value: any) => void;
@@ -242,7 +286,7 @@ function walk(
 		const state = {
 			node,
 			node_,
-			path: ([] as any[]).concat(path) as PropertyKey[],
+			path: path.slice(),
 			parent: parents[parents.length - 1],
 			parents,
 			key: path[path.length - 1],
@@ -256,7 +300,7 @@ function walk(
 			isLast: false as boolean,
 			update: function (x: any, stopHere: boolean = false) {
 				if (!state.isRoot) {
-					state.parent.node[state.key] = x;
+					safe_set(state.parent.node, state.key, x);
 				}
 				state.node = x;
 				if (stopHere) {
@@ -348,7 +392,9 @@ function walk(
 
 			update_state();
 
-			for (const [index, key] of Object.entries(state.keys ?? [])) {
+			const keys = state.keys ?? [];
+			for (let index = 0; index < keys.length; index++) {
+				const key = keys[index];
 				path.push(key);
 
 				if (modifiers.pre) {
@@ -356,12 +402,12 @@ function walk(
 				}
 
 				const child = walker(state.node[key]);
-				if (immutable && has_own_property.call(state.node, key) && !is_writable(state.node, key)) {
-					state.node[key] = child.node;
+				if (immutable && has_own_property.call(state.node, key) && !is_non_writable(state.node, key)) {
+					safe_set(state.node, key, child.node);
 				}
 
-				child.isLast = state.keys?.length ? +index === state.keys.length - 1 : false;
-				child.isFirst = +index === 0;
+				child.isLast = index === keys.length - 1;
+				child.isFirst = index === 0;
 
 				if (modifiers.post) {
 					modifiers.post.call(state, child);
@@ -439,6 +485,12 @@ export class Traverse {
 	 * Set the element at the array `path` to `value`.
 	 */
 	set(path: PropertyKey[], value: any): any {
+		// Prevent prototype pollution: never navigate or write through
+		// __proto__/constructor/prototype. Neutralize silently (no mutation).
+		for (let j = 0; j < path.length; j++) {
+			if (is_unsafe_key(path[j])) return value;
+		}
+
 		let node = this.#value;
 
 		let i = 0;
@@ -464,6 +516,7 @@ export class Traverse {
 		return walk(this.#value, cb, {
 			immutable: true,
 			includeSymbols: !!this.#options.includeSymbols,
+			maxDepth: this.#options.maxDepth,
 		});
 	}
 
@@ -527,12 +580,15 @@ export class Traverse {
 		const parents: any[] = [];
 		const nodes: any[] = [];
 		const options = this.#options;
+		const max_depth = options.maxDepth;
 
 		if (is_typed_array(this.#value)) {
 			return this.#value.slice();
 		}
 
 		return (function clone(src) {
+			assert_within_depth(parents.length, max_depth);
+
 			for (let i = 0; i < parents.length; i++) {
 				if (parents[i] === src) {
 					return nodes[i];
@@ -542,12 +598,19 @@ export class Traverse {
 			if (typeof src === 'object' && src !== null) {
 				const dst = copy(src, options);
 
+				// Typed arrays and boxed primitives are fully materialized by copy()
+				// and have no child references to recurse into (boxed-primitive index
+				// slots are read-only — re-writing onto them would throw).
+				if (is_typed_array(src) || is_boxed_primitive(src)) {
+					return dst;
+				}
+
 				parents.push(src);
 				nodes.push(dst);
 
 				const iteratorFunction = options.includeSymbols ? own_enumerable_keys : Object.keys;
 				for (const key of iteratorFunction(src)) {
-					dst[key] = clone(src[key]);
+					safe_set(dst, key, clone(src[key]));
 				}
 
 				parents.pop();

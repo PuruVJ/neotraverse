@@ -42,9 +42,10 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"compile": "tsup && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
+		"compile": "tsdown && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
 		"test": "vitest run",
 		"test:cov": "vitest run --coverage",
+		"bench": "pnpm compile && tsx bench/run.ts",
 		"pub": "pnpm run compile && npm publish --access public --no-git-checks",
 		"changeset": "changeset",
 		"ci:version": "changeset version",
@@ -75,13 +76,15 @@
 		"node": ">= 10"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.27.7",
-		"@swc/core": "^1.6.13",
-		"@types/node": "^20.14.10",
-		"@vitest/coverage-v8": "^2.0.5",
-		"terser": "^5.31.2",
-		"tsup": "^8.1.0",
-		"typescript": "^5.5.3",
-		"vitest": "^2.0.5"
+		"@changesets/cli": "^2.31.0",
+		"@types/node": "^25.9.1",
+		"@vitest/coverage-v8": "^4.1.8",
+		"tinybench": "^6.0.2",
+		"traverse": "^0.6.11",
+		"tsdown": "^0.22.2",
+		"tsx": "^4.22.4",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.16",
+		"vitest": "^4.1.8"
 	}
 }
