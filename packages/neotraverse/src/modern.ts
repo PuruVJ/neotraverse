@@ -1480,6 +1480,9 @@ export function select(obj: any, glob: string, options?: TraverseOptions): PathN
  * Import standalone functions from `neotraverse/modern` instead. See the migration guide.
  */
 export class Traverse {
+	/** @deprecated Use `getType(value)` instead. */
+	static getType = getType;
+
 	#value: any;
 	#options: TraverseOptions;
 

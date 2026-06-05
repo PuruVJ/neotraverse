@@ -25,7 +25,7 @@ features:
     details: Prototype-pollution & injection safe on untrusted input, with an opt-in maxDepth DoS guard.
   - icon: ⚡
     title: Fast
-    details: ~4.5× faster than traverse on average — up to ~7×. Tree-shakeable `import * as t` on the modern build.
+    details: ~4.5× faster than traverse on average — up to ~7×. Tree-shakeable `import * as t` with paths, diff/patch, and more.
   - icon: 🎹
     title: TypeScript
     details: Types included by default. Throw away the @types/traverse package.
@@ -34,5 +34,5 @@ features:
     details: Modern ESM + a legacy ES2015 CJS/ESM drop-in. Works in browsers, Node and Deno.
   - icon: 🔁
     title: Drop-in
-    details: Same API as traverse. Change the import and you're done.
+    details: Same API as traverse on the default build — or adopt `neotraverse/modern` for `t.*` functions.
 ---

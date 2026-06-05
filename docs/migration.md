@@ -91,6 +91,9 @@ new Traverse(obj).forEach((ctx, x) => {
 | `.entries()` / `for…of` | `entries(obj, opts?)` / `values(obj, opts?)` |
 | `.forEachAsync(cb)` / `.mapAsync(cb)` | `forEachAsync(obj, cb, opts?)` / `mapAsync` |
 
+**No class equivalent** (functions only): `findPaths`, `filterPaths`, `getPath`, `setPath`, `hasPath`, `count`,
+`size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`.
+
 Options move to the **last** argument. There is no `pipe()` helper.
 
 ### `Traverse` removal timeline
@@ -134,11 +137,8 @@ export default {
 
 ## New helpers (modern only)
 
-These ship as `import * as t from 'neotraverse/modern'` — no `traverse` equivalent:
-
-`t.findPaths` / `t.filterPaths`, `t.getPath` / `t.setPath` / `t.hasPath`, `t.count` / `t.size`, `t.getType`,
-`t.deleteWhere` / `t.prune`, `t.pruneDeep`, `t.deepEqual`, `t.toJSON`, `t.freeze`, `t.diff` / `t.patch`,
-`t.select`. See the [guide examples](/guide#examples).
+These ship as `import * as t from 'neotraverse/modern'` — no `traverse` equivalent. See
+[guide examples](/guide#examples) and [types & traversal](/guide#types-and-traversal).
 
 ## What you gain
 

@@ -56,16 +56,41 @@
 
   > For the `get` / `has` / `set` path helpers, prefer the **modern** build — the **legacy** (ES2015) build is slower there because private `#fields` are downleveled to WeakMaps.
 
-  ## ✨ New APIs (modern build only)
+  ## ✨ Modern build (`neotraverse/modern`)
 
-  The `Traverse` class in `neotraverse/modern` gains four sets of additions. They live only on the modern build, so the default/legacy `traverse` surface is unchanged:
+  ### Tree-shakeable functions (recommended)
 
-  - **Query helpers** — `.find(fn)`, `.filter(fn)`, `.some(fn)`, `.every(fn)`: array-style queries over every node (root included), with `find`/`some`/`every` short-circuiting.
-  - **Lazy iteration** — `Traverse` is now iterable (`for (const node of t)`, `[...t]`) and exposes `.entries()` yielding `[path, node]` pairs. Pull-based, so it never materializes the full `nodes()` / `paths()` arrays; circular-safe.
-  - **Async traversal** — `.forEachAsync(fn)` / `.mapAsync(fn)` await an `async` callback at each node, and a new `signal?: AbortSignal` option cancels a walk in flight.
-  - **`Map` / `Set` support** — `clone()` now deep-clones `Map`/`Set` (keys and values) and `map()` shallow-copies them, instead of silently dropping every entry. (They remain leaf nodes during traversal.)
+  Import standalone functions instead of `new Traverse(obj)`:
 
-  These are purely additive (no change to existing methods); the only hot-path touch is two cheap `instanceof` checks in `copy()` / `clone_node()`, so the benchmark numbers above are unaffected.
+  ```ts
+  import * as t from 'neotraverse/modern';
+
+  t.forEach(obj, (ctx, x) => { /* … */ });
+  t.map(obj, (ctx, x) => { /* … */ }, { maxDepth: 100 });
+  ```
+
+  - **`sideEffects: false`** — unused exports drop from bundles.
+  - **`Traverse` class deprecated** (JSDoc only); **removed in 0.8**. Options move to the last argument.
+
+  ### Query, iteration, async, Map/Set
+
+  - **Query** — `find`, `filter`, `some`, `every` (class or `t.find(obj, fn)`).
+  - **Paths** — `findPaths`, `filterPaths`; string paths via `getPath` / `setPath` / `hasPath` (dot or JSON Pointer).
+  - **Lazy iteration** — `entries`, `values` (and deprecated `for…of` on `Traverse`).
+  - **Async** — `forEachAsync`, `mapAsync` + `signal` option.
+  - **`Map` / `Set`** — `clone()` deep-clones entries; walk treats them as **leaves** (see types guide below).
+
+  ### Structural helpers
+
+  `count`, `size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`.
+
+  `getType()` reports `function`, `arraybuffer`, `dataview`, `weakmap`, `weakset`, and the usual built-ins. See the docs **Types and traversal** section for JSON-like trees vs binary data vs Map walk/clone behaviour.
+
+  ### CI
+
+  - npm publish uses **trusted publishing** (OIDC); see `.github/PUBLISHING.md`.
+
+  Additive for default/legacy `traverse` importers — only `neotraverse/modern` gains the new surface.
 
   ## 🔧 Tooling / build
 
