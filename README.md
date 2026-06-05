@@ -26,6 +26,10 @@ pnpm docs:dev       # run the docs site locally
 pnpm docs:build     # build the docs site
 ```
 
+## Release
+
+Versioning and npm publish are handled by Changesets on `main` via [`.github/workflows/release.yml`](./.github/workflows/release.yml), using [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC). One-time registry setup: [`.github/PUBLISHING.md`](./.github/PUBLISHING.md).
+
 ## License
 
 [MIT](./packages/neotraverse/LICENSE)
