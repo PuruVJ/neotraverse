@@ -32,8 +32,8 @@ export interface TraverseOptions {
 	maxDepth?: number;
 
 	/**
-	 * Cancel an in-flight async walk ({@link Traverse.forEachAsync} /
-	 * {@link Traverse.mapAsync}). When the signal aborts, the walk rejects with
+	 * Cancel an in-flight async walk ({@link forEachAsync} /
+	 * {@link mapAsync}). When the signal aborts, the walk rejects with
 	 * the signal's reason on the next visited node. Ignored by the synchronous
 	 * methods.
 	 */
@@ -687,18 +687,239 @@ async function walk_async(
 	return (await walker(root)).node;
 }
 
+// Tree-shakeable functional API. Terminal ops take options as the last argument.
+// No pipe() helper: ops are heterogeneous; map/clone nest as plain calls.
+
+export function get(obj: any, paths: PropertyKey[], options?: TraverseOptions): any {
+	let node = obj;
+	const symbols = options?.includeSymbols;
+
+	for (let i = 0; node && i < paths.length; i++) {
+		const key = paths[i];
+
+		if (!has_own_property.call(node, key) || (!symbols && typeof key === 'symbol')) {
+			return void undefined;
+		}
+
+		node = node[key];
+	}
+
+	return node;
+}
+
+export function has(obj: any, paths: PropertyKey[], options?: TraverseOptions): boolean {
+	let node = obj;
+	const symbols = options?.includeSymbols;
+
+	for (let i = 0; node && i < paths.length; i++) {
+		const key = paths[i];
+
+		if (!has_own_property.call(node, key) || (!symbols && typeof key === 'symbol')) {
+			return false;
+		}
+
+		node = node[key];
+	}
+
+	return true;
+}
+
+export function set(obj: any, path: PropertyKey[], value: any, _options?: TraverseOptions): any {
+	let node = obj;
+
+	let i = 0;
+	for (i = 0; i < path.length - 1; i++) {
+		const key = path[i];
+
+		if (is_unsafe_key(key)) return value;
+
+		if (!has_own_property.call(node, key)) {
+			node[key] = {};
+		}
+
+		node = node[key];
+	}
+
+	if (is_unsafe_key(path[i])) return value;
+
+	node[path[i]] = value;
+
+	return value;
+}
+
+export function map(
+	obj: any,
+	cb: (ctx: TraverseContext, v: any) => void,
+	options?: TraverseOptions,
+): any {
+	return walk(obj, cb, {
+		immutable: true,
+		includeSymbols: !!options?.includeSymbols,
+		maxDepth: options?.maxDepth,
+	});
+}
+
+export function forEach(
+	obj: any,
+	cb: (ctx: TraverseContext, v: any) => void,
+	options?: TraverseOptions,
+): any {
+	return walk(obj, cb, options);
+}
+
+export function reduce(
+	obj: any,
+	cb: (ctx: TraverseContext, acc: any, v: any) => any,
+	init?: any,
+	options?: TraverseOptions,
+): any {
+	const skip = arguments.length === 2;
+	let acc = skip ? obj : init;
+
+	forEach(obj, (ctx, x) => {
+		if (!ctx.isRoot || !skip) {
+			acc = cb(ctx, acc, x);
+		}
+	}, options);
+
+	return acc;
+}
+
+export function find(
+	obj: any,
+	fn: (ctx: TraverseContext, v: any) => unknown,
+	options?: TraverseOptions,
+): any {
+	let result: any;
+	forEach(obj, (ctx, x) => {
+		if (fn(ctx, x)) {
+			result = x;
+			ctx.stop();
+		}
+	}, options);
+	return result;
+}
+
+export function filter(
+	obj: any,
+	fn: (ctx: TraverseContext, v: any) => unknown,
+	options?: TraverseOptions,
+): any[] {
+	const acc: any[] = [];
+	forEach(obj, (ctx, x) => {
+		if (fn(ctx, x)) acc.push(x);
+	}, options);
+	return acc;
+}
+
+export function some(
+	obj: any,
+	fn: (ctx: TraverseContext, v: any) => unknown,
+	options?: TraverseOptions,
+): boolean {
+	let result = false;
+	forEach(obj, (ctx, x) => {
+		if (fn(ctx, x)) {
+			result = true;
+			ctx.stop();
+		}
+	}, options);
+	return result;
+}
+
+export function every(
+	obj: any,
+	fn: (ctx: TraverseContext, v: any) => unknown,
+	options?: TraverseOptions,
+): boolean {
+	let result = true;
+	forEach(obj, (ctx, x) => {
+		if (!fn(ctx, x)) {
+			result = false;
+			ctx.stop();
+		}
+	}, options);
+	return result;
+}
+
+export function paths(obj: any, options?: TraverseOptions): PropertyKey[][] {
+	const acc: PropertyKey[][] = [];
+
+	forEach(obj, (ctx) => {
+		acc.push(ctx.path);
+	}, options);
+
+	return acc;
+}
+
+export function nodes(obj: any, options?: TraverseOptions): any[] {
+	const acc: any[] = [];
+
+	forEach(obj, (ctx) => {
+		acc.push(ctx.node);
+	}, options);
+
+	return acc;
+}
+
+export function clone(obj: any, options?: TraverseOptions): any {
+	return clone_node(obj, new Map(), options ?? empty_null, 0);
+}
+
+export function* entries(
+	obj: any,
+	options?: TraverseOptions,
+): Generator<[PropertyKey[], any]> {
+	yield* iterate(
+		obj,
+		[],
+		options?.includeSymbols ? own_enumerable_keys : object_keys,
+		new Set(),
+		options?.maxDepth,
+		0,
+	);
+}
+
+export function* values(obj: any, options?: TraverseOptions): Generator<any> {
+	for (const [, node] of entries(obj, options)) yield node;
+}
+
+export async function forEachAsync(
+	obj: any,
+	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
+	options?: TraverseOptions,
+): Promise<any> {
+	return walk_async(obj, cb, options);
+}
+
+export async function mapAsync(
+	obj: any,
+	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
+	options?: TraverseOptions,
+): Promise<any> {
+	return walk_async(obj, cb, {
+		immutable: true,
+		includeSymbols: !!options?.includeSymbols,
+		maxDepth: options?.maxDepth,
+		signal: options?.signal,
+	});
+}
+
+/**
+ * @deprecated The `Traverse` class is deprecated and will be removed in a future release.
+ * Import standalone functions from `neotraverse/modern` instead. See the migration guide.
+ */
 export class Traverse {
 	#value: any;
 	#options: TraverseOptions;
 
+	/** @deprecated Use standalone functions from `neotraverse/modern` instead. */
 	constructor(obj: any, options: TraverseOptions = empty_null) {
 		this.#value = obj;
 		this.#options = options;
 	}
 
-	/**
-	 * Get the element at the array `path`.
-	 */
+	/** @deprecated Use `get(obj, path, options)` instead. */
 	get(paths: PropertyKey[]): any {
 		let node = this.#value;
 		const symbols = this.#options.includeSymbols;
@@ -716,9 +937,7 @@ export class Traverse {
 		return node;
 	}
 
-	/**
-	 * Return whether the element at the array `path` exists.
-	 */
+	/** @deprecated Use `has(obj, path, options)` instead. */
 	has(paths: PropertyKey[]): boolean {
 		let node = this.#value;
 		const symbols = this.#options.includeSymbols;
@@ -736,9 +955,7 @@ export class Traverse {
 		return true;
 	}
 
-	/**
-	 * Set the element at the array `path` to `value`.
-	 */
+	/** @deprecated Use `set(obj, path, value, options)` instead. */
 	set(path: PropertyKey[], value: any): any {
 		let node = this.#value;
 
@@ -764,9 +981,7 @@ export class Traverse {
 		return value;
 	}
 
-	/**
-	 * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
-	 */
+	/** @deprecated Use `map(obj, cb, options)` instead. */
 	map(cb: (ctx: TraverseContext, v: any) => void): any {
 		return walk(this.#value, cb, {
 			immutable: true,
@@ -775,19 +990,13 @@ export class Traverse {
 		});
 	}
 
-	/**
-	 * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
-	 */
+	/** @deprecated Use `forEach(obj, cb, options)` instead. */
 	forEach(cb: (ctx: TraverseContext, v: any) => void): any {
 		this.#value = walk(this.#value, cb, this.#options);
 		return this.#value;
 	}
 
-	/**
-	 * For each node in the object, perform a [left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function)) with the return value of `fn(acc, node)`.
-	 *
-	 * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
-	 */
+	/** @deprecated Use `reduce(obj, cb, init?, options?)` instead. */
 	reduce(cb: (ctx: TraverseContext, acc: any, v: any) => void, init?: any): any {
 		const skip = arguments.length === 1;
 		let acc = skip ? this.#value : init;
@@ -801,10 +1010,7 @@ export class Traverse {
 		return acc;
 	}
 
-	/**
-	 * Return the first node (including the root) for which `fn` is truthy, or
-	 * `undefined` if none match. Stops walking as soon as a match is found.
-	 */
+	/** @deprecated Use `find(obj, fn, options)` instead. */
 	find(fn: (ctx: TraverseContext, v: any) => unknown): any {
 		let result: any;
 		this.forEach((ctx, x) => {
@@ -816,9 +1022,7 @@ export class Traverse {
 		return result;
 	}
 
-	/**
-	 * Return an `Array` of every node (including the root) for which `fn` is truthy.
-	 */
+	/** @deprecated Use `filter(obj, fn, options)` instead. */
 	filter(fn: (ctx: TraverseContext, v: any) => unknown): any[] {
 		const acc: any[] = [];
 		this.forEach((ctx, x) => {
@@ -827,10 +1031,7 @@ export class Traverse {
 		return acc;
 	}
 
-	/**
-	 * Return `true` if `fn` is truthy for any node (including the root). Stops at
-	 * the first match.
-	 */
+	/** @deprecated Use `some(obj, fn, options)` instead. */
 	some(fn: (ctx: TraverseContext, v: any) => unknown): boolean {
 		let result = false;
 		this.forEach((ctx, x) => {
@@ -842,10 +1043,7 @@ export class Traverse {
 		return result;
 	}
 
-	/**
-	 * Return `true` if `fn` is truthy for every node (including the root). Stops at
-	 * the first node that fails.
-	 */
+	/** @deprecated Use `every(obj, fn, options)` instead. */
 	every(fn: (ctx: TraverseContext, v: any) => unknown): boolean {
 		let result = true;
 		this.forEach((ctx, x) => {
@@ -857,10 +1055,7 @@ export class Traverse {
 		return result;
 	}
 
-	/**
-	 * Return an `Array` of every possible non-cyclic path in the object.
-	 * Paths are `Array`s of string keys.
-	 */
+	/** @deprecated Use `paths(obj, options)` instead. */
 	paths(): PropertyKey[][] {
 		const acc: PropertyKey[][] = [];
 
@@ -871,9 +1066,7 @@ export class Traverse {
 		return acc;
 	}
 
-	/**
-	 * Return an `Array` of every node in the object.
-	 */
+	/** @deprecated Use `nodes(obj, options)` instead. */
 	nodes(): any[] {
 		const acc: any[] = [];
 
@@ -884,20 +1077,12 @@ export class Traverse {
 		return acc;
 	}
 
-	/**
-	 * Create a deep clone of the object. Handles circular references,
-	 * `Date`/`RegExp`/`Error`/typed arrays and `Map`/`Set` (entries are deep-cloned),
-	 * and is prototype-pollution-safe.
-	 */
+	/** @deprecated Use `clone(obj, options)` instead. */
 	clone(): any {
 		return clone_node(this.#value, new Map(), this.#options, 0);
 	}
 
-	/**
-	 * Lazily yield `[path, node]` for every node (root first), depth-first. Unlike
-	 * `paths()`/`nodes()` this is pull-based — nothing is materialized until you
-	 * iterate. Circular references are visited once and not descended into.
-	 */
+	/** @deprecated Use `entries(obj, options)` instead. */
 	*entries(): Generator<[PropertyKey[], any]> {
 		const o = this.#options;
 		yield* iterate(
@@ -910,27 +1095,18 @@ export class Traverse {
 		);
 	}
 
-	/**
-	 * Make `Traverse` iterable: `for (const node of new Traverse(obj))` and
-	 * `[...new Traverse(obj)]` lazily yield every node (the values of `entries()`).
-	 */
+	/** @deprecated Use `values(obj, options)` or `entries(obj, options)` instead. */
 	*[Symbol.iterator](): Generator<any> {
 		for (const [, node] of this.entries()) yield node;
 	}
 
-	/**
-	 * Like `forEach`, but awaits an `async` callback at each node and mutates in
-	 * place. Pass `{ signal }` to cancel via an `AbortController`.
-	 */
+	/** @deprecated Use `forEachAsync(obj, cb, options)` instead. */
 	async forEachAsync(cb: (ctx: TraverseContext, v: any) => void | Promise<void>): Promise<any> {
 		this.#value = await walk_async(this.#value, cb, this.#options);
 		return this.#value;
 	}
 
-	/**
-	 * Like `map`, but awaits an `async` callback at each node and returns a new
-	 * object, leaving the original intact. Pass `{ signal }` to cancel.
-	 */
+	/** @deprecated Use `mapAsync(obj, cb, options)` instead. */
 	async mapAsync(cb: (ctx: TraverseContext, v: any) => void | Promise<void>): Promise<any> {
 		return walk_async(this.#value, cb, {
 			immutable: true,

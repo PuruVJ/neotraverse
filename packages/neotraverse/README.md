@@ -31,12 +31,17 @@ npm install neotraverse
 ## Quick start
 
 ```ts
-// modern build — state on a `ctx` argument (recommended for new code)
-import { Traverse } from 'neotraverse/modern';
+// modern build — tree-shakeable functions, `ctx` argument (recommended)
+import { forEach } from 'neotraverse/modern';
 
-new Traverse({ a: 1, b: 2, c: [3, 4] }).forEach((ctx, x) => {
+forEach({ a: 1, b: 2, c: [3, 4] }, (ctx, x) => {
   if (typeof x === 'number') ctx.update(x * 10);
 });
+```
+
+```ts
+// or: import * as t from 'neotraverse/modern'
+// `new Traverse(obj)` still works in 0.7 but is deprecated — see the migration guide
 ```
 
 ```ts
@@ -98,11 +103,11 @@ The API is identical. For old bundlers/runtimes use `neotraverse/legacy`.
 
 ## API
 
-Methods: `.map(fn)` · `.forEach(fn)` · `.reduce(fn, acc)` · `.paths()` · `.nodes()` · `.clone()` · `.get(path)` · `.set(path, value)` · `.has(path)`.
+**Modern (`neotraverse/modern`):** import functions such as `forEach`, `map`, `clone`, `reduce`, `find`, `filter`, `paths`, `nodes`, `get`, `set`, `has`, `entries`, `values`, `forEachAsync`, `mapAsync`. Pass options as the last argument. The `Traverse` class is deprecated in 0.7 and will be removed later.
 
-**Modern build also adds:** `.find(fn)` · `.filter(fn)` · `.some(fn)` · `.every(fn)`, lazy iteration (`for…of` / `.entries()`), and async `.forEachAsync(fn)` / `.mapAsync(fn)` (cancelable via `AbortSignal`). Its `.clone()` deep-clones `Map`/`Set` too.
+**Classic (`neotraverse`):** `.map(fn)` · `.forEach(fn)` · `.reduce(fn, acc)` · `.paths()` · `.nodes()` · `.clone()` · `.get(path)` · `.set(path, value)` · `.has(path)` on a traversal instance (`this`-bound context).
 
-Options: `{ immutable?, includeSymbols?, maxDepth?, signal? }` (`signal` is modern-async only).
+Options: `{ immutable?, includeSymbols?, maxDepth?, signal? }` (`signal` is async-only on modern).
 
 Each callback gets a context (`ctx` in modern, `this` in classic) with `node`, `path`, `parent`, `key`, `isRoot`, `isLeaf`, `isFirst`, `isLast`, `level`, `circular`, and the mutators `update()`, `remove()`, `delete()`, `before()`, `after()`, `pre()`, `post()`, `stop()`, `block()`.
 

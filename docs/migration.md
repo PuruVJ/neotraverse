@@ -57,16 +57,47 @@ traverse(obj).forEach(function (x) {
 });
 ```
 
-```js [neotraverse/modern]
+```js [neotraverse/modern (recommended)]
+import { forEach } from 'neotraverse/modern';
+
+forEach(obj, (ctx, x) => {
+  if (typeof x === 'number') ctx.update(x * 10);
+});
+```
+
+```js [neotraverse/modern (class, deprecated)]
 import { Traverse } from 'neotraverse/modern';
 
-// `ctx` is the context — great with arrow functions
 new Traverse(obj).forEach((ctx, x) => {
   if (typeof x === 'number') ctx.update(x * 10);
 });
 ```
 
 :::
+
+### Class to function mapping
+
+| Class (`new Traverse(obj, opts)`) | Functional (`neotraverse/modern`) |
+| --------------------------------- | --------------------------------- |
+| `.forEach(cb)` | `forEach(obj, cb, opts?)` |
+| `.map(cb)` | `map(obj, cb, opts?)` |
+| `.reduce(cb, init?)` | `reduce(obj, cb, init?, opts?)` |
+| `.find(fn)` | `find(obj, fn, opts?)` |
+| `.filter(fn)` | `filter(obj, fn, opts?)` |
+| `.some(fn)` / `.every(fn)` | `some(obj, fn, opts?)` / `every(obj, fn, opts?)` |
+| `.paths()` / `.nodes()` | `paths(obj, opts?)` / `nodes(obj, opts?)` |
+| `.clone()` | `clone(obj, opts?)` |
+| `.get(path)` / `.has(path)` / `.set(path, val)` | `get(obj, path, opts?)` / `has` / `set` |
+| `.entries()` / `for…of` | `entries(obj, opts?)` / `values(obj, opts?)` |
+| `.forEachAsync(cb)` / `.mapAsync(cb)` | `forEachAsync(obj, cb, opts?)` / `mapAsync` |
+
+Options move to the **last** argument. There is no `pipe()` helper.
+
+### `Traverse` removal timeline
+
+- **0.7.0:** standalone functions ship; class is **deprecated** (JSDoc only).
+- **0.8.0 (planned):** class methods throw with a migration message.
+- **0.9.0 / 1.0 (planned):** class removed from `neotraverse/modern`.
 
 The only change between the drop-in and modern styles is **how you reach the context**:
 

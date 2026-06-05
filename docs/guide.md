@@ -33,18 +33,42 @@ npm install neotraverse
 
 ## Quick start
 
-The modern build exports a `Traverse` class; every callback receives a `ctx` argument:
+Import tree-shakeable functions from `neotraverse/modern`. Every callback receives a `ctx` argument; pass
+options as the **last** argument when you need them:
 
 ```ts
-import { Traverse } from 'neotraverse/modern';
+import { forEach } from 'neotraverse/modern';
 
 const obj = { a: 1, b: 2, c: [3, 4] };
 
-new Traverse(obj).forEach((ctx, x) => {
+forEach(obj, (ctx, x) => {
   if (typeof x === 'number') ctx.update(x * 10);
 });
 // → { a: 10, b: 20, c: [30, 40] }
 ```
+
+Or use a namespace import:
+
+```ts
+import * as t from 'neotraverse/modern';
+
+t.map(obj, (ctx, x) => { /* … */ }, { immutable: true });
+t.clone(untrusted, { maxDepth: 1000 });
+```
+
+::: warning `Traverse` class is deprecated
+`new Traverse(obj)` still works in 0.7 but is deprecated (JSDoc only, no runtime warning). Prefer the
+standalone functions above. The class will be removed in a future release; see [Migration](/migration).
+:::
+
+## Functional API
+
+Each operation is a **terminal** function: one walk per call. There is no `pipe()` helper; tree-to-tree ops
+such as `map` and `clone` compose as plain nested calls (`clone(map(obj, cb))`).
+
+`reduce(obj, cb)` is **seedless**: the accumulator starts at the root and the root node is skipped. Pass an
+explicit initial value as the third argument for a seeded fold: `reduce(obj, cb, 0)`. Seedless calls cannot
+also pass options positionally; pass an explicit seed (for example `undefined`) if you need options.
 
 ## Security
 
@@ -92,13 +116,16 @@ try {
 
 ## Options
 
+Pass options as the **last** argument (for example `forEach(obj, cb, { maxDepth: 100 })`). `map` and `mapAsync`
+always run immutably; other ops default to in-place mutation unless you set `immutable: true`.
+
 ```ts
-new Traverse(obj, {
+{
   immutable: false,      // if true, never mutate the original object
   includeSymbols: false, // if true, also traverse own enumerable symbol keys
   maxDepth: undefined,   // bound recursion depth (throws RangeError when exceeded)
   signal: undefined,     // AbortSignal — cancels forEachAsync()/mapAsync()
-});
+}
 ```
 
 ## Examples
