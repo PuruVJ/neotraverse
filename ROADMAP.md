@@ -1,6 +1,6 @@
 # neotraverse roadmap
 
-Work targets **`neotraverse/modern`** (`packages/neotraverse/src/modern.ts` + `modern-backlog.ts`). Legacy `src/index.ts` stays frozen.
+Work targets **`neotraverse/modern`** (`packages/neotraverse/src/modern.ts`). Legacy `src/index.ts` stays frozen.
 
 Last updated: 2026-06-05.
 
@@ -14,7 +14,7 @@ Last updated: 2026-06-05.
 
 ## Rules for new work
 
-1. Standalone functions in `modern.ts` / `modern-backlog.ts`; class forwards only until 0.8.
+1. Standalone functions in `modern.ts`; class forwards only until 0.8.
 2. Thin wrappers over `walk` / `map` / `forEach` / `clone_node` — bench before touching the hot loop.
 3. No `pipe()` — nest terminals or one callback.
 4. New tests in dedicated files; do not edit the frozen legacy suite.
