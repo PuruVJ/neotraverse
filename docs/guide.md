@@ -1,6 +1,6 @@
 ---
 title: Documentation
-outline: deep
+outline: [2, 3]
 ---
 
 # neotraverse
@@ -10,9 +10,7 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 and **~4.5× the throughput** (up to ~7×).
 
 ::: tip This page documents the **modern** build
-`neotraverse/modern` is the recommended API: **tree-shakeable** functions (`import * as t from
-'neotraverse/modern'`), an explicit `ctx` argument, query / iteration / async helpers, and the fastest path
-operations.
+`neotraverse/modern` is the recommended API: **tree-shakeable** functions (`import * as t from 'neotraverse/modern'`), an explicit `ctx` argument, query / iteration / async helpers, and the fastest path operations.
 
 **Looking for a drop-in replacement for `traverse`?** That's the classic `this`-bound API — see the
 [**Legacy / Classic API**](/legacy).
@@ -52,8 +50,8 @@ Named imports work too (`import { forEach, clone } from 'neotraverse/modern'`) w
 
 ## Functional API
 
-Each `t.*` call is a **terminal** operation: one walk per invocation. There is no `pipe()` helper; tree-to-tree
-ops such as `t.map` and `t.clone` compose as plain nested calls (`t.clone(t.map(obj, cb))`).
+Each `t` method call is a **terminal** operation: one walk per invocation. There is no `pipe()` helper;
+tree-to-tree ops such as `t.map` and `t.clone` compose as plain nested calls (`t.clone(t.map(obj, cb))`).
 
 `t.reduce(obj, cb)` is **seedless**: the accumulator starts at the root and the root node is skipped. Pass an
 explicit initial value as the third argument for a seeded fold: `t.reduce(obj, cb, 0)`. Seedless calls cannot
@@ -172,38 +170,41 @@ Import as `import * as t from 'neotraverse/modern'`. Each callback that takes `f
 
 ### Core
 
-#### `t.map(obj, fn, options?)`
+#### t.map {#t-map}
 
-Run `fn` for each node and return a **new** object. Update nodes in the result with `ctx.update(value)`.
+`t.map(obj, fn, options?)` runs `fn` for each node and returns a **new** object. Update nodes in the result with
+`ctx.update(value)`.
 
-#### `t.forEach(obj, fn, options?)`
+#### t.forEach {#t-forEach}
 
-Like `t.map`, but `ctx.update()` mutates `obj` **in place** (returns the same reference).
+`t.forEach(obj, fn, options?)` is like `t.map`, but `ctx.update()` mutates `obj` **in place** (returns the same
+reference).
 
-#### `t.reduce(obj, fn, init?, options?)`
+#### t.reduce {#t-reduce}
 
-A [left-fold](<https://en.wikipedia.org/wiki/Fold_(higher-order_function)>) over every node. Omit `init` to start
-from the root and skip the root node in the fold.
+`t.reduce(obj, fn, init?, options?)` is a [left-fold](https://en.wikipedia.org/wiki/Fold_(higher-order_function))
+over every node. Omit `init` to start from the root and skip the root node in the fold.
 
-#### `t.paths(obj, options?)` · `t.nodes(obj, options?)`
+#### t.paths and t.nodes {#t-paths-nodes}
 
-Return every non-cyclic path or every node.
+`t.paths(obj, options?)` and `t.nodes(obj, options?)` return every non-cyclic path or every node.
 
-#### `t.clone(obj, options?)`
+#### t.clone {#t-clone}
 
-Deep clone. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and `Map`/`Set` (entries
-deep-cloned), and is prototype-pollution-safe.
+`t.clone(obj, options?)` deep-clones. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and
+`Map`/`Set` (entries deep-cloned), and is prototype-pollution-safe.
 
-#### `t.get(obj, path, options?)` · `t.set(obj, path, value, options?)` · `t.has(obj, path, options?)`
+#### t.get, t.set, t.has {#t-get-set-has}
 
-Read / write / test at an array `path`. `get`/`has` only follow own properties; `set` refuses prototype-polluting
-keys.
+`t.get(obj, path, options?)`, `t.set(obj, path, value, options?)`, and `t.has(obj, path, options?)` read / write /
+test at an array `path`. `get`/`has` only follow own properties; `set` refuses prototype-polluting keys.
 
 ### Query helpers
 
-#### `t.find(obj, fn, options?)` · `t.filter(obj, fn, options?)` · `t.some` · `t.every`
+#### t.find, t.filter, t.some, t.every {#t-query}
 
-Search over every node (root included). `find`/`some` stop at the first match; `every` stops at the first failure.
+`t.find`, `t.filter`, `t.some`, and `t.every` search over every node (root included). `find`/`some` stop at the
+first match; `every` stops at the first failure.
 
 ```ts
 import * as t from 'neotraverse/modern';
@@ -221,14 +222,14 @@ t.every(tree, (ctx, x) => typeof x !== 'string'); // true
 Pull nodes without materializing `t.paths` / `t.nodes`. Circular references are visited once and not descended
 into.
 
-#### `t.values(obj, options?)`
+#### t.values {#t-values}
 
 `for (const node of t.values(tree))` and `[...t.values(tree)]` yield every node depth-first (like `t.nodes()`, but
 lazy).
 
-#### `t.entries(obj, options?)`
+#### t.entries {#t-entries}
 
-Yields `[path, node]` pairs.
+`t.entries(obj, options?)` yields `[path, node]` pairs.
 
 ```ts
 for (const node of t.values(tree)) {
@@ -255,9 +256,9 @@ const walking = t.forEachAsync(big, async (ctx) => { /* … */ }, { signal: cont
 controller.abort(); // → `walking` rejects with the abort reason
 ```
 
-::: info `Map` / `Set` are leaf nodes
-`forEach`, `map`, `paths`, `nodes`, and lazy iteration treat `Map`/`Set` as **leaf nodes**. Only `clone` (and
-`map`'s shallow copy) descend into their entries.
+::: info Map and Set are leaf nodes
+`forEach`, `map`, `paths`, `nodes`, and lazy iteration treat `Map`/`Set` as **leaf nodes**. Only `clone` (and the
+shallow `map` copy) descend into their entries.
 :::
 
 ## Context

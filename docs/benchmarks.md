@@ -19,9 +19,9 @@ across the full operation × shape matrix. Toggle between **throughput** (higher
 <blockquote>
 
 **Geometric mean speedup vs `traverse`:**
-**modern (fn) ≈ {{ results.summary['neotraverse modern (fn)'] }}×**,
-**modern (class) ≈ {{ results.summary['neotraverse modern'] }}×**,
-**legacy ≈ {{ results.summary['neotraverse legacy'] }}×**.
+**modern (fn) ≈ {{ results.summary['neotraverse modern (fn)'] ?? '—' }}×**,
+**modern (class) ≈ {{ results.summary['neotraverse modern'] ?? '—' }}×**,
+**legacy ≈ {{ results.summary['neotraverse legacy'] ?? '—' }}×**.
 
 </blockquote>
 
@@ -41,8 +41,8 @@ These are **runtime** benchmarks. For a **bundle size** comparison, see
 - **Traversal operations** (`forEach`, `map`, `clone`, `reduce`, `paths`, `nodes`) are ~5–7× faster than
   `traverse` on the **modern** build (class and tree-shakeable functions share the same engine; throughput is
   within noise) and ~2.7–3.3× on **legacy**.
-- **`neotraverse modern (fn)`** benchmarks `import * as t from 'neotraverse/modern'` style calls (`t.forEach(obj,
-  …)`). Runtime matches the class; bundle size wins when you import only what you use.
+- **`neotraverse modern (fn)`** benchmarks `import * as t from 'neotraverse/modern'` style calls
+  (`t.forEach(obj, …)`). Runtime matches the class; bundle size wins when you import only what you use.
 - **`clone` legacy vs modern is a tie.** Both builds compile from the *same* `clone()` / `copy()` source, so for
   cloning they're equal within measurement noise — the per-run winner just flips. Treat any ~1–2% gap there as
   jitter, not a real difference.

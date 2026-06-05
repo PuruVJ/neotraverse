@@ -48,6 +48,7 @@ function rows(suite) {
 	const traverse = suite.results.find((x) => x.name === 'traverse');
 	const vals = ORDER.map((name) => {
 		const r = suite.results.find((x) => x.name === name);
+		if (!r) return 0;
 		return isThroughput ? r.opsPerSec : (r.bytesPerOp ?? 0);
 	});
 	const max = Math.max(...vals, 1);
@@ -72,14 +73,14 @@ function rows(suite) {
 		// multiplier vs traverse (both: higher × = better)
 		let mult = null;
 		if (isThroughput) {
-			mult = suite.speedupVsTraverse[name];
-		} else if (traverse.bytesPerOp && r.bytesPerOp) {
+			mult = suite.speedupVsTraverse?.[name] ?? null;
+		} else if (traverse?.bytesPerOp && r?.bytesPerOp) {
 			mult = +(traverse.bytesPerOp / r.bytesPerOp).toFixed(2); // × less memory
 		}
 		return {
 			name,
 			pct: Math.max(2, (vals[i] / max) * 100),
-			label: isThroughput ? fmtOps(r.opsPerSec) : fmtMem(r.bytesPerOp),
+			label: r ? (isThroughput ? fmtOps(r.opsPerSec) : fmtMem(r.bytesPerOp)) : '—',
 			speed: mult,
 			fastest: i === winnerIdx,
 			color: COLOR[name],
