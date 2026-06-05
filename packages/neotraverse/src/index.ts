@@ -23,6 +23,13 @@ export interface TraverseOptions {
 	 * @default false
 	 */
 	includeSymbols?: boolean;
+
+	/**
+	 * Maximum traversal/clone depth. When set, traversing or cloning an object
+	 * nested deeper than this throws a `RangeError` instead of overflowing the
+	 * call stack — useful for bounding untrusted input. Unlimited when omitted.
+	 */
+	maxDepth?: number;
 }
 
 export interface TraverseContext {
@@ -115,24 +122,24 @@ export interface TraverseContext {
 
 	/**
 	 * Call this function before all of the children are traversed.
-	 * You can assign into `ctx.keys` here to traverse in a custom order.
+	 * You can assign into `this.keys` here to traverse in a custom order.
 	 */
-	before(callback: (ctx: TraverseContext, value: any) => void): void;
+	before(callback: (this: TraverseContext, value: any) => void): void;
 
 	/**
 	 * Call this function after all of the children are traversed.
 	 */
-	after(callback: (ctx: TraverseContext, value: any) => void): void;
+	after(callback: (this: TraverseContext, value: any) => void): void;
 
 	/**
 	 * Call this function before each of the children are traversed.
 	 */
-	pre(callback: (ctx: TraverseContext, child: any, key: any) => void): void;
+	pre(callback: (this: TraverseContext, child: any, key: any) => void): void;
 
 	/**
 	 * Call this function after each of the children are traversed.
 	 */
-	post(callback: (ctx: TraverseContext, child: any) => void): void;
+	post(callback: (this: TraverseContext, child: any) => void): void;
 
 	/**
 	 * Stops traversal entirely.
@@ -149,22 +156,47 @@ const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
 
 const is_typed_array = (value: unknown): value is TypedArray =>
 	ArrayBuffer.isView(value) && !(value instanceof DataView);
-const is_date = (obj: unknown): obj is Date => to_string(obj) === '[object Date]';
-const is_regexp = (obj: unknown): obj is RegExp => to_string(obj) === '[object RegExp]';
-const is_error = (obj: unknown): obj is Error => to_string(obj) === '[object Error]';
-const is_boolean = (obj: unknown): obj is boolean => to_string(obj) === '[object Boolean]';
-const is_number = (obj: unknown): obj is number => to_string(obj) === '[object Number]';
-const is_string = (obj: unknown): obj is string => to_string(obj) === '[object String]';
 const is_array = Array.isArray;
+
+// Boxed primitives (`new String()` / `new Number()` / `new Boolean()`), detected
+// by tag so they're still recognized when they originate from another realm.
+const is_boxed_primitive = (obj: unknown): boolean => {
+	const tag = to_string(obj);
+	return tag === '[object Boolean]' || tag === '[object Number]' || tag === '[object String]';
+};
 
 const gopd = Object.getOwnPropertyDescriptor;
 const is_property_enumerable = Object.prototype.propertyIsEnumerable;
 const get_own_property_symbols = Object.getOwnPropertySymbols;
 const has_own_property = Object.prototype.hasOwnProperty;
-const object_keys = Object.keys;
+
+// Keys that can mutate an object's prototype chain. They must never be used as
+// navigation/write targets when handling untrusted input (prototype pollution).
+const is_unsafe_key = (key: PropertyKey): boolean =>
+	key === '__proto__' || key === 'constructor' || key === 'prototype';
+
+// Assign `value` onto `dst` without ever triggering the `__proto__` setter or
+// otherwise mutating `dst`'s [[Prototype]]. The value is preserved as an
+// ordinary own enumerable data property, so injected data is neutralized — not
+// silently dropped — and the clone keeps its real prototype.
+function safe_set(dst: any, key: PropertyKey, value: any): void {
+	if (key === '__proto__') {
+		Object.defineProperty(dst, key, { value, writable: true, enumerable: true, configurable: true });
+	} else {
+		dst[key] = value;
+	}
+}
+
+// Bound recursion when a `maxDepth` is configured, throwing a catchable error
+// before the native stack overflow. No-op when `max_depth` is undefined.
+function assert_within_depth(depth: number, max_depth: number | undefined): void {
+	if (max_depth !== undefined && depth > max_depth) {
+		throw new RangeError(`neotraverse: maximum traversal depth (${max_depth}) exceeded`);
+	}
+}
 
 function own_enumerable_keys(obj: object): PropertyKey[] {
-	const res: PropertyKey[] = object_keys(obj);
+	const res: PropertyKey[] = Object.keys(obj);
 
 	const symbols = get_own_property_symbols(obj);
 	for (let i = 0; i < symbols.length; i++) {
@@ -176,7 +208,7 @@ function own_enumerable_keys(obj: object): PropertyKey[] {
 	return res;
 }
 
-function is_writable(object: any, key: PropertyKey) {
+function is_non_writable(object: any, key: PropertyKey) {
 	return !gopd(object, key)?.writable;
 }
 
@@ -186,23 +218,31 @@ function copy(src: any, options: TraverseOptions) {
 
 		if (is_array(src)) {
 			dst = [];
-		} else if (is_date(src)) {
-			dst = new Date(src.getTime ? src.getTime() : src);
-		} else if (is_regexp(src)) {
-			dst = new RegExp(src);
-		} else if (is_error(src)) {
-			dst = { message: src.message };
-		} else if (is_boolean(src) || is_number(src) || is_string(src)) {
-			dst = Object(src);
 		} else if (is_typed_array(src)) {
 			return src.slice();
+		} else if (is_boxed_primitive(src)) {
+			// Boxed primitives have read-only index slots; copying onto them throws
+			// in strict mode. The wrapper already carries the primitive value.
+			return Object(src);
 		} else {
-			dst = Object.create(Object.getPrototypeOf(src));
+			// One `toString` tag instead of a separate call per predicate.
+			const tag = to_string(src);
+			if (tag === '[object Date]' && typeof src.getTime === 'function') {
+				// Guard on `getTime` so a `Symbol.toStringTag`-spoofed object falls
+				// through to the generic copy instead of becoming `Invalid Date`.
+				dst = new Date(src.getTime());
+			} else if (tag === '[object RegExp]' && typeof src.source === 'string') {
+				dst = new RegExp(src);
+			} else if (tag === '[object Error]') {
+				dst = { message: src.message };
+			} else {
+				dst = Object.create(Object.getPrototypeOf(src));
+			}
 		}
 
-		const iterator_function = options.includeSymbols ? own_enumerable_keys : object_keys;
+		const iterator_function = options.includeSymbols ? own_enumerable_keys : Object.keys;
 		for (const key of iterator_function(src)) {
-			dst[key] = src[key];
+			safe_set(dst, key, src[key]);
 		}
 
 		return dst;
@@ -218,23 +258,26 @@ const empty_null: TraverseOptions = {
 
 function walk(
 	root: any,
-	cb: (ctx: TraverseContext, v: any) => void,
+	cb: (this: TraverseContext, v: any) => void,
 	options: TraverseOptions = empty_null,
 ) {
 	const path: PropertyKey[] = [];
 	const parents: any[] = [];
 	let alive = true;
 
-	const iterator_function = options.includeSymbols ? own_enumerable_keys : object_keys;
+	const iterator_function = options.includeSymbols ? own_enumerable_keys : Object.keys;
 	const immutable = !!options.immutable;
+	const max_depth = options.maxDepth;
 
 	return (function walker(node_) {
+		assert_within_depth(path.length, max_depth);
+
 		const node = immutable ? copy(node_, options) : node_;
 		const modifiers = {} as {
-			before?: (ctx: TraverseContext, value: any) => void;
-			after?: (ctx: TraverseContext, value: any) => void;
-			pre?: (ctx: TraverseContext, child: any, key: any) => void;
-			post?: (ctx: TraverseContext, child: any) => void;
+			before?: (this: TraverseContext, value: any) => void;
+			after?: (this: TraverseContext, value: any) => void;
+			pre?: (this: TraverseContext, child: any, key: any) => void;
+			post?: (this: TraverseContext, child: any) => void;
 			stop?: () => void;
 		};
 
@@ -243,7 +286,7 @@ function walk(
 		const state = {
 			node,
 			node_,
-			path: ([] as any[]).concat(path) as PropertyKey[],
+			path: path.slice(),
 			parent: parents[parents.length - 1],
 			parents,
 			key: path[path.length - 1],
@@ -257,7 +300,7 @@ function walk(
 			isLast: false as boolean,
 			update: function (x: any, stopHere: boolean = false) {
 				if (!state.isRoot) {
-					state.parent.node[state.key] = x;
+					safe_set(state.parent.node, state.key, x);
 				}
 				state.node = x;
 				if (stopHere) {
@@ -281,16 +324,16 @@ function walk(
 				}
 			},
 			keys: null as PropertyKey[] | null,
-			before: function (f: (ctx: TraverseContext, value: any) => void) {
+			before: function (f: (this: TraverseContext, value: any) => void) {
 				modifiers.before = f;
 			},
-			after: function (f: (ctx: TraverseContext, value: any) => void) {
+			after: function (f: (this: TraverseContext, value: any) => void) {
 				modifiers.after = f;
 			},
-			pre: function (f: (ctx: TraverseContext, child: any, key: any) => void) {
+			pre: function (f: (this: TraverseContext, child: any, key: any) => void) {
 				modifiers.pre = f;
 			},
-			post: function (f: (ctx: TraverseContext, child: any) => void) {
+			post: function (f: (this: TraverseContext, child: any) => void) {
 				modifiers.post = f;
 			},
 			stop: function () {
@@ -331,13 +374,13 @@ function walk(
 		update_state();
 
 		// use return values to update if defined
-		const ret = cb(state, state.node);
+		const ret = cb.call(state, state.node);
 		if (ret !== undefined && state.update) {
 			state.update(ret);
 		}
 
 		if (modifiers.before) {
-			modifiers.before(state, state.node);
+			modifiers.before.call(state, state.node);
 		}
 
 		if (!keep_going) {
@@ -349,23 +392,25 @@ function walk(
 
 			update_state();
 
-			for (const [index, key] of Object.entries(state.keys ?? [])) {
+			const keys = state.keys ?? [];
+			for (let index = 0; index < keys.length; index++) {
+				const key = keys[index];
 				path.push(key);
 
 				if (modifiers.pre) {
-					modifiers.pre(state, state.node[key], key);
+					modifiers.pre.call(state, state.node[key], key);
 				}
 
 				const child = walker(state.node[key]);
-				if (immutable && has_own_property.call(state.node, key) && !is_writable(state.node, key)) {
-					state.node[key] = child.node;
+				if (immutable && has_own_property.call(state.node, key) && !is_non_writable(state.node, key)) {
+					safe_set(state.node, key, child.node);
 				}
 
-				child.isLast = state.keys?.length ? +index === state.keys.length - 1 : false;
-				child.isFirst = +index === 0;
+				child.isLast = index === keys.length - 1;
+				child.isFirst = index === 0;
 
 				if (modifiers.post) {
-					modifiers.post(state, child);
+					modifiers.post.call(state, child);
 				}
 
 				path.pop();
@@ -374,14 +419,16 @@ function walk(
 		}
 
 		if (modifiers.after) {
-			modifiers.after(state, state.node);
+			modifiers.after.call(state, state.node);
 		}
 
 		return state;
 	})(root).node;
 }
 
+/** @deprecated Import `Traverse` from `neotraverse/modern` instead */
 export class Traverse {
+	// ! Have to keep these public as legacy mode requires them
 	#value: any;
 	#options: TraverseOptions;
 
@@ -444,12 +491,18 @@ export class Traverse {
 		for (i = 0; i < path.length - 1; i++) {
 			const key = path[i];
 
+			// Prevent prototype pollution: never navigate through these keys.
+			if (is_unsafe_key(key)) return value;
+
 			if (!has_own_property.call(node, key)) {
 				node[key] = {};
 			}
 
 			node = node[key];
 		}
+
+		// …and never write to them either.
+		if (is_unsafe_key(path[i])) return value;
 
 		node[path[i]] = value;
 
@@ -459,17 +512,18 @@ export class Traverse {
 	/**
 	 * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
 	 */
-	map(cb: (ctx: TraverseContext, v: any) => void): any {
+	map(cb: (this: TraverseContext, v: any) => void): any {
 		return walk(this.#value, cb, {
 			immutable: true,
 			includeSymbols: !!this.#options.includeSymbols,
+			maxDepth: this.#options.maxDepth,
 		});
 	}
 
 	/**
 	 * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
 	 */
-	forEach(cb: (ctx: TraverseContext, v: any) => void): any {
+	forEach(cb: (this: TraverseContext, v: any) => void): any {
 		this.#value = walk(this.#value, cb, this.#options);
 		return this.#value;
 	}
@@ -479,13 +533,13 @@ export class Traverse {
 	 *
 	 * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
 	 */
-	reduce(cb: (ctx: TraverseContext, acc: any, v: any) => void, init?: any): any {
+	reduce(cb: (this: TraverseContext, acc: any, v: any) => void, init?: any): any {
 		const skip = arguments.length === 1;
 		let acc = skip ? this.#value : init;
 
-		this.forEach((ctx, x) => {
-			if (!ctx.isRoot || !skip) {
-				acc = cb(ctx, acc, x);
+		this.forEach(function (x) {
+			if (!this.isRoot || !skip) {
+				acc = cb.call(this, acc, x);
 			}
 		});
 
@@ -499,8 +553,8 @@ export class Traverse {
 	paths(): PropertyKey[][] {
 		const acc: PropertyKey[][] = [];
 
-		this.forEach((ctx) => {
-			acc.push(ctx.path);
+		this.forEach(function () {
+			acc.push(this.path);
 		});
 
 		return acc;
@@ -512,8 +566,8 @@ export class Traverse {
 	nodes(): any[] {
 		const acc: any[] = [];
 
-		this.forEach((ctx) => {
-			acc.push(ctx.node);
+		this.forEach(function () {
+			acc.push(this.node);
 		});
 
 		return acc;
@@ -526,12 +580,15 @@ export class Traverse {
 		const parents: any[] = [];
 		const nodes: any[] = [];
 		const options = this.#options;
+		const max_depth = options.maxDepth;
 
 		if (is_typed_array(this.#value)) {
 			return this.#value.slice();
 		}
 
 		return (function clone(src) {
+			assert_within_depth(parents.length, max_depth);
+
 			for (let i = 0; i < parents.length; i++) {
 				if (parents[i] === src) {
 					return nodes[i];
@@ -541,12 +598,19 @@ export class Traverse {
 			if (typeof src === 'object' && src !== null) {
 				const dst = copy(src, options);
 
+				// Typed arrays and boxed primitives are fully materialized by copy()
+				// and have no child references to recurse into (boxed-primitive index
+				// slots are read-only — re-writing onto them would throw).
+				if (is_typed_array(src) || is_boxed_primitive(src)) {
+					return dst;
+				}
+
 				parents.push(src);
 				nodes.push(dst);
 
-				const iteratorFunction = options.includeSymbols ? own_enumerable_keys : object_keys;
+				const iteratorFunction = options.includeSymbols ? own_enumerable_keys : Object.keys;
 				for (const key of iteratorFunction(src)) {
-					dst[key] = clone(src[key]);
+					safe_set(dst, key, clone(src[key]));
 				}
 
 				parents.pop();
@@ -558,3 +622,88 @@ export class Traverse {
 		})(this.#value);
 	}
 }
+
+const traverse = (obj: any, options?: TraverseOptions): Traverse => {
+	return new Traverse(obj, options);
+};
+
+/**
+ * Get the element at the array `path`.
+ */
+traverse.get = (obj: any, paths: PropertyKey[], options?: TraverseOptions): any => {
+	return new Traverse(obj, options).get(paths);
+};
+
+/**
+ * Set the element at the array `path` to `value`.
+ */
+traverse.set = (obj: any, path: PropertyKey[], value: any, options?: TraverseOptions): any => {
+	return new Traverse(obj, options).set(path, value);
+};
+
+/**
+ * Return whether the element at the array `path` exists.
+ */
+traverse.has = (obj: any, paths: PropertyKey[], options?: TraverseOptions): boolean => {
+	return new Traverse(obj, options).has(paths);
+};
+
+/**
+ * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
+ */
+traverse.map = (
+	obj: any,
+	cb: (this: TraverseContext, v: any) => void,
+	options?: TraverseOptions,
+): any => {
+	return new Traverse(obj, options).map(cb);
+};
+
+/**
+ * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
+ */
+traverse.forEach = (
+	obj: any,
+	cb: (this: TraverseContext, v: any) => void,
+	options?: TraverseOptions,
+): any => {
+	return new Traverse(obj, options).forEach(cb);
+};
+
+/**
+ * For each node in the object, perform a [left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function)) with the return value of `fn(acc, node)`.
+ *
+ * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
+ */
+traverse.reduce = (
+	obj: any,
+	cb: (this: TraverseContext, acc: any, v: any) => void,
+	init?: any,
+	options?: TraverseOptions,
+): any => {
+	return new Traverse(obj, options).reduce(cb, init);
+};
+
+/**
+ * Return an `Array` of every possible non-cyclic path in the object.
+ * Paths are `Array`s of string keys.
+ */
+traverse.paths = (obj: any, options?: TraverseOptions): PropertyKey[][] => {
+	return new Traverse(obj, options).paths();
+};
+
+/**
+ * Return an `Array` of every node in the object.
+ */
+traverse.nodes = (obj: any, options?: TraverseOptions): any[] => {
+	return new Traverse(obj, options).nodes();
+};
+
+/**
+ * Create a deep clone of the object.
+ */
+traverse.clone = (obj: any, options?: TraverseOptions): any => {
+	return new Traverse(obj, options).clone();
+};
+
+export default traverse;

@@ -1,0 +1,16 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- self-contained: dark concrete base + emerald tree-`n` mark -->
+  <rect width="32" height="32" rx="7.5" fill="#0d100e" />
+  <path
+    d="M9.5 23 V12 Q9.5 10.8 10.7 10.8 H21.3 Q22.5 10.8 22.5 12 V23"
+    stroke="#13c08a"
+    stroke-width="2.3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <g fill="#13c08a">
+    <circle cx="16" cy="10.8" r="2.4" />
+    <circle cx="9.5" cy="23" r="2.1" />
+    <circle cx="22.5" cy="23" r="2.1" />
+  </g>
+</svg>

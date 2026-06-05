@@ -1,0 +1,155 @@
+# neotraverse
+
+Traverse and transform objects by visiting every node on a recursive walk. A TypeScript rewrite of [`traverse`](https://github.com/ljharb/js-traverse) with **0 dependencies**, **prototype-pollution hardening**, and **~4.5× the throughput** (modern build; up to ~7×).
+
+> 📖 **Full docs, security audit & live benchmarks:** **[neotraverse.puruvj.dev](https://neotraverse.puruvj.dev)**
+
+- 🤌 ~2.2 KB min+brotli (modern build)
+- 🚥 Zero dependencies, no polyfills
+- 🎹 TypeScript — throw away `@types/traverse`
+- 🛡️ Safe on untrusted input ([prototype-pollution & injection hardened](#security))
+- ⚡ **~4.5× faster** than `traverse` (modern build, geometric mean; up to ~7×)
+- 🛸 ESM-first, with a legacy ES2015 CJS/ESM build
+
+## Benchmarks (summary)
+
+Geometric-mean speedup versus the original `traverse` across the full operation × shape matrix:
+
+| Build                  | Speedup vs `traverse` |
+| ---------------------- | --------------------- |
+| **neotraverse modern** | **≈ 4.5×**            |
+| **neotraverse legacy** | **≈ 2.3×**            |
+
+Core traversal ops (`forEach` / `map` / `clone` / `reduce` / `paths` / `nodes`) land at ~2.7–3.3×. See the [full table](#benchmarks-full) at the bottom, or the [interactive benchmarks page](https://neotraverse.puruvj.dev/benchmarks). Reproduce with `pnpm bench`.
+
+## Install
+
+```sh
+npm install neotraverse
+```
+
+## Quick start
+
+```ts
+// modern build — state on a `ctx` argument (recommended for new code)
+import { Traverse } from 'neotraverse/modern';
+
+new Traverse({ a: 1, b: 2, c: [3, 4] }).forEach((ctx, x) => {
+  if (typeof x === 'number') ctx.update(x * 10);
+});
+```
+
+```ts
+// classic `traverse`-compatible API
+import traverse from 'neotraverse';
+
+traverse({ a: 1, b: 2, c: [3, 4] }).forEach(function (x) {
+  if (typeof x === 'number') this.update(x * 10);
+});
+```
+
+## Builds & browser support
+
+| Build       | Import                | Module       | Target | Browsers                                      |
+| ----------- | --------------------- | ------------ | ------ | --------------------------------------------- |
+| **default** | `neotraverse`         | ESM          | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+      |
+| **modern**  | `neotraverse/modern`  | ESM          | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+      |
+| **legacy**  | `neotraverse/legacy`  | CJS + ESM    | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+ |
+
+> ⚠️ **0.7 breaking change:** the legacy build now targets **ES2015** (was ES5). It is still CJS + ESM and a drop-in `traverse` replacement; only environments needing literal ES5 (e.g. IE11) are affected.
+
+## Security
+
+`neotraverse` is safe to run on **untrusted data**:
+
+- **No prototype pollution** — `set(path, value)` refuses `__proto__` / `constructor` / `prototype` keys.
+- **No prototype injection** — `clone()` / `map()` of hostile JSON like `{"__proto__":{"isAdmin":true}}` keep their real prototype; `result.isAdmin` is `undefined`.
+- **Prototype preservation intact** — legitimate `instanceof` still works after a clone.
+- **No prototype-chain disclosure** — `get()` / `has()` follow only own properties.
+
+```ts
+const evil = JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
+traverse(evil).clone().isAdmin; // undefined
+({}).isAdmin;                    // undefined — global prototype untouched
+```
+
+Read the full story in the [**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
+
+### DoS guard
+
+Bound recursion on deeply-nested hostile input with `maxDepth` (throws a catchable `RangeError`; unlimited by default):
+
+```ts
+traverse(untrusted, { maxDepth: 1000 }).clone();
+```
+
+## Migrating from `traverse`
+
+```diff
+-import traverse from 'traverse';
++import traverse from 'neotraverse';
+```
+
+```sh
+npm install neotraverse && npm uninstall traverse @types/traverse
+```
+
+The API is identical. For old bundlers/runtimes use `neotraverse/legacy`.
+
+## API
+
+Methods: `.map(fn)` · `.forEach(fn)` · `.reduce(fn, acc)` · `.paths()` · `.nodes()` · `.clone()` · `.get(path)` · `.set(path, value)` · `.has(path)`.
+
+**Modern build also adds:** `.find(fn)` · `.filter(fn)` · `.some(fn)` · `.every(fn)`, lazy iteration (`for…of` / `.entries()`), and async `.forEachAsync(fn)` / `.mapAsync(fn)` (cancelable via `AbortSignal`). Its `.clone()` deep-clones `Map`/`Set` too.
+
+Options: `{ immutable?, includeSymbols?, maxDepth?, signal? }` (`signal` is modern-async only).
+
+Each callback gets a context (`ctx` in modern, `this` in classic) with `node`, `path`, `parent`, `key`, `isRoot`, `isLeaf`, `isFirst`, `isLast`, `level`, `circular`, and the mutators `update()`, `remove()`, `delete()`, `before()`, `after()`, `pre()`, `post()`, `stop()`, `block()`.
+
+👉 Full API reference, examples, and context docs: **[neotraverse.puruvj.dev/guide](https://neotraverse.puruvj.dev/guide)**.
+
+## Benchmarks (full) {#benchmarks-full}
+
+`neotraverse` vs `traverse` — ops/sec (and ×speedup). Generated by [`bench/run.ts`](./bench/run.ts) via [tinybench](https://github.com/tinylibs/tinybench); see [`bench/results.json`](./bench/results.json).
+
+| Operation · shape | traverse | neotraverse legacy | neotraverse modern |
+| --- | ---: | ---: | ---: |
+| `forEach · small` | 844,636 | 1,724,555 (2.04×) | 4,276,177 (5.06×) |
+| `forEach · wide` | 87,558 | 245,149 (2.8×) | 506,325 (5.78×) |
+| `forEach · deep` | 51,025 | 153,295 (3×) | 342,722 (6.72×) |
+| `forEach · array` | 3,030 | 10,078 (3.33×) | 22,559 (7.45×) |
+| `forEach · json` | 57,900 | 179,917 (3.11×) | 406,466 (7.02×) |
+| `map · small` | 389,729 | 1,041,374 (2.67×) | 1,694,084 (4.35×) |
+| `map · wide` | 54,777 | 107,000 (1.95×) | 147,779 (2.7×) |
+| `map · deep` | 19,052 | 86,199 (4.52×) | 126,824 (6.66×) |
+| `map · array` | 1,416 | 4,372 (3.09×) | 6,215 (4.39×) |
+| `map · json` | 22,987 | 81,242 (3.53×) | 116,027 (5.05×) |
+| `clone · small` | 496,931 | 2,083,655 (4.19×) | 3,346,248 (6.73×) |
+| `clone · wide` | 190,851 | 263,631 (1.38×) | 274,066 (1.44×) |
+| `clone · deep` | 26,389 | 152,845 (5.79×) | 167,602 (6.35×) |
+| `clone · array` | 3,057 | 10,886 (3.56×) | 11,360 (3.72×) |
+| `clone · json` | 40,994 | 200,627 (4.89×) | 212,878 (5.19×) |
+| `reduce · small` | 781,071 | 1,539,403 (1.97×) | 3,597,546 (4.61×) |
+| `reduce · wide` | 81,305 | 212,541 (2.61×) | 429,191 (5.28×) |
+| `reduce · deep` | 49,744 | 136,571 (2.75×) | 292,687 (5.88×) |
+| `reduce · array` | 2,826 | 8,818 (3.12×) | 18,537 (6.56×) |
+| `reduce · json` | 54,031 | 157,255 (2.91×) | 338,716 (6.27×) |
+| `paths · small` | 788,581 | 1,565,019 (1.98×) | 3,483,227 (4.42×) |
+| `paths · wide` | 80,869 | 221,737 (2.74×) | 413,740 (5.12×) |
+| `paths · deep` | 49,949 | 141,549 (2.83×) | 211,823 (4.24×) |
+| `paths · array` | 2,851 | 8,734 (3.06×) | 16,706 (5.86×) |
+| `paths · json` | 54,417 | 163,932 (3.01×) | 307,740 (5.66×) |
+| `nodes · small` | 794,648 | 1,548,765 (1.95×) | 3,624,941 (4.56×) |
+| `nodes · wide` | 82,751 | 221,385 (2.68×) | 435,618 (5.26×) |
+| `nodes · deep` | 50,785 | 140,446 (2.77×) | 294,410 (5.8×) |
+| `nodes · array` | 2,872 | 9,101 (3.17×) | 18,839 (6.56×) |
+| `nodes · json` | 54,490 | 164,949 (3.03×) | 347,059 (6.37×) |
+| `get · json` | 18,148,860 | 4,174,915 (0.23×) | 21,928,827 (1.21×) |
+| `has · json` | 18,810,892 | 4,214,651 (0.22×) | 21,965,423 (1.17×) |
+| `set · json` | 23,424,854 | 4,438,886 (0.19×) | 23,603,563 (1.01×) |
+
+> `get` / `has` / `set` are fastest on the **modern** build; the **legacy** (ES2015) build is slower for these because its private `#fields` downlevel to WeakMaps. Prefer `neotraverse/modern` for path-heavy hot code.
+
+## License
+
+[MIT](./LICENSE) — Puru Vijay & James Halliday.

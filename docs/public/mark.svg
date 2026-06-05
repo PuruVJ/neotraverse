@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- the bare tree-`n` mark (no box) for compact contexts -->
+  <path
+    d="M9 23 V11.5 Q9 10 10.5 10 H21.5 Q23 10 23 11.5 V23"
+    stroke="#13c08a"
+    stroke-width="2.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <g fill="#13c08a">
+    <circle cx="16" cy="10" r="2.8" />
+    <circle cx="9" cy="23" r="2.5" />
+    <circle cx="23" cy="23" r="2.5" />
+  </g>
+</svg>
