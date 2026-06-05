@@ -146,7 +146,7 @@ your runtime actually uses them; see the table below for walk vs clone differenc
 | `RegExp` | `'regexp'` | Leaf | Cloned | |
 | `Map` | `'map'` | **Leaf** — entries not visited | **Deep-clones entries** | Transform entries via `clone` or manual loop |
 | `Set` | `'set'` | **Leaf** | **Deep-clones values** | Same as `Map` |
-| `WeakMap` / `WeakSet` | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk) | Cloned via constructor iteration | Cannot query weak refs after GC |
+| `WeakMap` / `WeakSet` | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk) | **`clone` / `copy` return the same reference** (entries are not copied) | Cannot query weak refs after GC |
 | Typed array (`Uint8Array`, …) | `'typed-array'` | Descends index keys; `copy` uses `.slice()` | Leaf in deep clone (buffer copied) | |
 | `ArrayBuffer` | `'arraybuffer'` | Leaf | `.slice(0)` | |
 | `DataView` | `'dataview'` | Leaf | Clones viewed byte range | |

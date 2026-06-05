@@ -248,19 +248,10 @@ function clone_node(
 		seen.delete(src);
 		return dst;
 	}
-	if (src instanceof WeakMap) {
-		const dst = new WeakMap();
-		seen.set(src, dst);
-		for (const [k, v] of src) {
-			dst.set(clone_node(k, seen, options, depth + 1), clone_node(v, seen, options, depth + 1));
-		}
-		return dst;
-	}
-	if (src instanceof WeakSet) {
-		const dst = new WeakSet();
-		seen.set(src, dst);
-		for (const v of src) dst.add(clone_node(v, seen, options, depth + 1));
-		return dst;
+	if (src instanceof WeakMap || src instanceof WeakSet) {
+		// Weak collections are not enumerable in the type system / walk — share reference.
+		seen.set(src, src);
+		return src;
 	}
 	if (src instanceof ArrayBuffer) {
 		const dst = src.slice(0);
@@ -358,10 +349,8 @@ function copy(src: any, options: TraverseOptions) {
 			return new Map(src);
 		} else if (src instanceof Set) {
 			return new Set(src);
-		} else if (src instanceof WeakMap) {
-			return new WeakMap(src);
-		} else if (src instanceof WeakSet) {
-			return new WeakSet(src);
+		} else if (src instanceof WeakMap || src instanceof WeakSet) {
+			return src;
 		} else {
 			// One `toString` tag instead of a separate call per predicate.
 			const tag = to_string(src);
