@@ -7,13 +7,13 @@ outline: deep
 
 Traverse and transform objects by visiting every node on a recursive walk. A TypeScript rewrite of
 [`traverse`](https://github.com/ljharb/js-traverse) with **0 dependencies**, **prototype-pollution hardening**,
-and **~3× the performance**.
+and **~4.5× the throughput** (modern build).
 
 - 🤌 ~1.5–1.6 KB min+brotli
 - 🚥 Zero dependencies, no polyfills
 - 🎹 Types included — drop `@types/traverse`
 - 🛡️ Safe on untrusted input (see [Security](#security))
-- ⚡ ~2.9× faster than `traverse` ([benchmarks](/benchmarks))
+- ⚡ ~4.5× faster than `traverse` — up to ~7× (modern; see [benchmarks](/benchmarks))
 - 🛸 ESM-first, with a legacy ES2015 CJS/ESM build
 
 ## Install

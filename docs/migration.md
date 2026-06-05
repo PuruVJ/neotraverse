@@ -103,5 +103,5 @@ export default {
 ## What you gain
 
 - 🛡️ [Prototype-pollution & injection safety](/guide#security) on untrusted input.
-- ⚡ [~2.9× the throughput](/benchmarks) of `traverse` (modern build).
+- ⚡ [~4.5× the throughput](/benchmarks) of `traverse` (modern build; up to ~7×).
 - 🤌 Zero dependencies, types included, ESM-first.

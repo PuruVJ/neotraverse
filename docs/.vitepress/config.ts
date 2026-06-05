@@ -1,6 +1,9 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitepress';
+
+const DOCS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..'); // the docs/ root
 
 // Strip VitePress/Vue-specific syntax to plain Markdown for llms.txt.
 function toPlain(md: string): string {
@@ -18,10 +21,27 @@ function toPlain(md: string): string {
 		.trim();
 }
 
+// Combine the docs into a single plain-Markdown llms.txt.
+function generate_llms(): string {
+	const files = ['guide.md', 'migration.md', 'benchmarks.md'];
+	const parts = [
+		'# neotraverse',
+		'',
+		'> Traverse and transform objects by visiting every node on a recursive walk — a zero-dependency, prototype-pollution-safe, up-to-~7×-faster drop-in replacement for `traverse`.',
+		'',
+		'Docs: https://neotraverse.puruvj.dev · npm: https://www.npmjs.com/package/neotraverse',
+	];
+	for (const f of files) {
+		const p = join(DOCS_DIR, f);
+		if (existsSync(p)) parts.push('\n\n---\n\n' + toPlain(readFileSync(p, 'utf-8')));
+	}
+	return parts.join('\n') + '\n';
+}
+
 export default defineConfig({
 	title: 'neotraverse',
 	description:
-		'Traverse and transform objects by visiting every node on a recursive walk — zero-dependency, hardened, ~3× faster drop-in for traverse.',
+		'Traverse and transform objects by visiting every node on a recursive walk — zero-dependency, hardened, up to ~7× faster drop-in for traverse.',
 	cleanUrls: true,
 	lastUpdated: true,
 	head: [
@@ -32,7 +52,7 @@ export default defineConfig({
 			'meta',
 			{
 				property: 'og:description',
-				content: 'Zero-dependency, hardened, ~3× faster drop-in for traverse.',
+				content: 'Zero-dependency, hardened, up to ~7× faster drop-in for traverse.',
 			},
 		],
 	],
@@ -73,23 +93,27 @@ export default defineConfig({
 	vite: {
 		// allow importing bench/results.json from the sibling package
 		server: { fs: { allow: ['..'] } },
+		plugins: [
+			{
+				// Serve /llms.txt as a live endpoint in dev (no file on disk).
+				name: 'llms-txt-endpoint',
+				configureServer(server) {
+					server.middlewares.use((req, res, next) => {
+						if ((req.url || '').split('?')[0] === '/llms.txt') {
+							res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+							res.end(generate_llms());
+						} else {
+							next();
+						}
+					});
+				},
+			},
+		],
 	},
 
-	// Generate a single /llms.txt that combines the docs as plain Markdown.
-	buildEnd: async (siteConfig) => {
-		const src = siteConfig.srcDir;
-		const files = ['guide.md', 'migration.md', 'benchmarks.md'];
-		const parts = [
-			'# neotraverse',
-			'',
-			'> Traverse and transform objects by visiting every node on a recursive walk — a zero-dependency, prototype-pollution-safe, ~3× faster drop-in replacement for `traverse`.',
-			'',
-			'Docs: https://neotraverse.puruvj.dev · npm: https://www.npmjs.com/package/neotraverse',
-		];
-		for (const f of files) {
-			const p = join(src, f);
-			if (existsSync(p)) parts.push('\n\n---\n\n' + toPlain(readFileSync(p, 'utf-8')));
-		}
-		writeFileSync(join(siteConfig.outDir, 'llms.txt'), parts.join('\n') + '\n');
+	// In the static build, emit the same content into dist/ so the host serves
+	// /llms.txt directly.
+	buildEnd: (siteConfig) => {
+		writeFileSync(join(siteConfig.outDir, 'llms.txt'), generate_llms());
 	},
 });

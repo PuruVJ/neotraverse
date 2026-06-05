@@ -36,8 +36,8 @@ These are **runtime** benchmarks. For a **bundle size** comparison, see
 
 ## Notes
 
-- **Traversal operations** (`forEach`, `map`, `clone`, `reduce`, `paths`, `nodes`) are ~2.7–3.3× faster than
-  `traverse` on both builds, and the **modern** build allocates slightly **less** memory than legacy.
+- **Traversal operations** (`forEach`, `map`, `clone`, `reduce`, `paths`, `nodes`) are ~5–7× faster than
+  `traverse` on the **modern** build (which also allocates 3–5× less per op) and ~2.7–3.3× on **legacy**.
 - **`clone` legacy vs modern is a tie.** Both builds compile from the *same* `clone()` / `copy()` source, so for
   cloning they're equal within measurement noise — the per-run winner just flips. Treat any ~1–2% gap there as
   jitter, not a real difference.

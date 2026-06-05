@@ -1,6 +1,6 @@
 # neotraverse
 
-Traverse and transform objects by visiting every node on a recursive walk. A TypeScript rewrite of [`traverse`](https://github.com/ljharb/js-traverse) with **0 dependencies**, **prototype-pollution hardening**, and **~3× the performance**.
+Traverse and transform objects by visiting every node on a recursive walk. A TypeScript rewrite of [`traverse`](https://github.com/ljharb/js-traverse) with **0 dependencies**, **prototype-pollution hardening**, and **~4.5× the throughput** (modern build; up to ~7×).
 
 > 📖 **Full docs, security audit & live benchmarks:** **[neotraverse.puruvj.dev](https://neotraverse.puruvj.dev)**
 
@@ -73,7 +73,7 @@ traverse(evil).clone().isAdmin; // undefined
 ({}).isAdmin;                    // undefined — global prototype untouched
 ```
 
-Read the full story: [**The vulnerability run**](https://neotraverse.puruvj.dev/blog/the-vulnerability-run).
+Read the full story in the [**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
 
 ### DoS guard
 
