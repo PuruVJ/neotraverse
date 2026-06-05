@@ -100,7 +100,9 @@ The API is identical. For old bundlers/runtimes use `neotraverse/legacy`.
 
 Methods: `.map(fn)` · `.forEach(fn)` · `.reduce(fn, acc)` · `.paths()` · `.nodes()` · `.clone()` · `.get(path)` · `.set(path, value)` · `.has(path)`.
 
-Options: `{ immutable?, includeSymbols?, maxDepth? }`.
+**Modern build also adds:** `.find(fn)` · `.filter(fn)` · `.some(fn)` · `.every(fn)`, lazy iteration (`for…of` / `.entries()`), and async `.forEachAsync(fn)` / `.mapAsync(fn)` (cancelable via `AbortSignal`). Its `.clone()` deep-clones `Map`/`Set` too.
+
+Options: `{ immutable?, includeSymbols?, maxDepth?, signal? }` (`signal` is modern-async only).
 
 Each callback gets a context (`ctx` in modern, `this` in classic) with `node`, `path`, `parent`, `key`, `isRoot`, `isLeaf`, `isFirst`, `isLast`, `level`, `circular`, and the mutators `update()`, `remove()`, `delete()`, `before()`, `after()`, `pre()`, `post()`, `stop()`, `block()`.
 

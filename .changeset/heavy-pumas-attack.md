@@ -2,12 +2,13 @@
 'neotraverse': minor
 ---
 
-# Security hardening, faster traversal, and a tsdown build
+# Security hardening, a much faster modern build, new modern APIs, and a tsdown build
 
 This release hardens neotraverse against prototype pollution / injection when
-processing untrusted data, adds an opt-in DoS guard, makes traversal ~2–3×
-faster than the original `traverse`, and modernizes the toolchain. The public
-API is unchanged — it remains a drop-in replacement for `traverse`.
+processing untrusted data, adds an opt-in DoS guard, makes the modern build
+~4.5× faster on average (up to ~7×) than the original `traverse`, adds several
+modern-only APIs, and modernizes the toolchain. The default/legacy `traverse`
+API is unchanged — it remains a drop-in replacement.
 
 ## ⚠️ Breaking change
 
@@ -93,6 +94,29 @@ both builds).
 > For the `get` / `has` / `set` path helpers, prefer the **modern** build — the
 > **legacy** (ES2015) build is slower there because private `#fields` are
 > downleveled to WeakMaps.
+
+## ✨ New APIs (modern build only)
+
+The `Traverse` class in `neotraverse/modern` gains four sets of additions. They
+live only on the modern build, so the default/legacy `traverse` surface is
+unchanged:
+
+- **Query helpers** — `.find(fn)`, `.filter(fn)`, `.some(fn)`, `.every(fn)`:
+  array-style queries over every node (root included), with `find`/`some`/`every`
+  short-circuiting.
+- **Lazy iteration** — `Traverse` is now iterable (`for (const node of t)`,
+  `[...t]`) and exposes `.entries()` yielding `[path, node]` pairs. Pull-based, so
+  it never materializes the full `nodes()` / `paths()` arrays; circular-safe.
+- **Async traversal** — `.forEachAsync(fn)` / `.mapAsync(fn)` await an `async`
+  callback at each node, and a new `signal?: AbortSignal` option cancels a walk in
+  flight.
+- **`Map` / `Set` support** — `clone()` now deep-clones `Map`/`Set` (keys and
+  values) and `map()` shallow-copies them, instead of silently dropping every
+  entry. (They remain leaf nodes during traversal.)
+
+These are purely additive (no change to existing methods); the only hot-path
+touch is two cheap `instanceof` checks in `copy()` / `clone_node()`, so the
+benchmark numbers above are unaffected.
 
 ## 🔧 Tooling / build
 

@@ -30,6 +30,14 @@ export interface TraverseOptions {
 	 * call stack — useful for bounding untrusted input. Unlimited when omitted.
 	 */
 	maxDepth?: number;
+
+	/**
+	 * Cancel an in-flight async walk ({@link Traverse.forEachAsync} /
+	 * {@link Traverse.mapAsync}). When the signal aborts, the walk rejects with
+	 * the signal's reason on the next visited node. Ignored by the synchronous
+	 * methods.
+	 */
+	signal?: AbortSignal;
 }
 
 export interface TraverseContext {
@@ -221,6 +229,26 @@ function clone_node(
 	const existing = seen.get(src);
 	if (existing !== undefined) return existing; // circular reference back to an ancestor
 
+	// Map/Set deep-clone (structuredClone parity). Handled before copy() so their
+	// entries — which carry no string/symbol keys — are cloned recursively rather
+	// than dropped. `instanceof` keeps the hot path free of a second toString tag.
+	if (src instanceof Map) {
+		const dst = new Map();
+		seen.set(src, dst);
+		for (const [k, v] of src) {
+			dst.set(clone_node(k, seen, options, depth + 1), clone_node(v, seen, options, depth + 1));
+		}
+		seen.delete(src);
+		return dst;
+	}
+	if (src instanceof Set) {
+		const dst = new Set();
+		seen.set(src, dst);
+		for (const v of src) dst.add(clone_node(v, seen, options, depth + 1));
+		seen.delete(src);
+		return dst;
+	}
+
 	const dst = copy(src, options);
 	// typed arrays / boxed primitives are fully materialized by copy()
 	if (is_typed_array(src) || is_boxed_primitive(src)) return dst;
@@ -234,6 +262,30 @@ function clone_node(
 	seen.delete(src);
 
 	return dst;
+}
+
+// Lazy, read-only depth-first walk yielding `[path, node]`. Pull-based, so it
+// never materializes the full paths()/nodes() arrays. Circular-safe via an
+// ancestry Set (a node that points back to an ancestor is yielded but not
+// descended, matching walk()'s circular rule). Honors includeSymbols/maxDepth.
+function* iterate(
+	node: any,
+	path: PropertyKey[],
+	iter: (obj: object) => PropertyKey[],
+	seen: Set<object>,
+	max_depth: number | undefined,
+	depth: number,
+): Generator<[PropertyKey[], any]> {
+	yield [path, node];
+	if (typeof node !== 'object' || node === null) return;
+	if (seen.has(node)) return; // circular — visited, but don't descend
+	assert_within_depth(depth, max_depth);
+	seen.add(node);
+	const keys = iter(node);
+	for (let i = 0; i < keys.length; i++) {
+		yield* iterate(node[keys[i]], path.concat(keys[i]), iter, seen, max_depth, depth + 1);
+	}
+	seen.delete(node);
 }
 
 function own_enumerable_keys(obj: object): PropertyKey[] {
@@ -265,6 +317,11 @@ function copy(src: any, options: TraverseOptions) {
 			// Boxed primitives have read-only index slots; copying onto them throws
 			// in strict mode. The wrapper already carries the primitive value.
 			return Object(src);
+		} else if (src instanceof Map) {
+			// Shallow entry copy (used by map()/immutable). clone_node() deep-clones.
+			return new Map(src);
+		} else if (src instanceof Set) {
+			return new Set(src);
 		} else {
 			// One `toString` tag instead of a separate call per predicate.
 			const tag = to_string(src);
@@ -532,6 +589,104 @@ function walk(
 	return walker(root).node;
 }
 
+// Async twin of walk(): identical shape, but awaits the callback and the
+// recursive descent — so the callback may be `async`. The structural hooks
+// (before/after/pre/post) still run synchronously. Reuses WalkContext/WalkState/
+// copy/update_state/safe_set verbatim; only the recursion is duplicated as async.
+// An optional AbortSignal cancels the walk on the next visited node
+// (`throwIfAborted` rejects the returned promise).
+async function walk_async(
+	root: any,
+	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
+	options: TraverseOptions = empty_null,
+): Promise<any> {
+	const w: WalkState = {
+		alive: true,
+		immutable: !!options.immutable,
+		iter: options.includeSymbols ? own_enumerable_keys : object_keys,
+		max_depth: options.maxDepth,
+		path: [],
+		parents: [],
+	};
+
+	const { immutable, max_depth, path, parents, iter } = w;
+	const signal = options.signal;
+
+	const walker = async (node_: any): Promise<WalkContext> => {
+		signal?.throwIfAborted();
+		assert_within_depth(path.length, max_depth);
+
+		const node0 = immutable ? copy(node_, options) : node_;
+		const ctx = new WalkContext(w, node_, node0);
+
+		if (!w.alive) return ctx;
+
+		// --- inlined initial update_state (keys are null on a fresh ctx) ---
+		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
+		if (node0_is_obj) {
+			const keys0 = iter(node0);
+			ctx.keys = keys0;
+			ctx.isLeaf = keys0.length === 0;
+			for (let i = 0; i < parents.length; i++) {
+				if (parents[i].node_ === node_) {
+					ctx.circular = parents[i];
+					break;
+				}
+			}
+		} else {
+			ctx.isLeaf = true;
+		}
+		// -------------------------------------------------------------------
+
+		const ret = await cb(ctx, node0);
+		if (ret !== undefined) ctx.update(ret);
+
+		const mods = ctx.mods;
+		if (mods !== null && mods.before !== undefined) mods.before(ctx, ctx.node);
+
+		if (!ctx.keep_going) return ctx;
+
+		const node = ctx.node;
+		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
+		if (descend && ctx.circular === undefined) {
+			parents.push(ctx);
+
+			if (node !== node0) update_state(ctx);
+
+			const keys = ctx.keys as PropertyKey[];
+			const last = keys.length - 1;
+			const pre = mods !== null ? mods.pre : undefined;
+			const post = mods !== null ? mods.post : undefined;
+
+			for (let index = 0; index <= last; index++) {
+				const key = keys[index];
+				path.push(key);
+
+				if (pre !== undefined) pre(ctx, node[key], key);
+
+				const child = await walker(node[key]);
+				if (immutable && has_own_property.call(node, key) && !is_non_writable(node, key)) {
+					safe_set(node, key, child.node);
+				}
+
+				child.isLast = index === last;
+				child.isFirst = index === 0;
+
+				if (post !== undefined) post(ctx, child);
+
+				path.pop();
+			}
+			parents.pop();
+		}
+
+		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
+
+		return ctx;
+	};
+
+	return (await walker(root)).node;
+}
+
 export class Traverse {
 	#value: any;
 	#options: TraverseOptions;
@@ -647,6 +802,62 @@ export class Traverse {
 	}
 
 	/**
+	 * Return the first node (including the root) for which `fn` is truthy, or
+	 * `undefined` if none match. Stops walking as soon as a match is found.
+	 */
+	find(fn: (ctx: TraverseContext, v: any) => unknown): any {
+		let result: any;
+		this.forEach((ctx, x) => {
+			if (fn(ctx, x)) {
+				result = x;
+				ctx.stop();
+			}
+		});
+		return result;
+	}
+
+	/**
+	 * Return an `Array` of every node (including the root) for which `fn` is truthy.
+	 */
+	filter(fn: (ctx: TraverseContext, v: any) => unknown): any[] {
+		const acc: any[] = [];
+		this.forEach((ctx, x) => {
+			if (fn(ctx, x)) acc.push(x);
+		});
+		return acc;
+	}
+
+	/**
+	 * Return `true` if `fn` is truthy for any node (including the root). Stops at
+	 * the first match.
+	 */
+	some(fn: (ctx: TraverseContext, v: any) => unknown): boolean {
+		let result = false;
+		this.forEach((ctx, x) => {
+			if (fn(ctx, x)) {
+				result = true;
+				ctx.stop();
+			}
+		});
+		return result;
+	}
+
+	/**
+	 * Return `true` if `fn` is truthy for every node (including the root). Stops at
+	 * the first node that fails.
+	 */
+	every(fn: (ctx: TraverseContext, v: any) => unknown): boolean {
+		let result = true;
+		this.forEach((ctx, x) => {
+			if (!fn(ctx, x)) {
+				result = false;
+				ctx.stop();
+			}
+		});
+		return result;
+	}
+
+	/**
 	 * Return an `Array` of every possible non-cyclic path in the object.
 	 * Paths are `Array`s of string keys.
 	 */
@@ -674,9 +885,58 @@ export class Traverse {
 	}
 
 	/**
-	 * Create a deep clone of the object.
+	 * Create a deep clone of the object. Handles circular references,
+	 * `Date`/`RegExp`/`Error`/typed arrays and `Map`/`Set` (entries are deep-cloned),
+	 * and is prototype-pollution-safe.
 	 */
 	clone(): any {
 		return clone_node(this.#value, new Map(), this.#options, 0);
+	}
+
+	/**
+	 * Lazily yield `[path, node]` for every node (root first), depth-first. Unlike
+	 * `paths()`/`nodes()` this is pull-based — nothing is materialized until you
+	 * iterate. Circular references are visited once and not descended into.
+	 */
+	*entries(): Generator<[PropertyKey[], any]> {
+		const o = this.#options;
+		yield* iterate(
+			this.#value,
+			[],
+			o.includeSymbols ? own_enumerable_keys : object_keys,
+			new Set(),
+			o.maxDepth,
+			0,
+		);
+	}
+
+	/**
+	 * Make `Traverse` iterable: `for (const node of new Traverse(obj))` and
+	 * `[...new Traverse(obj)]` lazily yield every node (the values of `entries()`).
+	 */
+	*[Symbol.iterator](): Generator<any> {
+		for (const [, node] of this.entries()) yield node;
+	}
+
+	/**
+	 * Like `forEach`, but awaits an `async` callback at each node and mutates in
+	 * place. Pass `{ signal }` to cancel via an `AbortController`.
+	 */
+	async forEachAsync(cb: (ctx: TraverseContext, v: any) => void | Promise<void>): Promise<any> {
+		this.#value = await walk_async(this.#value, cb, this.#options);
+		return this.#value;
+	}
+
+	/**
+	 * Like `map`, but awaits an `async` callback at each node and returns a new
+	 * object, leaving the original intact. Pass `{ signal }` to cancel.
+	 */
+	async mapAsync(cb: (ctx: TraverseContext, v: any) => void | Promise<void>): Promise<any> {
+		return walk_async(this.#value, cb, {
+			immutable: true,
+			includeSymbols: !!this.#options.includeSymbols,
+			maxDepth: this.#options.maxDepth,
+			signal: this.#options.signal,
+		});
 	}
 }
