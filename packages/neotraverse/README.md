@@ -4,7 +4,9 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 
 > 📖 **Full docs, security audit & live benchmarks:** **[neotraverse.puruvj.dev](https://neotraverse.puruvj.dev)**
 
-- 🤌 ~2.2 KB min+brotli (modern build)
+**Utility-first:** import named functions from `neotraverse/modern` (`sideEffects: false`) — pay for what you use, not a monolithic class.
+
+- 🤌 **~2–6 KB brotli** (tree-shaken; ~2 KB for one walk like `forEach`, ~5.8 KB for all functions except deprecated `Traverse`)
 - 🚥 Zero dependencies, no polyfills
 - 🎹 TypeScript — throw away `@types/traverse`
 - 🛡️ Safe on untrusted input ([prototype-pollution & injection hardened](#security))
@@ -27,6 +29,16 @@ Core traversal ops (`forEach` / `map` / `clone` / `reduce` / `paths` / `nodes`) 
 ```sh
 npm install neotraverse
 ```
+
+## Bundle size (tree-shaken, brotli)
+
+Measured with esbuild + brotli from published ESM ([`bench/bundle-sizes.json`](./bench/bundle-sizes.json); `pnpm bundle-size`):
+
+| Import | Brotli |
+|--------|--------|
+| One walk terminal (`forEach`, `map`, `find`, `size`, …) | **~2 KB** |
+| Path only (`get` / `has` / `set` or `getPath`) | **~0.3–0.5 KB** |
+| All modern functions (no deprecated `Traverse` class) | **~5.8 KB** |
 
 ## Quick start
 
@@ -89,6 +101,8 @@ traverse(untrusted, { maxDepth: 1000 }).clone();
 ```
 
 ## Migrating from `traverse`
+
+**[Differences from traverse](https://neotraverse.puruvj.dev/guide/vs-traverse)** — drop-in vs modern, what's new, which build to use.
 
 ```diff
 -import traverse from 'traverse';
@@ -157,4 +171,4 @@ Each callback gets a context (`ctx` in modern, `this` in classic) with `node`, `
 
 ## License
 
-[MIT](./LICENSE) — Puru Vijay & James Halliday.
+[MIT](./LICENSE) — [Puru Vijay](https://puruvj.dev).

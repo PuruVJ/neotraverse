@@ -4,20 +4,18 @@ import results from '../../../../packages/neotraverse/bench/results.json';
 
 const metric = ref('throughput'); // 'throughput' | 'memory'
 
-const ORDER = ['traverse', 'neotraverse legacy', 'neotraverse modern', 'neotraverse modern (fn)'];
+const ORDER = ['traverse', 'neotraverse legacy', 'neotraverse modern'];
 const COLOR = {
 	traverse: 'var(--vp-c-text-3)',
 	'neotraverse legacy': 'color-mix(in oklch, var(--vp-c-brand-1) 62%, var(--vp-c-text-3))',
 	'neotraverse modern': 'var(--vp-c-brand-1)',
-	'neotraverse modern (fn)': 'color-mix(in oklch, var(--vp-c-brand-1) 72%, var(--vp-c-bg))',
 };
 
 // compact label: a boxed `n` mark (the neotraverse logo) + build name
-const libDisplay = (name) => {
-	if (name === 'traverse') return { logo: false, text: 'traverse' };
-	const text = name.replace('neotraverse ', '').replace('(fn)', '· fn');
-	return { logo: true, text };
-};
+const libDisplay = (name) =>
+	name === 'traverse'
+		? { logo: false, text: 'traverse' }
+		: { logo: true, text: name.replace('neotraverse ', '') };
 
 const groups = computed(() => {
 	const out = [];
@@ -48,7 +46,6 @@ function rows(suite) {
 	const traverse = suite.results.find((x) => x.name === 'traverse');
 	const vals = ORDER.map((name) => {
 		const r = suite.results.find((x) => x.name === name);
-		if (!r) return 0;
 		return isThroughput ? r.opsPerSec : (r.bytesPerOp ?? 0);
 	});
 	const max = Math.max(...vals, 1);
@@ -73,14 +70,14 @@ function rows(suite) {
 		// multiplier vs traverse (both: higher × = better)
 		let mult = null;
 		if (isThroughput) {
-			mult = suite.speedupVsTraverse?.[name] ?? null;
-		} else if (traverse?.bytesPerOp && r?.bytesPerOp) {
+			mult = suite.speedupVsTraverse[name];
+		} else if (traverse.bytesPerOp && r.bytesPerOp) {
 			mult = +(traverse.bytesPerOp / r.bytesPerOp).toFixed(2); // × less memory
 		}
 		return {
 			name,
 			pct: Math.max(2, (vals[i] / max) * 100),
-			label: r ? (isThroughput ? fmtOps(r.opsPerSec) : fmtMem(r.bytesPerOp)) : '—',
+			label: isThroughput ? fmtOps(r.opsPerSec) : fmtMem(r.bytesPerOp),
 			speed: mult,
 			fastest: i === winnerIdx,
 			color: COLOR[name],
@@ -184,7 +181,7 @@ function rows(suite) {
 }
 .bench-row {
 	display: grid;
-	grid-template-columns: 8.5rem 1fr 9rem;
+	grid-template-columns: 7rem 1fr 9rem;
 	align-items: center;
 	gap: 0.7rem;
 	margin: 0.3rem 0;

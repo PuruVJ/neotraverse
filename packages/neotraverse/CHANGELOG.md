@@ -93,13 +93,27 @@
   - **`ctx.nextSibling()` / `ctx.prevSibling()`** — adjacent sibling snapshots.
   - Deprecated **`Traverse`** class lives in `deprecated.ts` (still re-exported from `neotraverse/modern`).
 
-  `getType()` reports `function`, `arraybuffer`, `dataview`, `weakmap`, `weakset`, and the usual built-ins. See the docs **Types and traversal** section for JSON-like trees vs binary data vs Map walk/clone behaviour.
+  `getType()` reports `function`, `arraybuffer`, `dataview`, `weakmap`, `weakset`, and the usual built-ins. `clone` / `copy` handle `ArrayBuffer`, `DataView`, and weak collections explicitly. See [Types & traversal](https://neotraverse.puruvj.dev/guide/types#types-and-traversal) for JSON-like trees vs binary data vs Map walk/clone behaviour.
 
   ### CI
 
   - npm publish uses **trusted publishing** (OIDC); see `.github/PUBLISHING.md`.
 
   Additive for default/legacy `traverse` importers — only `neotraverse/modern` gains the new surface.
+
+  ## 📖 Documentation
+
+  - Split the monolithic guide into grouped pages: getting started (options, security, [**differences from traverse**](https://neotraverse.puruvj.dev/guide/vs-traverse)), concepts (types, context), and API reference (core, paths, structural, walk, query, iteration, async) with **examples colocated** on each API page.
+  - Introduction hub at `/guide` — documentation map, example index, bundle-size range, migration pointers.
+  - VitePress sidebar groups + [`llms.txt`](https://neotraverse.puruvj.dev/llms.txt) built from the full guide tree.
+  - In-repo and JSDoc links updated (`/guide#…` → split routes).
+
+  ## 📦 Bundle size (tree-shaken brotli)
+
+  Documented **~2–6 KB brotli** range (guide, README, homepage, benchmarks): floor ≈ one walk terminal (`forEach`, `map`, …), ceiling ≈ all modern functions except deprecated `Traverse`. Path-only imports (`get` / `has` / `set`) are smaller (~0.3 KB) because they do not run a full-tree walk.
+
+  - `pnpm bundle-size` — esbuild minify + brotli q11; writes `bench/bundle-sizes.json`.
+  - Utility-first positioning: `sideEffects: false`, named imports from `neotraverse/modern`.
 
   ## 🔧 Tooling / build
 

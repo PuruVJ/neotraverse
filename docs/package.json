@@ -4,6 +4,11 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vitepress dev",
+		"downloads": "node scripts/fetch-npm-downloads.mjs",
+		"discover-github": "node scripts/discover-neotraverse-users.mjs",
+		"discover-npm": "node scripts/discover-npm-dependents.mjs",
+		"discover": "node scripts/discover-neotraverse-users.mjs && node scripts/discover-npm-dependents.mjs",
+		"discover-users": "node scripts/discover-neotraverse-users.mjs",
 		"build": "vitepress build",
 		"preview": "vitepress preview"
 	},

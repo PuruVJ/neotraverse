@@ -4,7 +4,7 @@ layout: home
 hero:
   name: neotraverse
   text: Traverse & transform objects
-  tagline: Zero-dependency, TypeScript-first, prototype-pollution-safe, and up to ~7× faster — a drop-in replacement for traverse.
+  tagline: Zero-dependency, TypeScript-first, prototype-pollution-safe, ~5× faster and ~6× leaner with the functional API (up to ~10× / ~11× peaks). Still a drop-in for traverse.
   actions:
     - theme: brand
       text: Get started
@@ -13,19 +13,19 @@ hero:
       text: Benchmarks
       link: /benchmarks
     - theme: alt
-      text: Blog ↗
+      text: Blog
       link: https://puruvj.dev/blog/neotraverse-0-7
 
 features:
   - icon: 🤌
-    title: Tiny
-    details: ~2.2 KB min+brotli (modern build). Zero dependencies, no polyfills.
+    title: Tree-shakeable
+    details: Utility-first named imports, ~2 KB brotli for one walk (`forEach`), up to ~6 KB for the full modern API (no deprecated class). Zero dependencies.
   - icon: 🛡️
     title: Hardened
     details: Prototype-pollution & injection safe on untrusted input, with an opt-in maxDepth DoS guard.
   - icon: ⚡
     title: Fast
-    details: ~4.5× faster than traverse on average — up to ~7×. Tree-shakeable `import * as t` with paths, diff/patch, and more.
+    details: Functional API (`neotraverse/modern`) averages ~5× throughput and ~6× less heap per walk vs traverse, peaks around ~10× speed and ~11× memory on core shapes. Import only what you need.
   - icon: 🎹
     title: TypeScript
     details: Types included by default. Throw away the @types/traverse package.
@@ -34,5 +34,6 @@ features:
     details: Modern ESM + a legacy ES2015 CJS/ESM drop-in. Works in browsers, Node and Deno.
   - icon: 🔁
     title: Drop-in
-    details: Same API as traverse on the default build — or adopt `neotraverse/modern` for `t.*` functions.
+    details: Same API as traverse on the default build, or adopt `neotraverse/modern` for named, tree-shakeable functions. See differences from traverse.
+    link: /guide/vs-traverse
 ---

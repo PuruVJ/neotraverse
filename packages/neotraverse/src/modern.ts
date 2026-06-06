@@ -11,9 +11,16 @@ type TypedArray =
 	| BigInt64Array
 	| BigUint64Array;
 
+/**
+ * Walk, clone, and async traversal options.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/options
+ */
 export interface TraverseOptions {
 	/**
 	 * If true, does not alter the original object
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/options
 	 */
 	immutable?: boolean;
 
@@ -21,6 +28,8 @@ export interface TraverseOptions {
 	 * If false, removes all symbols from traversed objects
 	 *
 	 * @default false
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/options
 	 */
 	includeSymbols?: boolean;
 
@@ -28,6 +37,8 @@ export interface TraverseOptions {
 	 * Maximum traversal/clone depth. When set, traversing or cloning an object
 	 * nested deeper than this throws a `RangeError` instead of overflowing the
 	 * call stack — useful for bounding untrusted input. Unlimited when omitted.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/security
 	 */
 	maxDepth?: number;
 
@@ -36,6 +47,8 @@ export interface TraverseOptions {
 	 * {@link mapAsync}). When the signal aborts, the walk rejects with
 	 * the signal's reason on the next visited node. Ignored by the synchronous
 	 * methods.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
 	 */
 	signal?: AbortSignal;
 
@@ -43,79 +56,115 @@ export interface TraverseOptions {
 	 * When true, {@link Map} and {@link Set} are not leaves — their entries are
 	 * visited (Map: each value at its key; Set: each element at a numeric index).
 	 * @default false
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/iteration#t-entries
 	 */
 	descendIntoMapSet?: boolean;
 
 	/**
 	 * Max parallel sibling callbacks in {@link forEachAsync} / {@link mapAsync}.
 	 * @default 1
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
 	 */
 	concurrency?: number;
+
 }
 
+/**
+ * Callback context (`ctx`) passed to every traversal function.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/context
+ */
 export interface TraverseContext {
 	/**
 	 * The present node on the recursive walk
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	node: any;
 
 	/**
 	 * An array of string keys from the root to the present node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	path: PropertyKey[];
 
 	/**
 	 * The context of the node's parent.
 	 * This is `undefined` for the root node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	parent: TraverseContext | undefined;
 
 	/**
 	 * The contexts of the node's parents.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	parents: TraverseContext[];
 
 	/**
 	 * The name of the key of the present node in its parent.
 	 * This is `undefined` for the root node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	key: PropertyKey | undefined;
 
 	/**
 	 * Whether the present node is the root node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isRoot: boolean;
 	/**
 	 * Whether the present node is not the root node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	notRoot: boolean;
 
 	/**
 	 * Whether the present node is the last node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isLast: boolean;
 
 	/**
 	 * Whether the present node is the first node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isFirst: boolean;
 
 	/**
 	 * Whether or not the present node is a leaf node (has no children)
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isLeaf: boolean;
 	/**
 	 * Whether or not the present node is not a leaf node (has children)
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	notLeaf: boolean;
 
 	/**
 	 * Depth of the node within the traversal
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	level: number;
 
 	/**
 	 * If the node equals one of its parents, the `circular` attribute is set to the context of that parent and the traversal progresses no deeper.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context#context-circular
 	 */
 	circular: TraverseContext | undefined;
 
@@ -123,64 +172,89 @@ export interface TraverseContext {
 	 * Set a new value for the present node.
 	 *
 	 * All the elements in `value` will be recursively traversed unless `stopHere` is true (false by default).
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	update(value: any, stopHere?: boolean): void;
 
 	/**
 	 * Remove the current element from the output. If the node is in an Array it will be spliced off. Otherwise it will be deleted from its parent.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	remove(stopHere?: boolean): void;
 
 	/**
 	 * Delete the current element from its parent in the output. Calls `delete` even on Arrays.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	delete(stopHere?: boolean): void;
 
 	/**
 	 * Object keys of the node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	keys: PropertyKey[] | null;
 
 	/**
 	 * Call this function before all of the children are traversed.
 	 * You can assign into `ctx.keys` here to traverse in a custom order.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	before(callback: (ctx: TraverseContext, value: any) => void): void;
 
 	/**
 	 * Call this function after all of the children are traversed.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	after(callback: (ctx: TraverseContext, value: any) => void): void;
 
 	/**
 	 * Call this function before each of the children are traversed.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	pre(callback: (ctx: TraverseContext, child: any, key: any) => void): void;
 
 	/**
 	 * Call this function after each of the children are traversed.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	post(callback: (ctx: TraverseContext, child: any) => void): void;
 
 	/**
 	 * Stops traversal entirely.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	stop(): void;
 
 	/**
 	 * Prevents traversing descendents of the current node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context#context-block
 	 */
 	block(): void;
 
 	/**
 	 * Next sibling context, or `undefined`. Reads live parent state (not `isLast`).
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context#context-siblings
 	 */
 	nextSibling(): TraverseContext | undefined;
 
 	/**
 	 * Previous sibling context, or `undefined`. Reads live parent state (not `isFirst`).
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context#context-siblings
 	 */
 	prevSibling(): TraverseContext | undefined;
+
 }
 
 const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
@@ -246,9 +320,7 @@ function clone_node(
 	depth: number,
 ): any {
 	if (typeof src !== 'object' || src === null) return src;
-
 	assert_within_depth(depth, options.maxDepth);
-
 	const existing = seen.get(src);
 	if (existing !== undefined) return existing; // circular reference back to an ancestor
 
@@ -290,11 +362,9 @@ function clone_node(
 		seen.set(src, dst);
 		return dst;
 	}
-
 	const dst = copy(src, options);
 	// typed arrays / boxed primitives are fully materialized by copy()
 	if (is_typed_array(src) || is_boxed_primitive(src)) return dst;
-
 	seen.set(src, dst);
 	const keys = options.includeSymbols ? own_enumerable_keys(src) : object_keys(src);
 	for (let i = 0; i < keys.length; i++) {
@@ -302,7 +372,6 @@ function clone_node(
 		safe_set(dst, key, clone_node(src[key], seen, options, depth + 1));
 	}
 	seen.delete(src);
-
 	return dst;
 }
 
@@ -332,14 +401,12 @@ function* iterate(
 
 function own_enumerable_keys(obj: object): PropertyKey[] {
 	const res: PropertyKey[] = object_keys(obj);
-
 	const symbols = get_own_property_symbols(obj);
 	for (let i = 0; i < symbols.length; i++) {
 		if (is_property_enumerable.call(obj, symbols[i])) {
 			res.push(symbols[i]);
 		}
 	}
-
 	return res;
 }
 
@@ -401,7 +468,6 @@ function copy(src: any, options: TraverseOptions) {
 
 		return dst;
 	}
-
 	return src;
 }
 
@@ -437,6 +503,8 @@ interface Modifiers {
  * for each of `update`/`remove`/`before`/… and a separate `modifiers` object.
  * That, plus the lazily-derived {@link path}, is what makes the modern build
  * dramatically faster and lighter on the GC than the classic design.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
  */
 class WalkContext implements TraverseContext {
 	node: any;
@@ -455,7 +523,6 @@ class WalkContext implements TraverseContext {
 	w: WalkState;
 	keep_going = true;
 	mods: Modifiers | null = null;
-
 	constructor(w: WalkState, node_: any, node: any) {
 		const { path, parents } = w;
 		const level = path.length;
@@ -493,7 +560,6 @@ class WalkContext implements TraverseContext {
 		}
 		return out;
 	}
-
 	update(x: any, stopHere: boolean = false): void {
 		if (!this.isRoot) {
 			safe_set((this.parent as WalkContext).node, this.key as PropertyKey, x);
@@ -501,12 +567,10 @@ class WalkContext implements TraverseContext {
 		this.node = x;
 		if (stopHere) this.keep_going = false;
 	}
-
 	delete(stopHere?: boolean): void {
 		delete (this.parent as WalkContext).node[this.key as PropertyKey];
 		if (stopHere) this.keep_going = false;
 	}
-
 	remove(stopHere?: boolean): void {
 		const parent = (this.parent as WalkContext).node;
 		if (is_array(parent)) {
@@ -516,7 +580,6 @@ class WalkContext implements TraverseContext {
 		}
 		if (stopHere) this.keep_going = false;
 	}
-
 	before(f: (ctx: TraverseContext, value: any) => void): void {
 		(this.mods ??= {}).before = f;
 	}
@@ -535,7 +598,6 @@ class WalkContext implements TraverseContext {
 	block(): void {
 		this.keep_going = false;
 	}
-
 	nextSibling(): WalkContext | undefined {
 		const parent = this.parent as WalkContext | undefined;
 		if (!parent?.keys || this.key === undefined) return undefined;
@@ -558,7 +620,6 @@ class WalkContext implements TraverseContext {
 		};
 		return new WalkContext(w2, sibNode, sibNode);
 	}
-
 	prevSibling(): WalkContext | undefined {
 		const parent = this.parent as WalkContext | undefined;
 		if (!parent?.keys || this.key === undefined) return undefined;
@@ -628,7 +689,6 @@ function descend_children(
 	const { path, parents } = w;
 	const pre = mods !== null ? mods.pre : undefined;
 	const post = mods !== null ? mods.post : undefined;
-
 	if (w.descend_map_set && node instanceof Map) {
 		const entries = [...node.entries()];
 		const last = entries.length - 1;
@@ -645,7 +705,6 @@ function descend_children(
 		}
 		return;
 	}
-
 	if (w.descend_map_set && node instanceof Set) {
 		const vals = [...node];
 		const last = vals.length - 1;
@@ -660,7 +719,6 @@ function descend_children(
 		}
 		return;
 	}
-
 	const keys = ctx.keys as PropertyKey[];
 	const last = keys.length - 1;
 	for (let index = 0; index <= last; index++) {
@@ -704,7 +762,11 @@ function initial_keys(w: WalkState, node0: object, iter: (obj: object) => Proper
 	return iter(node0);
 }
 
-/** Depth-first walk; {@link forEach} and {@link map} use this internally. */
+/**
+ * Depth-first walk; {@link forEach} and {@link map} use this internally.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-walk
+ */
 export function walk(
 	root: any,
 	cb: (ctx: TraverseContext, v: any) => void,
@@ -712,7 +774,6 @@ export function walk(
 ) {
 	const w = make_walk_state(options);
 	const { immutable, max_depth, parents, iter } = w;
-
 	const walker = (node_: any): WalkContext => {
 		assert_within_depth(w.path.length, max_depth);
 
@@ -757,7 +818,6 @@ export function walk(
 
 		return ctx;
 	};
-
 	return walker(root).node;
 }
 
@@ -775,7 +835,6 @@ async function walk_async(
 	const w = make_walk_state(options);
 	const { immutable, parents, iter } = w;
 	const signal = options.signal;
-
 	const walker = async (node_: any, state: WalkState = w): Promise<WalkContext> => {
 		signal?.throwIfAborted();
 		assert_within_depth(state.path.length, state.max_depth);
@@ -821,7 +880,6 @@ async function walk_async(
 
 		return ctx;
 	};
-
 	return (await walker(root)).node;
 }
 
@@ -838,7 +896,6 @@ async function descend_children_async(
 	const pre = mods !== null ? mods.pre : undefined;
 	const post = mods !== null ? mods.post : undefined;
 	const limit = w.concurrency;
-
 	const visitOne = async (key: PropertyKey, childVal: any, index: number, last: number) => {
 		const childState: WalkState = {
 			alive: w.alive,
@@ -860,7 +917,6 @@ async function descend_children_async(
 		child.isFirst = index === 0;
 		if (post !== undefined) post(ctx, child);
 	};
-
 	if (w.descend_map_set && node instanceof Map) {
 		const entries = [...node.entries()];
 		const last = entries.length - 1;
@@ -875,7 +931,6 @@ async function descend_children_async(
 		}
 		return;
 	}
-
 	if (w.descend_map_set && node instanceof Set) {
 		const vals = [...node];
 		const last = vals.length - 1;
@@ -889,7 +944,6 @@ async function descend_children_async(
 		}
 		return;
 	}
-
 	const keys = ctx.keys as PropertyKey[];
 	const last = keys.length - 1;
 	for (let start = 0; start <= last; start += limit) {
@@ -920,7 +974,6 @@ function walk_bfs(
 	const queue: BfsQueueItem[] = [{ node_: root, parents: [], path: [] }];
 	let head = 0;
 	let rootOut = root;
-
 	while (head < queue.length && w.alive) {
 		const item = queue[head++];
 		const { node_, parents, path } = item;
@@ -1004,11 +1057,14 @@ function walk_bfs(
 
 		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
 	}
-
 	return rootOut;
 }
 
-/** Breadth-first {@link forEach}; visit order is level-by-level, not depth-first. */
+/**
+ * Breadth-first {@link forEach}; visit order is level-by-level, not depth-first.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-bfs
+ */
 export function breadthFirst(
 	obj: any,
 	cb: (ctx: TraverseContext, v: any) => void,
@@ -1017,7 +1073,11 @@ export function breadthFirst(
 	return walk_bfs(obj, cb, options);
 }
 
-/** Breadth-first {@link map} (immutable clone with callback writeback). */
+/**
+ * Breadth-first {@link map} (immutable clone with callback writeback).
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-bfs
+ */
 export function mapBfs(
 	obj: any,
 	cb: (ctx: TraverseContext, v: any) => void,
@@ -1029,6 +1089,8 @@ export function mapBfs(
 /**
  * Callback helper: calls {@link TraverseContext.block} when `pred` is truthy.
  * Compose with other callbacks in a single {@link forEach} / {@link map} pass.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/walk#t-skip-where
  */
 export function skipWhere(
 	pred: (ctx: TraverseContext, value: any) => unknown,
@@ -1038,7 +1100,11 @@ export function skipWhere(
 	};
 }
 
-/** Bucket every visited value by `keyFn(ctx, value)` in one walk. */
+/**
+ * Bucket every visited value by `keyFn(ctx, value)` in one walk.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-group-by
+ */
 export function groupBy(
 	obj: any,
 	keyFn: (ctx: TraverseContext, value: any) => PropertyKey,
@@ -1057,8 +1123,19 @@ export function groupBy(
 	return buckets;
 }
 
+/**
+ * Options for {@link merge}.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-merge
+ */
 export interface MergeOptions extends TraverseOptions {
-	/** How to combine two arrays at the same path. @default `'replace'` */
+	/**
+	 * How to combine two arrays at the same path.
+	 *
+	 * @default `'replace'`
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/walk#t-merge
+	 */
 	array?: 'replace' | 'concat';
 }
 
@@ -1073,7 +1150,6 @@ function merge_pair(target: any, source: any, options: MergeOptions, depth: numb
 	if (st === 'null' || st === 'primitive' || st === 'function') return clone(source, options);
 	if (!mergeable_object_type(st) || !mergeable_object_type(tt) || st !== tt) return clone(source, options);
 	if (options.maxDepth !== undefined && depth >= options.maxDepth) return clone(source, options);
-
 	if (st === 'array') {
 		if (options.array === 'concat') return target.concat(source.map((v: any) => clone(v, options)));
 		const out: any[] = [];
@@ -1090,7 +1166,6 @@ function merge_pair(target: any, source: any, options: MergeOptions, depth: numb
 		}
 		return out;
 	}
-
 	if (st === 'map') {
 		const out = new Map(target);
 		for (const [k, v] of source) {
@@ -1103,7 +1178,6 @@ function merge_pair(target: any, source: any, options: MergeOptions, depth: numb
 		}
 		return out;
 	}
-
 	const out = { ...target };
 	const keys = object_keys(source);
 	for (let i = 0; i < keys.length; i++) {
@@ -1122,14 +1196,27 @@ function merge_pair(target: any, source: any, options: MergeOptions, depth: numb
  * Deep-merge `source` into a clone of `target` (does not mutate `target`).
  * Plain objects and Map entries merge recursively; arrays replace index-by-index
  * unless `array: 'concat'`. Other types are replaced from `source`.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-merge
  */
 export function merge(target: any, source: any, options?: MergeOptions): any {
 	const base = clone(target, options);
 	return merge_pair(base, source, options ?? empty_null, 0);
 }
 
+/**
+ * Options for {@link dereference}.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-dereference
+ */
 export interface DereferenceOptions extends TraverseOptions {
-	/** Only resolve refs whose string starts with `#` (JSON Pointer). @default true */
+	/**
+	 * Only resolve refs whose string starts with `#` (JSON Pointer).
+	 *
+	 * @default true
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/walk#t-dereference
+	 */
 	localOnly?: boolean;
 }
 
@@ -1146,12 +1233,13 @@ function is_ref_object(node: any): node is { $ref: string } {
 /**
  * Resolve local JSON Pointer `$ref` objects (`"#/…"`) on a cloned tree.
  * External / URL refs are left unchanged.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/walk#t-dereference
  */
 export function dereference(obj: any, options?: DereferenceOptions): any {
 	const localOnly = options?.localOnly !== false;
 	const root = clone(obj, options);
 	const cache = new Map<string, any>();
-
 	const resolveRef = (ref: string): any => {
 		if (localOnly && !ref.startsWith('#')) return undefined;
 		const pointer = ref.startsWith('#') ? ref.slice(1) : ref;
@@ -1163,7 +1251,6 @@ export function dereference(obj: any, options?: DereferenceOptions): any {
 		}
 		return hit === undefined ? undefined : clone(hit, options);
 	};
-
 	return map(
 		root,
 		(ctx) => {
@@ -1182,10 +1269,12 @@ export function dereference(obj: any, options?: DereferenceOptions): any {
 // Tree-shakeable functional API. Terminal ops take options as the last argument.
 // No pipe() helper: ops are heterogeneous; map/clone nest as plain calls.
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-get-set-has
+ */
 export function get(obj: any, paths: PropertyKey[], options?: TraverseOptions): any {
 	let node = obj;
 	const symbols = options?.includeSymbols;
-
 	for (let i = 0; node && i < paths.length; i++) {
 		const key = paths[i];
 
@@ -1195,14 +1284,15 @@ export function get(obj: any, paths: PropertyKey[], options?: TraverseOptions): 
 
 		node = node[key];
 	}
-
 	return node;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-get-set-has
+ */
 export function has(obj: any, paths: PropertyKey[], options?: TraverseOptions): boolean {
 	let node = obj;
 	const symbols = options?.includeSymbols;
-
 	for (let i = 0; node && i < paths.length; i++) {
 		const key = paths[i];
 
@@ -1212,13 +1302,14 @@ export function has(obj: any, paths: PropertyKey[], options?: TraverseOptions): 
 
 		node = node[key];
 	}
-
 	return true;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-get-set-has
+ */
 export function set(obj: any, path: PropertyKey[], value: any, _options?: TraverseOptions): any {
 	let node = obj;
-
 	let i = 0;
 	for (i = 0; i < path.length - 1; i++) {
 		const key = path[i];
@@ -1231,14 +1322,14 @@ export function set(obj: any, path: PropertyKey[], value: any, _options?: Traver
 
 		node = node[key];
 	}
-
 	if (is_unsafe_key(path[i])) return value;
-
 	node[path[i]] = value;
-
 	return value;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-map
+ */
 export function map(
 	obj: any,
 	cb: (ctx: TraverseContext, v: any) => void,
@@ -1247,6 +1338,9 @@ export function map(
 	return walk(obj, cb, { ...options, immutable: true });
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-forEach
+ */
 export function forEach(
 	obj: any,
 	cb: (ctx: TraverseContext, v: any) => void,
@@ -1255,6 +1349,9 @@ export function forEach(
 	return walk(obj, cb, options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-reduce
+ */
 export function reduce(
 	obj: any,
 	cb: (ctx: TraverseContext, acc: any, v: any) => any,
@@ -1263,16 +1360,17 @@ export function reduce(
 ): any {
 	const skip = arguments.length === 2;
 	let acc = skip ? obj : init;
-
 	forEach(obj, (ctx, x) => {
 		if (!ctx.isRoot || !skip) {
 			acc = cb(ctx, acc, x);
 		}
 	}, options);
-
 	return acc;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/query#t-query
+ */
 export function find(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1288,6 +1386,9 @@ export function find(
 	return result;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/query#t-query
+ */
 export function filter(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1300,6 +1401,9 @@ export function filter(
 	return acc;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/query#t-query
+ */
 export function some(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1315,6 +1419,9 @@ export function some(
 	return result;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/query#t-query
+ */
 export function every(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1330,30 +1437,38 @@ export function every(
 	return result;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-paths-nodes
+ */
 export function paths(obj: any, options?: TraverseOptions): PropertyKey[][] {
 	const acc: PropertyKey[][] = [];
-
 	forEach(obj, (ctx) => {
 		acc.push(ctx.path);
 	}, options);
-
 	return acc;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-paths-nodes
+ */
 export function nodes(obj: any, options?: TraverseOptions): any[] {
 	const acc: any[] = [];
-
 	forEach(obj, (ctx) => {
 		acc.push(ctx.node);
 	}, options);
-
 	return acc;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-clone
+ */
 export function clone(obj: any, options?: TraverseOptions): any {
 	return clone_node(obj, new Map(), options ?? empty_null, 0);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/iteration#t-entries
+ */
 export function* entries(
 	obj: any,
 	options?: TraverseOptions,
@@ -1368,10 +1483,16 @@ export function* entries(
 	);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/iteration#t-values
+ */
 export function* values(obj: any, options?: TraverseOptions): Generator<any> {
 	for (const [, node] of entries(obj, options)) yield node;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
+ */
 export async function forEachAsync(
 	obj: any,
 	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
@@ -1380,6 +1501,9 @@ export async function forEachAsync(
 	return walk_async(obj, cb, options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
+ */
 export async function mapAsync(
 	obj: any,
 	cb: (ctx: TraverseContext, v: any) => void | Promise<void>,
@@ -1388,7 +1512,11 @@ export async function mapAsync(
 	return walk_async(obj, cb, { ...options, immutable: true });
 }
 
-/** Locked union — do not rename tags after release. */
+/**
+ * Locked union — do not rename tags after release. Returned by {@link getType}.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/types#types-and-traversal
+ */
 export type TraverseNodeType =
 	| 'null'
 	| 'primitive'
@@ -1408,7 +1536,9 @@ export type TraverseNodeType =
 
 /**
  * Classify a value for branching inside traversal callbacks.
- * See the [types reference](/guide#types-and-traversal) for walk vs clone behaviour per tag.
+ * See the [types reference](https://neotraverse.puruvj.dev/guide/types#types-and-traversal) for walk vs clone behaviour per tag.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-get-type
  */
 export function getType(value: unknown): TraverseNodeType {
 	if (value === null) return 'null';
@@ -1442,12 +1572,19 @@ function assertSafePath(keys: PropertyKey[]): void {
 	}
 }
 
-/** Dot notation (`a.b.0`). Use a leading `/` for JSON Pointer (`/a/b/0`). */
+/**
+ * Dot notation (`a.b.0`). Use a leading `/` for JSON Pointer (`/a/b/0`).
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function parsePath(path: string): PropertyKey[] {
 	if (path.startsWith('/')) return parseJsonPointer(path);
 	return parseDotPath(path);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function parseDotPath(path: string): PropertyKey[] {
 	const keys: PropertyKey[] = [];
 	let cur = '';
@@ -1469,6 +1606,9 @@ export function parseDotPath(path: string): PropertyKey[] {
 	return keys;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function parseJsonPointer(pointer: string): PropertyKey[] {
 	if (pointer === '') return [];
 	if (!pointer.startsWith('/')) throw new Error('neotraverse: JSON Pointer must start with "/"');
@@ -1478,6 +1618,9 @@ export function parseJsonPointer(pointer: string): PropertyKey[] {
 	return keys;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function pointerPath(path: PropertyKey[]): string {
 	return (
 		'/' +
@@ -1491,18 +1634,30 @@ export function pointerPath(path: PropertyKey[]): string {
 	);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function getPath(obj: any, path: string, options?: TraverseOptions): any {
 	return get(obj, parsePath(path), options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function hasPath(obj: any, path: string, options?: TraverseOptions): boolean {
 	return has(obj, parsePath(path), options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-string-paths
+ */
 export function setPath(obj: any, path: string, value: any, options?: TraverseOptions): any {
 	return set(obj, parsePath(path), value, options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-find-paths
+ */
 export function findPaths(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1518,11 +1673,30 @@ export function findPaths(
 	return found;
 }
 
+/**
+ * A `path` and `node` pair returned by path query helpers.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-find-paths
+ */
 export interface PathNode {
+	/**
+	 * Key path from the root to the node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/paths#t-find-paths
+	 */
 	path: PropertyKey[];
+
+	/**
+	 * Value at {@link path}.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/paths#t-find-paths
+	 */
 	node: any;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-find-paths
+ */
 export function filterPaths(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1535,6 +1709,9 @@ export function filterPaths(
 	return acc;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-count
+ */
 export function count(
 	obj: any,
 	fn?: (ctx: TraverseContext, v: any) => unknown,
@@ -1547,10 +1724,16 @@ export function count(
 	return n;
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-count
+ */
 export function size(obj: any, options?: TraverseOptions): number {
 	return count(obj, undefined, options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-prune
+ */
 export function deleteWhere(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1561,6 +1744,9 @@ export function deleteWhere(
 	}, options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-prune
+ */
 export function prune(
 	obj: any,
 	fn: (ctx: TraverseContext, v: any) => unknown,
@@ -1569,6 +1755,9 @@ export function prune(
 	return deleteWhere(obj, (ctx, x) => !fn(ctx, x), options);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-prune-deep
+ */
 export function pruneDeep(
 	obj: any,
 	maxDepth: number,
@@ -1587,6 +1776,9 @@ export function pruneDeep(
 	);
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-freeze
+ */
 export function freeze(obj: any, options?: TraverseOptions): any {
 	forEach(obj, (ctx) => {
 		ctx.after(() => {
@@ -1597,11 +1789,25 @@ export function freeze(obj: any, options?: TraverseOptions): any {
 	return obj;
 }
 
+/**
+ * Options for {@link deepEqual}.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-deep-equal
+ */
 export interface DeepEqualOptions {
+	/**
+	 * Custom per-pair comparator; return `undefined` to fall back to structural equality.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/structural#t-deep-equal
+	 */
 	compareFn?: (a: any, b: any) => boolean | undefined;
 }
 
-/** Structural equality with an explicit per-type contract (not identical to `clone()`). */
+/**
+ * Structural equality with an explicit per-type contract (not identical to `clone()`).
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-deep-equal
+ */
 export function deepEqual(a: any, b: any, options?: DeepEqualOptions): boolean {
 	const seen = new Map<any, Map<any, boolean>>();
 	return deepEqualPair(a, b, options?.compareFn, seen);
@@ -1620,18 +1826,14 @@ function deepEqualPair(
 	}
 	if (typeof a !== typeof b) return false;
 	if (a === null || b === null) return a === b;
-
 	if (is_boxed_primitive(a) || is_boxed_primitive(b)) {
 		if (!is_boxed_primitive(a) || !is_boxed_primitive(b)) return false;
 		return Object(a).valueOf() === Object(b).valueOf();
 	}
-
 	const ta = getType(a);
 	const tb = getType(b);
 	if (ta !== tb) return false;
-
 	if (ta === 'primitive' || ta === 'null') return a === b;
-
 	if (typeof a === 'object' && typeof b === 'object') {
 		let pairs = seen.get(a);
 		if (pairs?.has(b)) return true;
@@ -1641,7 +1843,6 @@ function deepEqualPair(
 		}
 		pairs.set(b, true);
 	}
-
 	switch (ta) {
 		case 'date':
 			return (a as Date).getTime() === (b as Date).getTime();
@@ -1731,12 +1932,27 @@ function deepEqualPair(
 	}
 }
 
+/**
+ * Options for {@link toJSON}.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-to-json
+ */
 export interface ToJSONOptions extends TraverseOptions {
-	/** Value inserted where a circular reference is detected. @default null */
+	/**
+	 * Value inserted where a circular reference is detected.
+	 *
+	 * @default null
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/structural#t-to-json
+	 */
 	cycle?: null | string;
 }
 
-/** JSON.stringify after a walk; does not throw on circular references. */
+/**
+ * JSON.stringify after a walk; does not throw on circular references.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-to-json
+ */
 export function toJSON(obj: any, options?: ToJSONOptions): string {
 	const cycle = options?.cycle ?? null;
 	const prepared = map(obj, (ctx) => {
@@ -1755,12 +1971,21 @@ export function toJSON(obj: any, options?: ToJSONOptions): string {
 	return JSON.stringify(prepared);
 }
 
+/**
+ * RFC 6902 patch operation (`add` | `remove` | `replace`).
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-diff
+ */
 export type PatchOp =
 	| { op: 'add'; path: string; value: any }
 	| { op: 'remove'; path: string }
 	| { op: 'replace'; path: string; value: any };
 
-/** RFC 6902 subset (`add` / `remove` / `replace`). Circular graphs are not supported. */
+/**
+ * RFC 6902 subset (`add` / `remove` / `replace`). Circular graphs are not supported.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-diff
+ */
 export function diff(a: any, b: any): PatchOp[] {
 	const ops: PatchOp[] = [];
 	diffPair(a, b, [], ops, new WeakSet());
@@ -1769,20 +1994,16 @@ export function diff(a: any, b: any): PatchOp[] {
 
 function diffPair(a: any, b: any, path: PropertyKey[], ops: PatchOp[], stack: WeakSet<object>): void {
 	if (a === b) return;
-
 	const ta = getType(a);
 	const tb = getType(b);
-
 	if (ta !== tb || ta === 'primitive' || ta === 'null') {
 		ops.push({ op: 'replace', path: pointerPath(path), value: clone(b) });
 		return;
 	}
-
 	if (typeof a === 'object' && a !== null) {
 		if (stack.has(a)) return;
 		stack.add(a);
 	}
-
 	if (ta === 'array') {
 		const max = Math.max(a.length, b.length);
 		for (let i = 0; i < max; i++) {
@@ -1797,7 +2018,6 @@ function diffPair(a: any, b: any, path: PropertyKey[], ops: PatchOp[], stack: We
 		}
 		return;
 	}
-
 	if (
 		ta === 'map' ||
 		ta === 'set' ||
@@ -1816,7 +2036,6 @@ function diffPair(a: any, b: any, path: PropertyKey[], ops: PatchOp[], stack: We
 		}
 		return;
 	}
-
 	const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
 	for (const k of keys) {
 		const p = path.concat(k);
@@ -1828,6 +2047,9 @@ function diffPair(a: any, b: any, path: PropertyKey[], ops: PatchOp[], stack: We
 	}
 }
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/structural#t-diff
+ */
 export function patch(obj: any, ops: PatchOp[]): any {
 	let root = clone(obj);
 	for (let i = 0; i < ops.length; i++) {
@@ -1874,6 +2096,9 @@ function removeAt(root: any, keys: PropertyKey[]): any {
 
 type GlobSeg = { kind: 'any' } | { kind: 'literal'; key: string } | { kind: 'keyAnyIndex'; key: string };
 
+/**
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-select
+ */
 export function parseGlob(glob: string): GlobSeg[] {
 	return glob
 		.split('.')
@@ -1908,7 +2133,11 @@ function pathMatches(path: PropertyKey[], segs: GlobSeg[]): boolean {
 	return i === path.length;
 }
 
-/** Glob path query (`*`, `key[*]`, dot segments). Predicate search → `filterPaths`. */
+/**
+ * Glob path query (`*`, `key[*]`, dot segments). Predicate search → `filterPaths`.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/paths#t-select
+ */
 export function select(obj: any, glob: string, options?: TraverseOptions): PathNode[] {
 	const segs = parseGlob(glob);
 	const acc: PathNode[] = [];

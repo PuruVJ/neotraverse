@@ -11,9 +11,16 @@ type TypedArray =
 	| BigInt64Array
 	| BigUint64Array;
 
+/**
+ * Walk and clone options (legacy `Traverse` constructor).
+ *
+ * @see https://neotraverse.puruvj.dev/guide/options
+ */
 export interface TraverseOptions {
 	/**
 	 * If true, does not alter the original object
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/options
 	 */
 	immutable?: boolean;
 
@@ -21,6 +28,8 @@ export interface TraverseOptions {
 	 * If false, removes all symbols from traversed objects
 	 *
 	 * @default false
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/options
 	 */
 	includeSymbols?: boolean;
 
@@ -28,73 +37,107 @@ export interface TraverseOptions {
 	 * Maximum traversal/clone depth. When set, traversing or cloning an object
 	 * nested deeper than this throws a `RangeError` instead of overflowing the
 	 * call stack — useful for bounding untrusted input. Unlimited when omitted.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/security
 	 */
 	maxDepth?: number;
+
 }
 
+/**
+ * Callback context (`this` / `ctx`) in legacy `Traverse` callbacks.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/context
+ */
 export interface TraverseContext {
 	/**
 	 * The present node on the recursive walk
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	node: any;
 
 	/**
 	 * An array of string keys from the root to the present node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	path: PropertyKey[];
 
 	/**
 	 * The context of the node's parent.
 	 * This is `undefined` for the root node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	parent: TraverseContext | undefined;
 
 	/**
 	 * The contexts of the node's parents.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	parents: TraverseContext[];
 
 	/**
 	 * The name of the key of the present node in its parent.
 	 * This is `undefined` for the root node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	key: PropertyKey | undefined;
 
 	/**
 	 * Whether the present node is the root node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isRoot: boolean;
 	/**
 	 * Whether the present node is not the root node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	notRoot: boolean;
 
 	/**
 	 * Whether the present node is the last node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isLast: boolean;
 
 	/**
 	 * Whether the present node is the first node
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isFirst: boolean;
 
 	/**
 	 * Whether or not the present node is a leaf node (has no children)
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	isLeaf: boolean;
 	/**
 	 * Whether or not the present node is not a leaf node (has children)
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	notLeaf: boolean;
 
 	/**
 	 * Depth of the node within the traversal
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	level: number;
 
 	/**
 	 * If the node equals one of its parents, the `circular` attribute is set to the context of that parent and the traversal progresses no deeper.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context#context-circular
 	 */
 	circular: TraverseContext | undefined;
 
@@ -102,54 +145,75 @@ export interface TraverseContext {
 	 * Set a new value for the present node.
 	 *
 	 * All the elements in `value` will be recursively traversed unless `stopHere` is true (false by default).
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	update(value: any, stopHere?: boolean): void;
 
 	/**
 	 * Remove the current element from the output. If the node is in an Array it will be spliced off. Otherwise it will be deleted from its parent.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	remove(stopHere?: boolean): void;
 
 	/**
 	 * Delete the current element from its parent in the output. Calls `delete` even on Arrays.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	delete(stopHere?: boolean): void;
 
 	/**
 	 * Object keys of the node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	keys: PropertyKey[] | null;
 
 	/**
 	 * Call this function before all of the children are traversed.
 	 * You can assign into `this.keys` here to traverse in a custom order.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	before(callback: (this: TraverseContext, value: any) => void): void;
 
 	/**
 	 * Call this function after all of the children are traversed.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	after(callback: (this: TraverseContext, value: any) => void): void;
 
 	/**
 	 * Call this function before each of the children are traversed.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	pre(callback: (this: TraverseContext, child: any, key: any) => void): void;
 
 	/**
 	 * Call this function after each of the children are traversed.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	post(callback: (this: TraverseContext, child: any) => void): void;
 
 	/**
 	 * Stops traversal entirely.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	stop(): void;
 
 	/**
 	 * Prevents traversing descendents of the current node.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/context
 	 */
 	block(): void;
+
 }
 
 const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
@@ -197,14 +261,12 @@ function assert_within_depth(depth: number, max_depth: number | undefined): void
 
 function own_enumerable_keys(obj: object): PropertyKey[] {
 	const res: PropertyKey[] = Object.keys(obj);
-
 	const symbols = get_own_property_symbols(obj);
 	for (let i = 0; i < symbols.length; i++) {
 		if (is_property_enumerable.call(obj, symbols[i])) {
 			res.push(symbols[i]);
 		}
 	}
-
 	return res;
 }
 
@@ -247,7 +309,6 @@ function copy(src: any, options: TraverseOptions) {
 
 		return dst;
 	}
-
 	return src;
 }
 
@@ -264,11 +325,9 @@ function walk(
 	const path: PropertyKey[] = [];
 	const parents: any[] = [];
 	let alive = true;
-
 	const iterator_function = options.includeSymbols ? own_enumerable_keys : Object.keys;
 	const immutable = !!options.immutable;
 	const max_depth = options.maxDepth;
-
 	return (function walker(node_) {
 		assert_within_depth(path.length, max_depth);
 
@@ -426,19 +485,23 @@ function walk(
 	})(root).node;
 }
 
-/** @deprecated Import `Traverse` from `neotraverse/modern` instead */
+/**
+ * @deprecated Import `Traverse` from `neotraverse/modern` instead
+ *
+ * @see https://neotraverse.puruvj.dev/legacy#methods
+ */
 export class Traverse {
 	// ! Have to keep these public as legacy mode requires them
 	#value: any;
 	#options: TraverseOptions;
-
 	constructor(obj: any, options: TraverseOptions = empty_null) {
 		this.#value = obj;
 		this.#options = options;
 	}
-
 	/**
 	 * Get the element at the array `path`.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	get(paths: PropertyKey[]): any {
 		let node = this.#value;
@@ -458,9 +521,10 @@ export class Traverse {
 
 		return node;
 	}
-
 	/**
 	 * Return whether the element at the array `path` exists.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	has(paths: PropertyKey[]): boolean {
 		let node = this.#value;
@@ -480,9 +544,10 @@ export class Traverse {
 
 		return true;
 	}
-
 	/**
 	 * Set the element at the array `path` to `value`.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	set(path: PropertyKey[], value: any): any {
 		let node = this.#value;
@@ -508,9 +573,10 @@ export class Traverse {
 
 		return value;
 	}
-
 	/**
 	 * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	map(cb: (this: TraverseContext, v: any) => void): any {
 		return walk(this.#value, cb, {
@@ -519,19 +585,21 @@ export class Traverse {
 			maxDepth: this.#options.maxDepth,
 		});
 	}
-
 	/**
 	 * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	forEach(cb: (this: TraverseContext, v: any) => void): any {
 		this.#value = walk(this.#value, cb, this.#options);
 		return this.#value;
 	}
-
 	/**
 	 * For each node in the object, perform a [left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function)) with the return value of `fn(acc, node)`.
 	 *
 	 * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	reduce(cb: (this: TraverseContext, acc: any, v: any) => void, init?: any): any {
 		const skip = arguments.length === 1;
@@ -545,10 +613,11 @@ export class Traverse {
 
 		return acc;
 	}
-
 	/**
 	 * Return an `Array` of every possible non-cyclic path in the object.
 	 * Paths are `Array`s of string keys.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	paths(): PropertyKey[][] {
 		const acc: PropertyKey[][] = [];
@@ -559,9 +628,10 @@ export class Traverse {
 
 		return acc;
 	}
-
 	/**
 	 * Return an `Array` of every node in the object.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	nodes(): any[] {
 		const acc: any[] = [];
@@ -572,9 +642,10 @@ export class Traverse {
 
 		return acc;
 	}
-
 	/**
 	 * Create a deep clone of the object.
+	 *
+	 * @see https://neotraverse.puruvj.dev/legacy#methods
 	 */
 	clone(): any {
 		const parents: any[] = [];
@@ -629,6 +700,8 @@ const traverse = (obj: any, options?: TraverseOptions): Traverse => {
 
 /**
  * Get the element at the array `path`.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-get-set-has
  */
 traverse.get = (obj: any, paths: PropertyKey[], options?: TraverseOptions): any => {
 	return new Traverse(obj, options).get(paths);
@@ -636,6 +709,8 @@ traverse.get = (obj: any, paths: PropertyKey[], options?: TraverseOptions): any 
 
 /**
  * Set the element at the array `path` to `value`.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-get-set-has
  */
 traverse.set = (obj: any, path: PropertyKey[], value: any, options?: TraverseOptions): any => {
 	return new Traverse(obj, options).set(path, value);
@@ -643,6 +718,8 @@ traverse.set = (obj: any, path: PropertyKey[], value: any, options?: TraverseOpt
 
 /**
  * Return whether the element at the array `path` exists.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-get-set-has
  */
 traverse.has = (obj: any, paths: PropertyKey[], options?: TraverseOptions): boolean => {
 	return new Traverse(obj, options).has(paths);
@@ -650,6 +727,8 @@ traverse.has = (obj: any, paths: PropertyKey[], options?: TraverseOptions): bool
 
 /**
  * Execute `fn` for each node in the object and return a new object with the results of the walk. To update nodes in the result use `this.update(value)`.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-map
  */
 traverse.map = (
 	obj: any,
@@ -661,6 +740,8 @@ traverse.map = (
 
 /**
  * Execute `fn` for each node in the object but unlike `.map()`, when `this.update()` is called it updates the object in-place.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-forEach
  */
 traverse.forEach = (
 	obj: any,
@@ -674,6 +755,8 @@ traverse.forEach = (
  * For each node in the object, perform a [left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function)) with the return value of `fn(acc, node)`.
  *
  * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/core#t-reduce
  */
 traverse.reduce = (
 	obj: any,
@@ -687,6 +770,8 @@ traverse.reduce = (
 /**
  * Return an `Array` of every possible non-cyclic path in the object.
  * Paths are `Array`s of string keys.
+	 *
+	 * @see https://neotraverse.puruvj.dev/guide/api/core#t-paths-nodes
  */
 traverse.paths = (obj: any, options?: TraverseOptions): PropertyKey[][] => {
 	return new Traverse(obj, options).paths();
@@ -694,6 +779,8 @@ traverse.paths = (obj: any, options?: TraverseOptions): PropertyKey[][] => {
 
 /**
  * Return an `Array` of every node in the object.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-paths-nodes
  */
 traverse.nodes = (obj: any, options?: TraverseOptions): any[] => {
 	return new Traverse(obj, options).nodes();
@@ -701,6 +788,8 @@ traverse.nodes = (obj: any, options?: TraverseOptions): any[] => {
 
 /**
  * Create a deep clone of the object.
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core#t-clone
  */
 traverse.clone = (obj: any, options?: TraverseOptions): any => {
 	return new Traverse(obj, options).clone();

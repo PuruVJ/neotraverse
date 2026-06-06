@@ -13,9 +13,10 @@ This is the original `traverse`-compatible API — a **drop-in replacement** for
 - **`neotraverse/legacy`** — a CJS + ESM build targeting **ES2015**, for older bundlers / runtimes.
 
 ::: tip Building something new?
-For new code, prefer the [**modern build**](/guide) (`neotraverse/modern`) — the same engine, but with a `ctx`
-argument, query / iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page
-documents the stable classic API, which stays a faithful `traverse` drop-in.
+See [**Differences from traverse**](/guide/vs-traverse) for a full comparison. For new code, prefer the
+[**modern build**](/guide) (`neotraverse/modern`) — the same engine, but with a `ctx` argument, query /
+iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page documents the stable
+classic API, which stays a faithful `traverse` drop-in.
 :::
 
 ## Install
@@ -105,7 +106,7 @@ traverse(obj, {
 });
 ```
 
-> The async-only `signal` option lives on the [modern build](/guide#options).
+> The async-only `signal` option lives on the [modern build](/guide/options).
 
 ## Methods
 
@@ -144,7 +145,7 @@ Read / write / test the element at an array `path`. `get`/`has` only follow own 
 prototype-polluting keys.
 
 > The query / iteration / async helpers (`find`, `filter`, `for…of`, `forEachAsync`, …) and `Map`/`Set` cloning
-> are **modern-build only** — see the [modern docs](/guide#methods).
+> are **modern-build only** — see the [modern API reference](/guide/api/core).
 
 ## Context
 
@@ -183,4 +184,4 @@ See the [**Migration guide**](/migration) for the full `traverse → neotraverse
 
 ## License
 
-[MIT](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/LICENSE) — Puru Vijay & James Halliday.
+[MIT](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/LICENSE) — [Puru Vijay](https://puruvj.dev).

@@ -2,8 +2,10 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitepress';
+import { fetchNpmDownloads } from '../scripts/fetch-npm-downloads.mjs';
 
 const DOCS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..'); // the docs/ root
+const NPM_DOWNLOADS_JSON = join(DOCS_DIR, '.vitepress/data/npm-downloads.json');
 
 // Strip VitePress/Vue-specific syntax to plain Markdown for llms.txt.
 function toPlain(md: string): string {
@@ -22,8 +24,24 @@ function toPlain(md: string): string {
 }
 
 // Combine the docs into a single plain-Markdown llms.txt.
+const GUIDE_PAGES = [
+	'guide.md',
+	'guide/vs-traverse.md',
+	'guide/options.md',
+	'guide/security.md',
+	'guide/types.md',
+	'guide/context.md',
+	'guide/api/core.md',
+	'guide/api/paths.md',
+	'guide/api/structural.md',
+	'guide/api/walk.md',
+	'guide/api/query.md',
+	'guide/api/iteration.md',
+	'guide/api/async.md',
+];
+
 function generate_llms(): string {
-	const files = ['guide.md', 'legacy.md', 'migration.md', 'benchmarks.md'];
+	const files = [...GUIDE_PAGES, 'legacy.md', 'migration.md', 'benchmarks.md'];
 	const parts = [
 		'# neotraverse',
 		'',
@@ -62,22 +80,47 @@ export default defineConfig({
 		nav: [
 			{ text: 'Docs', link: '/guide' },
 			{ text: 'Benchmarks', link: '/benchmarks' },
-			{ text: 'Blog ↗', link: 'https://puruvj.dev/blog/neotraverse-0-7' },
+			{ text: 'Blog', link: 'https://puruvj.dev/blog/neotraverse-0-7' },
 			{ text: 'npm', link: 'https://www.npmjs.com/package/neotraverse' },
 		],
 		sidebar: [
 			{
-				text: 'Guide',
+				text: 'Getting started',
 				items: [
-					{ text: 'Documentation', link: '/guide' },
-					{ text: 'Legacy / Classic API', link: '/legacy' },
-					{ text: 'Migrating from traverse', link: '/migration' },
-					{ text: 'Benchmarks', link: '/benchmarks' },
+					{ text: 'Introduction', link: '/guide' },
+					{ text: 'Differences from traverse', link: '/guide/vs-traverse' },
+					{ text: 'Options', link: '/guide/options' },
+					{ text: 'Security', link: '/guide/security' },
 				],
 			},
 			{
-				text: 'Reference',
-				items: [{ text: 'llms.txt ↗', link: '/llms.txt', target: '_blank' }],
+				text: 'Concepts',
+				items: [
+					{ text: 'Types & traversal', link: '/guide/types' },
+					{ text: 'Context', link: '/guide/context' },
+				],
+			},
+			{
+				text: 'API reference',
+				collapsed: false,
+				items: [
+					{ text: 'Core traversal', link: '/guide/api/core' },
+					{ text: 'Paths & metrics', link: '/guide/api/paths' },
+					{ text: 'Structural helpers', link: '/guide/api/structural' },
+					{ text: 'Walk variants', link: '/guide/api/walk' },
+					{ text: 'Query helpers', link: '/guide/api/query' },
+					{ text: 'Lazy iteration', link: '/guide/api/iteration' },
+					{ text: 'Async traversal', link: '/guide/api/async' },
+				],
+			},
+			{
+				text: 'More',
+				items: [
+					{ text: 'Legacy / Classic API', link: '/legacy' },
+					{ text: 'Migrating from traverse', link: '/migration' },
+					{ text: 'Benchmarks', link: '/benchmarks' },
+					{ text: 'llms.txt', link: '/llms.txt', target: '_blank' },
+				],
 			},
 		],
 		socialLinks: [{ icon: 'github', link: 'https://github.com/PuruVJ/neotraverse' }],
@@ -88,13 +131,24 @@ export default defineConfig({
 		},
 		footer: {
 			message: 'Released under the MIT License.',
-			copyright: 'Copyright © Puru Vijay & James Halliday',
+			copyright: 'Copyright © <a href="https://puruvj.dev" target="_blank" rel="noreferrer">Puru Vijay</a>',
 		},
 	},
 	vite: {
 		// allow importing bench/results.json from the sibling package
 		server: { fs: { allow: ['..'] } },
 		plugins: [
+			{
+				name: 'npm-downloads-fetch',
+				async buildStart() {
+					try {
+						await fetchNpmDownloads({ outFile: NPM_DOWNLOADS_JSON, quiet: true });
+					} catch (err) {
+						if (!existsSync(NPM_DOWNLOADS_JSON)) throw err;
+						console.warn('[npm-downloads] fetch failed; using committed data:', (err as Error).message);
+					}
+				},
+			},
 			{
 				// Serve /llms.txt as a live endpoint in dev (no file on disk).
 				name: 'llms-txt-endpoint',

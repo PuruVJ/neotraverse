@@ -46,7 +46,8 @@
 		"compile": "tsdown && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
 		"test": "vitest run",
 		"test:cov": "vitest run --coverage",
-		"bench": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run.ts"
+		"bench": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run.ts",
+		"bundle-size": "node scripts/measure-bundle.mjs"
 	},
 	"repository": {
 		"type": "git",
@@ -64,7 +65,8 @@
 		"clone"
 	],
 	"author": {
-		"name": "Puru Vijay, James Halliday"
+		"name": "Puru Vijay",
+		"url": "https://puruvj.dev"
 	},
 	"publishConfig": {
 		"provenance": true

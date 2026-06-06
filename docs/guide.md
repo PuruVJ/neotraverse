@@ -1,5 +1,5 @@
 ---
-title: Documentation
+title: Introduction
 outline: [2, 3]
 ---
 
@@ -7,20 +7,22 @@ outline: [2, 3]
 
 Traverse and transform objects by visiting every node on a recursive walk. A TypeScript rewrite of
 [`traverse`](https://github.com/ljharb/js-traverse) with **0 dependencies**, **prototype-pollution hardening**,
-and **~4.5× the throughput** (up to ~7×).
+and **~5× the throughput** with the functional API (up to **~10×** on core walks) and **~6× less allocation** per op.
 
-::: tip This page documents the **modern** build
-`neotraverse/modern` is the recommended API: **tree-shakeable** functions (`import * as t from 'neotraverse/modern'`), an explicit `ctx` argument, query / iteration / async helpers, and the fastest path operations.
+::: tip Utility-first, tree-shakeable API
+Import **only what you use** from `neotraverse/modern` (`sideEffects: false`). Named imports like
+`import { forEach } from 'neotraverse/modern'` pull in one walk; importing every function (except the deprecated
+`Traverse` class) is the upper bound. See [Bundle size (brotli)](#bundle-size-brotli) below.
 
-**Looking for a drop-in replacement for `traverse`?** That's the classic `this`-bound API — see the
-[**Legacy / Classic API**](/legacy).
+**Coming from `traverse`?** See [**Differences from traverse**](/guide/vs-traverse) (drop-in vs modern) or the
+[**Legacy / Classic API**](/legacy) for the `this`-bound reference.
 :::
 
-- 🤌 ~2.2 KB min+brotli
+- 🤌 **~2–6 KB brotli** (tree-shaken modern build; see [bundle range](#bundle-size-brotli))
 - 🚥 Zero dependencies, no polyfills
-- 🎹 Types included — drop `@types/traverse`
-- 🛡️ Safe on untrusted input (see [Security](#security))
-- ⚡ ~4.5× faster than `traverse` — up to ~7× (see [benchmarks](/benchmarks))
+- 🎹 Types included: drop `@types/traverse`
+- 🛡️ Safe on untrusted input (see [Security](/guide/security))
+- ⚡ ~5× faster and ~6× leaner than `traverse` with `neotraverse/modern`, up to ~10× / ~11× (see [benchmarks](/benchmarks))
 - 🧰 Query helpers, lazy iteration, async traversal, `Map`/`Set` clone
 
 ## Install
@@ -31,9 +33,6 @@ npm install neotraverse
 ```
 
 ## Quick start
-
-Use a namespace import so each method is tree-shakeable. Every callback receives a `ctx` argument; pass options
-as the **last** argument when you need them:
 
 ```ts
 import * as t from 'neotraverse/modern';
@@ -57,602 +56,85 @@ tree-to-tree ops such as `t.map` and `t.clone` compose as plain nested calls (`t
 explicit initial value as the third argument for a seeded fold: `t.reduce(obj, cb, 0)`. Seedless calls cannot
 also pass options positionally; pass an explicit seed (for example `undefined`) if you need options.
 
-## Security
-
-`neotraverse` is designed to be safe to run on **untrusted data**.
-
-- **No prototype pollution.** `set(path, value)` refuses to navigate or write through `__proto__`,
-  `constructor`, or `prototype`, so an attacker-controlled path can't reach `Object.prototype`.
-- **No prototype injection.** `clone()`, `map()`, and `forEach()` assign keys without ever triggering the
-  `__proto__` setter. An object parsed from hostile JSON such as `{"__proto__":{"isAdmin":true}}` is cloned with
-  its real prototype intact — `result.isAdmin` is `undefined`, and the injected value is preserved as an inert
-  own data property.
-- **Prototype preservation still works.** Legitimate class instances keep their prototype (`instanceof` is
-  unaffected) after `clone()`/`map()`.
-- **No prototype-chain disclosure.** `get()` and `has()` only ever follow **own** properties.
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const evil = JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
-const safe = t.clone(evil);
-
-safe.isAdmin;                         // undefined — not polluted
-Object.getPrototypeOf(safe);          // Object.prototype
-({}).isAdmin;                         // undefined — global prototype untouched
-```
-
-Read the story of the audit that produced these guarantees in the
-[**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
-
-### DoS guard — `maxDepth`
-
-Traversal is recursive, so a deeply-nested hostile object can overflow the stack. Pass `maxDepth` to bound it; a
-catchable `RangeError` is thrown before the native overflow. Unlimited when omitted (default behaviour is
-unchanged).
-
-```ts
-import * as t from 'neotraverse/modern';
-
-try {
-  t.clone(untrusted, { maxDepth: 1000 });
-} catch (e) {
-  // RangeError: neotraverse: maximum traversal depth (1000) exceeded
-}
-```
-
-## Options
-
-Pass options as the **last** argument (for example `t.forEach(obj, cb, { maxDepth: 100 })`). `t.map` and
-`t.mapAsync` always run immutably; other ops default to in-place mutation unless you set `immutable: true`.
-
-```ts
-{
-  immutable: false,      // if true, never mutate the original object
-  includeSymbols: false, // if true, also traverse own enumerable symbol keys
-  maxDepth: undefined,   // bound recursion depth (throws RangeError when exceeded)
-  signal: undefined,     // AbortSignal — cancels forEachAsync()/mapAsync()
-}
-```
-
-## Types and traversal {#types-and-traversal}
-
-How neotraverse treats different JavaScript values. Use `t.getType(node)` inside callbacks; use `typeof` when you
-need finer detail inside the `'primitive'` bucket (`'string'` vs `'number'`, etc.).
-
-### JSON-like trees (the common case)
-
-If your data looks like **`JSON.parse` output** — plain objects, arrays, `null`, strings, numbers, booleans, and
-nested combinations — you are on the supported path:
-
-- **`forEach` / `map` / `reduce`** visit every own enumerable property.
-- **`clone`** deep-copies structure and handles circular references.
-- **`get` / `set` / `has`** and **`getPath`** follow own keys only (no prototype chain).
-- **`includeSymbols: false`** (default) matches JSON (no symbol keys).
-
-Typical API/config/document trees need nothing special. Add **`Date`**, **`RegExp`**, **`Map`**, or **`Set`** when
-your runtime actually uses them; see the table below for walk vs clone differences.
-
-### Full type reference
-
-| Kind | `getType()` | `forEach` / `map` walk | `clone()` | Notes |
-|------|-------------|------------------------|-----------|--------|
-| `null` | `'null'` | Visited | Copied | |
-| `string`, `number`, `boolean`, `bigint`, `symbol`, `undefined` | `'primitive'` | Visited as values | Copied | Use `typeof` to branch |
-| `function` | `'function'` | Node value only; not invoked | Same reference on properties | Stripped by `toJSON()` |
-| Plain object, class instance | `'object'` | Descends into **own enumerable** keys | Deep clone; keeps prototype | Boxed `new String()` etc. are `'object'` **leaves** |
-| `Array` | `'array'` | Descends indices | Deep clone | |
-| `Date` | `'date'` | Leaf (no keys) | Cloned via `getTime()` | |
-| `RegExp` | `'regexp'` | Leaf | Cloned | |
-| `Map` | `'map'` | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each **value** at its key | **Deep-clones entries** | Transform entries via `clone`, `descendIntoMapSet`, or a manual loop |
-| `Set` | `'set'` | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each element at a numeric index | **Deep-clones values** | Same as `Map` |
-| `WeakMap` / `WeakSet` | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk) | **`clone` / `copy` return the same reference** (entries are not copied) | Cannot query weak refs after GC |
-| Typed array (`Uint8Array`, …) | `'typed-array'` | Descends index keys; `copy` uses `.slice()` | Leaf in deep clone (buffer copied) | |
-| `ArrayBuffer` | `'arraybuffer'` | Leaf | `.slice(0)` | |
-| `DataView` | `'dataview'` | Leaf | Clones viewed byte range | |
-| `Error` | `'error'` | Leaf | Deep clone; shallow `map` copy is lossy (`message` only) | `deepEqual`: `message` + `name` |
-| `Promise`, `URL`, DOM nodes, … | `'object'` | Own enumerable keys only, if any | Generic object copy | Host objects may behave oddly |
-
-### Deliberate limits
-
-- **No prototype walking** — only own properties (`get`/`has` never follow the chain). Safer on untrusted input.
-- **No non-enumerable / getter-only keys** unless you add your own logic.
-- **`Map` / `Set` vs walk** — by default the walker sees the collection as one node; pass **`descendIntoMapSet: true`**
-  to visit entries. **`clone`** always deep-copies entries regardless.
-- **Boxed primitives** (`new String('x')`) — classified as `'object'`, treated as **leaves**; unwrap with
-  `.valueOf()` when needed.
-- **`diff` / `patch`** — acyclic trees only; circular graphs are unsupported.
-- **Cross-realm** — `instanceof` may fail; `copy()` falls back to tag checks for `Date` / `RegExp`.
-
-### Quick checks in callbacks
-
-```ts
-import * as t from 'neotraverse/modern';
-
-t.forEach(data, (ctx, x) => {
-  switch (t.getType(x)) {
-    case 'primitive':
-      if (typeof x === 'string') { /* … */ }
-      break;
-    case 'function':
-      // present on the tree, but not called by neotraverse
-      break;
-    case 'map':
-    case 'set':
-      // walk leaf — use t.clone(x) or iterate x yourself
-      break;
-    case 'arraybuffer':
-    case 'dataview':
-    case 'typed-array':
-      // binary data; clone copies bytes
-      break;
-    default:
-      break;
-  }
-});
-```
-
-## Examples
-
-### Transform negative numbers in place
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
-
-t.forEach(obj, (ctx, x) => {
-  if (x < 0) ctx.update(x + 128);
-});
-// → [ 5, 6, 125, [ 7, 8, 126, 1 ], { f: 10, g: 115 } ]
-```
-
-### Immutable map (original untouched)
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const input = { a: 1, nested: { b: 2 } };
-const out = t.map(input, (ctx, x) => {
-  if (typeof x === 'number') ctx.update(x * 10);
-});
-// out → { a: 10, nested: { b: 20 } }
-// input is unchanged
-```
-
-### Redact fields and strip secrets
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const apiPayload = {
-  user: 'alice',
-  token: 'secret',
-  profile: { email: 'a@example.com', password: 'hunter2' },
-};
-
-const safe = t.deleteWhere(structuredClone(apiPayload), (_, x) =>
-  x === 'secret' || x === 'hunter2',
-);
-// drops matching nodes; original apiPayload unchanged if you cloned first
-```
-
-### Dot-path read / write
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const config = { server: { host: 'localhost', port: 3000 } };
-
-t.getPath(config, 'server.port'); // 3000
-t.setPath(config, 'server.port', 8080);
-t.hasPath(config, 'server.tls'); // false
-
-// JSON Pointer (leading slash)
-t.getPath(config, '/server/host'); // 'localhost' after set
-```
-
-### Find where a value lives
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const tree = { users: [{ id: 1 }, { id: 2, flag: true }] };
-
-t.findPaths(tree, (_, x) => x === true); // ['users', '1', 'flag']
-t.filterPaths(tree, (ctx) => ctx.isLeaf && typeof ctx.node === 'number');
-// → [{ path: ['users','0','id'], node: 1 }, …]
-```
-
-### Glob-style `select`
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const data = { users: [{ email: 'a@x.com' }, { email: 'b@x.com' }] };
-
-t.select(data, 'users[*].email');
-// → [{ path: ['users','0','email'], node: 'a@x.com' }, …]
-```
-
-### Sum with `reduce`
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const nested = { a: 1, b: { c: 2, d: 3 } };
-const sum = t.reduce(nested, (_, acc, x) => (typeof x === 'number' ? acc + x : acc), 0);
-// 6
-```
-
-### Clone, then freeze for a read-only snapshot
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const snapshot = t.freeze(t.clone(liveConfig));
-// snapshot is deeply frozen; liveConfig can still change
-```
-
-### Cycle-safe JSON for logging
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const graph: any = { name: 'root' };
-graph.self = graph;
-
-console.log(t.toJSON(graph)); // {"name":"root","self":null}
-```
-
-### Diff and patch (config updates)
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const v1 = { title: 'Hi', items: [1, 2] };
-const v2 = { title: 'Hello', items: [1, 3], extra: true };
-
-const ops = t.diff(v1, v2);
-const v2FromV1 = t.patch(structuredClone(v1), ops);
-// v2FromV1 deep-equals v2 (acyclic trees)
-```
-
-### Collect leaf nodes
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const leaves = t.filter({ a: [1, 2, 3], b: 4, d: { e: [7, 8], f: 9 } }, (ctx) => ctx.isLeaf);
-// → [ 1, 2, 3, 4, 7, 8, 9 ]
-```
-
-### Scrub circular references
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const obj = { a: 1, b: 2, c: [3, 4] };
-obj.c.push(obj);
-
-const scrubbed = t.map(obj, (ctx) => {
-  if (ctx.circular) ctx.remove();
-});
-// → { a: 1, b: 2, c: [ 3, 4 ] }
-```
-
-### Skip a subtree with `block`
-
-```ts
-import * as t from 'neotraverse/modern';
-
-t.forEach(config, (ctx) => {
-  if (ctx.key === 'skipMe') ctx.block();
-  if (typeof ctx.node === 'number') ctx.update(ctx.node * 2);
-});
-// nodes under `skipMe` are not visited or updated
-```
-
-### Branch on node kind with `getType`
-
-```ts
-import * as t from 'neotraverse/modern';
-
-t.map(doc, (ctx) => {
-  switch (t.getType(ctx.node)) {
-    case 'date':
-      ctx.update(ctx.node.toISOString());
-      break;
-    case 'map':
-    case 'set':
-      // Map/Set are walk leaves — clone handles entries
-      break;
-  }
-});
-```
-
-### Transform every node asynchronously
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const translated = await t.mapAsync(doc, async (ctx, x) => {
-  if (typeof x === 'string') ctx.update(await translate(x));
-});
-```
-
-## Methods
-
-Import as `import * as t from 'neotraverse/modern'`. Each callback that takes `fn` receives the
-[context](#context) below.
-
-### Core
-
-#### t.map {#t-map}
-
-`t.map(obj, fn, options?)` runs `fn` for each node and returns a **new** object. Update nodes in the result with
-`ctx.update(value)`.
-
-#### t.forEach {#t-forEach}
-
-`t.forEach(obj, fn, options?)` is like `t.map`, but `ctx.update()` mutates `obj` **in place** (returns the same
-reference).
-
-#### t.reduce {#t-reduce}
-
-`t.reduce(obj, fn, init?, options?)` is a [left-fold](https://en.wikipedia.org/wiki/Fold_(higher-order_function))
-over every node. Omit `init` to start from the root and skip the root node in the fold.
-
-#### t.paths and t.nodes {#t-paths-nodes}
-
-`t.paths(obj, options?)` and `t.nodes(obj, options?)` return every non-cyclic path or every node.
-
-#### t.clone {#t-clone}
-
-`t.clone(obj, options?)` deep-clones. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and
-`Map`/`Set` (entries deep-cloned), and is prototype-pollution-safe.
-
-#### t.get, t.set, t.has {#t-get-set-has}
-
-`t.get(obj, path, options?)`, `t.set(obj, path, value, options?)`, and `t.has(obj, path, options?)` read / write /
-test at an array `path`. `get`/`has` only follow own properties; `set` refuses prototype-polluting keys.
-
-### Paths & metrics
-
-#### t.findPaths · t.filterPaths {#t-find-paths}
-
-Return **where** a match occurred, not only the value. `findPaths` stops at the first hit; `filterPaths` returns
-`{ path, node }[]`.
-
-```ts
-t.findPaths(tree, (_, x) => x?.type === 'error');
-t.filterPaths(tree, (ctx) => ctx.level === 2);
-```
-
-#### t.getPath · t.setPath · t.hasPath {#t-string-paths}
-
-String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Pointer (`/a/b/0`). Unsafe segments
-(`__proto__`, etc.) throw at parse time.
-
-#### t.count · t.size {#t-count}
-
-`size(obj)` counts every visited node. `count(obj, fn)` counts nodes where the predicate is true.
-
-#### t.getType {#t-get-type}
-
-`getType(value)` returns a stable tag for branching inside callbacks. See
-[Types and traversal](#types-and-traversal) for the full matrix (walk vs clone vs JSON-like data).
-
-### Structural helpers
-
-#### t.deleteWhere · t.prune {#t-prune}
-
-`deleteWhere` returns a new tree with matching nodes removed (`map` + `ctx.remove()`). `prune` keeps nodes where
-the predicate is true (inverse). Map/Set stay whole leaves.
-
-#### t.pruneDeep {#t-prune-deep}
-
-Replace nodes deeper than `maxDepth` with a sentinel (default `null`). Unlike the `maxDepth` **option**, this does
-not throw.
-
-#### t.deepEqual {#t-deep-equal}
-
-Structural compare with an explicit per-type contract (Dates by time, RegExp by source+flags, etc.). Optional
-`compareFn` can override pairs. Not guaranteed to match `clone()` byte-for-byte (e.g. `Error` fields).
-
-#### t.toJSON {#t-to-json}
-
-`JSON.stringify` after a walk; circular references become `null` (configurable via `cycle`).
-
-#### t.freeze {#t-freeze}
-
-Deep-freeze in place (children before parents). Pair with `clone` when you need an immutable snapshot.
-
-#### t.diff · t.patch {#t-diff}
-
-RFC 6902 subset (`add` / `remove` / `replace`). `diff(a, b)` returns ops; `patch(clone(a), ops)` applies them.
-Acyclic trees only.
-
-#### t.select {#t-select}
-
-Glob path query: `*`, `key[*]`, dot segments. For predicate search, use `filterPaths`.
-
-### Walk variants
-
-#### t.walk {#t-walk}
-
-`t.walk(obj, cb, options?)` is the low-level depth-first walker behind `forEach` and `map`. It returns the (possibly
-mutated) root. Prefer `forEach` / `map` unless you need the same callback shape with a different return contract.
-
-#### t.breadthFirst · t.mapBfs {#t-bfs}
-
-Level-order traversal. `breadthFirst` mutates in place like `forEach`; `mapBfs` clones first like `map`. Visit order
-differs from DFS — do not assume `isFirst` / `isLast` match sibling order in the queue.
-
-#### t.skipWhere {#t-skip-where}
-
-Predicate helper that calls `ctx.block()` — equivalent to `if (pred(ctx, v)) ctx.block()` inside your callback.
-Compose with other logic in a single pass.
-
-```ts
-t.forEach(tree, (ctx, v) => {
-  t.skipWhere((c) => c.level > 2)(ctx, v);
-  // …
-});
-```
-
-#### t.groupBy {#t-group-by}
-
-One walk; buckets every visited value: `Map<PropertyKey, any[]>`. Usually combine with `ctx.isLeaf` or `typeof` so
-the root object does not land in a bucket.
-
-#### t.merge {#t-merge}
-
-`merge(target, source, options?)` returns a **new** tree (does not mutate `target`). Plain objects and `Map` entries
-merge recursively; arrays take indices from `source` (length follows `source`, default **`array: 'replace'`**). Use
-`{ array: 'concat' }` to append.
-
-#### t.dereference {#t-dereference}
-
-Resolve local JSON Pointer `$ref` objects (`{ "$ref": "#/definitions/Foo" }`) on a clone. External URL refs are left
-unchanged (`localOnly` defaults to `true`).
-
-### Context helpers
-
-#### ctx.nextSibling · ctx.prevSibling {#t-siblings}
-
-Return a lightweight sibling context (path snapshot only — not a full re-walk). Reads live `parent.keys`; unlike
-`isFirst` / `isLast`, safe when you need the adjacent key’s node.
-
-### Async concurrency
-
-`forEachAsync` / `mapAsync` accept `{ concurrency: n }` (default `1`) to run up to **n** sibling callbacks in
-parallel. Each branch gets an isolated path/parent snapshot — intended for I/O-bound work; pair with `signal` to abort.
-
-### Query helpers
-
-#### t.find, t.filter, t.some, t.every {#t-query}
-
-`t.find`, `t.filter`, `t.some`, and `t.every` search over every node (root included). `find`/`some` stop at the
-first match; `every` stops at the first failure.
-
-```ts
-import * as t from 'neotraverse/modern';
-
-const tree = { a: 1, b: { c: 2, d: 3 } };
-
-t.find(tree, (ctx, x) => x === 2); // 2
-t.filter(tree, (ctx) => ctx.isLeaf); // [1, 2, 3]
-t.some(tree, (ctx, x) => x > 2); // true
-t.every(tree, (ctx, x) => typeof x !== 'string'); // true
-```
-
-### Lazy iteration — `t.entries` · `t.values`
-
-Pull nodes without materializing `t.paths` / `t.nodes`. Circular references are visited once and not descended
-into.
-
-#### t.values {#t-values}
-
-`for (const node of t.values(tree))` and `[...t.values(tree)]` yield every node depth-first (like `t.nodes()`, but
-lazy).
-
-#### t.entries {#t-entries}
-
-`t.entries(obj, options?)` yields `[path, node]` pairs.
-
-```ts
-for (const node of t.values(tree)) {
-  /* every node */
-}
-
-for (const [path, node] of t.entries(tree)) {
-  /* path: PropertyKey[], node: value at that path */
-}
-```
-
-### Async — `t.forEachAsync` · `t.mapAsync`
-
-The callback may be `async` and is awaited at each node. Pass `signal` in options to cancel via
-[`AbortController`](https://developer.mozilla.org/docs/Web/API/AbortController).
-
-```ts
-const out = await t.mapAsync(tree, async (ctx, x) => {
-  if (typeof x === 'number') ctx.update(await slowDouble(x));
-});
-
-const controller = new AbortController();
-const walking = t.forEachAsync(big, async (ctx) => { /* … */ }, { signal: controller.signal });
-controller.abort(); // → `walking` rejects with the abort reason
-```
-
-::: info Map and Set are leaf nodes
-`forEach`, `map`, `paths`, `nodes`, and lazy iteration treat `Map`/`Set` as **leaf nodes**. Only `clone` (and the
-shallow `map` copy) descend into their entries.
+## Bundle size (brotli) {#bundle-size-brotli}
+
+Sizes are **minified ESM + brotli** after your bundler tree-shakes `neotraverse/modern` (measured with esbuild;
+see [`bench/bundle-sizes.json`](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/bench/bundle-sizes.json)).
+Reproduce with `pnpm bundle-size` in `packages/neotraverse`.
+
+| What you import | Brotli (approx.) | Notes |
+|-----------------|------------------|--------|
+| **One walk terminal** (`forEach`, `map`, `find`, `size`, …) | **~2 KB** | Same ballpark for any single DFS callback op |
+| **Path helpers only** (`get` / `has` / `set`, or `getPath`) | **~0.3–0.5 KB** | No full-tree walk, keyed access / parse only |
+| **`clone` only** | **~0.9 KB** | Deep copy without installing the walk callback surface |
+| **All modern functions** (everything except deprecated `Traverse`) | **~5.8 KB** | Upper bound when you use the full toolkit |
+
+**Range: ~2–6 KB brotli**, floor is one traversal (`forEach`-class import), ceiling is the full function surface.
+
+::: warning Do not confuse with the prebuilt min file
+Importing the entire `dist/modern/min/modern.js` without tree-shaking is ~5.8 KB brotli, same as “all functions”.
+Always use **named imports** so dead code drops out.
 :::
 
-## Context
+## Documentation map
 
-Every callback receives a context — the `ctx` argument:
+**Getting started**
 
-| Property                            | Description                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------ |
-| `node`                              | The present node.                                                         |
-| `path`                              | Array of keys from the root to the present node.                         |
-| `parent` / `parents`                | The parent context / all ancestor contexts.                              |
-| `key`                               | The key of the present node in its parent (`undefined` at the root).     |
-| `isRoot` / `notRoot`                | Whether the node is the root.                                            |
-| `isLeaf` / `notLeaf`                | Whether the node has no children.                                        |
-| `isFirst` / `isLast`                | Whether the node is the first / last sibling.                            |
-| `level`                             | Depth of the node within the traversal.                                  |
-| `circular`                          | The ancestor context this node is a cycle back to, if any.               |
-| `update(value, stopHere?)`          | Set a new value for the node. Stops descending when `stopHere` is true.  |
-| `remove(stopHere?)`                 | Remove from the output (spliced from arrays, deleted otherwise).         |
-| `delete(stopHere?)`                 | `delete` from the parent (even on arrays).                               |
-| `keys`                              | The node's keys — assign in `before()` to traverse in a custom order.    |
-| `before(fn)` / `after(fn)`          | Run before / after all children are traversed.                          |
-| `pre(fn)` / `post(fn)`              | Run before / after **each** child is traversed.                         |
-| `stop()`                            | Stop the entire traversal.                                               |
-| `block()`                           | Don't descend into the current node's children.                         |
+- [Differences from traverse](/guide/vs-traverse): drop-in vs modern, what's new
+- [Options](/guide/options): `immutable`, `maxDepth`, `signal`, `descendIntoMapSet`, `concurrency`
+- [Security](/guide/security): prototype pollution, injection, DoS guard
+
+**Concepts**
+
+- [Types & traversal](/guide/types): `getType()` matrix, JSON-like trees, Map/Set behaviour
+- [Context](/guide/context): `ctx` reference, `block`, siblings
+
+**API reference** (reference + examples on each page)
+
+- [Core](/guide/api/core): `map`, `forEach`, `reduce`, `paths`, `nodes`, `clone`, `get` / `set` / `has`
+- [Paths & metrics](/guide/api/paths): string paths, `findPaths`, `select`, `count`, `getType`
+- [Structural](/guide/api/structural): `deleteWhere`, `prune`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`
+- [Walk variants](/guide/api/walk): `walk`, BFS, `skipWhere`, `groupBy`, `merge`, `dereference`
+- [Query](/guide/api/query): `find`, `filter`, `some`, `every`
+- [Iteration](/guide/api/iteration): `entries`, `values`, Map/Set leaves
+- [Async](/guide/api/async): `forEachAsync`, `mapAsync`, concurrency, `AbortSignal`
+
+**More**
+
+- [Legacy / Classic API](/legacy)
+- [Migrating from traverse](/migration)
+- [Benchmarks](/benchmarks)
+
+## Example index {#example-index}
+
+Runnable snippets live next to each API on the pages above:
+
+| Recipe | Page |
+|--------|------|
+| In-place `forEach` (negatives → offset) | [Core → forEach](/guide/api/core#forEach) |
+| Immutable `map` | [Core → map](/guide/api/core#map) |
+| Scrub circular refs | [Core → map](/guide/api/core#map) |
+| Dot / JSON Pointer paths | [Paths → getPath](/guide/api/paths#getPath) |
+| Find / filter paths | [Paths → findPaths](/guide/api/paths#findPaths) |
+| Redact secrets | [Structural → deleteWhere](/guide/api/structural#prune) |
+| Freeze snapshot | [Structural → freeze](/guide/api/structural#freeze) |
+| Cycle-safe JSON | [Structural → toJSON](/guide/api/structural#toJSON) |
+| Diff / patch | [Structural → diff](/guide/api/structural#diff) |
+| Leaf `filter` / `reduce` sum | [Query](/guide/api/query) |
+| `block` / skip subtree | [Context](/guide/context) |
+| `getType` branching | [Walk](/guide/api/walk) |
+| Async translate | [Async](/guide/api/async) |
 
 ## Builds & browser support
 
 The **modern** build is **ES2022** (Chrome/Edge 94+, Firefox 93+, Safari 15+, Node 18+, Deno, Bun). For the
 classic `this`-bound API and an ES2015 build for older targets, see the [**Legacy / Classic API**](/legacy).
 
-## Deprecated: `Traverse` class (removed in 0.8)
-
-In **0.7** you can still use `new Traverse(obj)`; it is deprecated (JSDoc only, no runtime warning) and will be
-**removed in 0.8**. Prefer `import * as t from 'neotraverse/modern'` for tree-shaking and forward compatibility.
-
-The class API mirrors the functional one: options were passed to the constructor instead of the last argument.
-
-```ts
-import { Traverse } from 'neotraverse/modern';
-
-const obj = { a: 1, b: 2, c: [3, 4] };
-
-new Traverse(obj).forEach((ctx, x) => {
-  if (typeof x === 'number') ctx.update(x * 10);
-});
-
-const tree = { a: 1, b: { c: 2, d: 3 } };
-new Traverse(tree).find((ctx, x) => x === 2);
-new Traverse(tree).filter((ctx) => ctx.isLeaf);
-
-for (const node of new Traverse(tree)) { /* … */ }
-for (const [path, node] of new Traverse(tree).entries()) { /* … */ }
-
-await new Traverse(doc).mapAsync(async (ctx, x) => { /* … */ });
-```
-
-See the [migration guide](/migration) for a full class-to-function table and the removal timeline.
-
 ## Migrating from `traverse`
 
-It's a drop-in replacement — see the dedicated [**Migration guide**](/migration) for the full
-`traverse → neotraverse → neotraverse/modern` path and a side-by-side diff.
+Start with [**Differences from traverse**](/guide/vs-traverse), then the [**Migration guide**](/migration) for
+install steps, side-by-side diffs, and the class→function table.
 
 ## License
 
-[MIT](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/LICENSE) — Puru Vijay & James Halliday.
+[MIT](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/LICENSE), [Puru Vijay](https://puruvj.dev).
