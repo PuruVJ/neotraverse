@@ -6,7 +6,7 @@
 
 - 282133b: # Security hardening, a much faster modern build, new modern APIs, and a tsdown build
 
-  This release hardens neotraverse against prototype pollution / injection when processing untrusted data, adds an opt-in DoS guard, makes the modern build ~4.5× faster on average (up to ~7×) than the original `traverse`, adds several modern-only APIs, and modernizes the toolchain. The default/legacy `traverse` API is unchanged — it remains a drop-in replacement.
+  This release hardens neotraverse against prototype pollution / injection when processing untrusted data, adds an opt-in DoS guard, makes the functional build ~5× faster on average (up to ~10× on core walks) and ~6× leaner on heap allocation (up to ~11×) than the original `traverse`, adds several modern-only APIs, and modernizes the toolchain. The default/legacy `traverse` API is unchanged — it remains a drop-in replacement.
 
   ## ⚠️ Breaking change
 
@@ -48,7 +48,7 @@
 
   ## ⚡ Performance
 
-  Across the full benchmark matrix the geometric-mean speedup vs `traverse` is now **modern ≈ 4.5×** and **legacy ≈ 2.3×** — with individual traversal ops up to **~7× faster** and allocating **3–5× less memory** per op.
+  Across the full benchmark matrix the geometric-mean speedup vs `traverse` is now **modern ≈ 4.8×** and **legacy ≈ 2.3×** — with core traversal ops averaging **~5.6×** (peak **~10×** on `clone · small`) and allocating **~5× less memory** per op.
 
   The **modern build was re-architected** for this: visiting a node used to allocate a context object **plus a fresh closure for every method** (`update`/`remove`/`before`/…) **plus a `modifiers` object plus a per-node path copy**. The new modern context is a class whose methods live on the prototype (one allocation per node), and `ctx.path` is derived lazily from the parent chain — so `forEach`/`map`/`clone`/`reduce`/`nodes` never pay for a path copy. Shared wins (both builds): `copy()`/`clone()` make 2–3 `toString` tag checks per node instead of 6–9, and child iteration no longer allocates a pairs array.
 

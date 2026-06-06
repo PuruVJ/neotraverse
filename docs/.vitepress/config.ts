@@ -45,7 +45,7 @@ function generate_llms(): string {
 	const parts = [
 		'# neotraverse',
 		'',
-		'> Traverse and transform objects by visiting every node on a recursive walk — a zero-dependency, prototype-pollution-safe, up-to-~7×-faster drop-in replacement for `traverse`.',
+		'> Traverse and transform objects by visiting every node on a recursive walk: zero-dependency, hardened, ~5× faster and ~6× leaner with the functional API (up to ~10× / ~11×). Drop-in replacement for `traverse`.',
 		'',
 		'Docs: https://neotraverse.puruvj.dev · npm: https://www.npmjs.com/package/neotraverse',
 	];
@@ -59,7 +59,7 @@ function generate_llms(): string {
 export default defineConfig({
 	title: 'neotraverse',
 	description:
-		'Traverse and transform objects by visiting every node on a recursive walk — zero-dependency, hardened, up to ~7× faster drop-in for traverse.',
+		'Traverse and transform objects by visiting every node on a recursive walk, zero-dependency, hardened, ~5× faster and ~6× leaner functional API (up to ~10× / ~11×).',
 	cleanUrls: true,
 	lastUpdated: true,
 	head: [
@@ -70,7 +70,7 @@ export default defineConfig({
 			'meta',
 			{
 				property: 'og:description',
-				content: 'Zero-dependency, hardened, up to ~7× faster drop-in for traverse.',
+				content: 'Zero-dependency, hardened, ~5× faster and ~6× leaner functional API (up to ~10× / ~11×). Drop-in for traverse.',
 			},
 		],
 	],

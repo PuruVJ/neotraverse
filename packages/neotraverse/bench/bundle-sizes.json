@@ -1,0 +1,54 @@
+{
+  "method": "esbuild bundle (browser, es2022, minify) + brotli quality 11 from source ESM",
+  "package": "neotraverse/modern",
+  "sideEffects": false,
+  "measured": "2026-06-05",
+  "scenarios": {
+    "get_has_set": {
+      "minified": 608,
+      "brotli": 262,
+      "note": "path helpers — no tree walk"
+    },
+    "getPath": {
+      "minified": 990,
+      "brotli": 474,
+      "note": "string paths — no tree walk"
+    },
+    "forEach": {
+      "minified": 5636,
+      "brotli": 1933,
+      "note": "single DFS walk terminal"
+    },
+    "map": {
+      "minified": 5650,
+      "brotli": 1937
+    },
+    "size": {
+      "minified": 5739,
+      "brotli": 1963
+    },
+    "clone": {
+      "minified": 2315,
+      "brotli": 870,
+      "note": "clone_node only — no walk callback"
+    },
+    "allFunctionsExceptTraverse": {
+      "minified": 19203,
+      "brotli": 5812
+    },
+    "fullMinDistFile": {
+      "minified": 19921,
+      "brotli": 5773,
+      "note": "entire dist/modern/min without consumer tree-shake"
+    }
+  },
+  "summary": {
+    "brotliKb": {
+      "walkTerminalMin": 1.9,
+      "walkTerminalMax": 1.9,
+      "allFunctionsMax": 5.7,
+      "pathOnlyMin": 0.3
+    },
+    "rangeLabel": "~2–6 KB brotli (tree-shaken)"
+  }
+}

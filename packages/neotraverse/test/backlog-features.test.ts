@@ -140,6 +140,6 @@ describe('backlog: diff / patch / select', () => {
 		const hits = select(tree, 'users[*].email');
 		expect(hits).toHaveLength(2);
 		expect(hits[0].node).toBe('a@x.com');
-		expect(hits[1].path).toEqual(['users', '1', 'email']);
+		expect(hits[1].path).toEqual(['users', 1, 'email']);
 	});
 });

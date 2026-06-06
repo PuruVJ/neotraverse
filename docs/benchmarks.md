@@ -23,6 +23,9 @@ across the full operation × shape matrix. Toggle between **throughput** (higher
 **Geometric mean speedup vs `traverse`:**
 **modern ≈ {{ results.summary['neotraverse modern'] }}×**, **legacy ≈ {{ results.summary['neotraverse legacy'] }}×**.
 
+**Geometric mean allocation reduction on core walks** (`forEach`, `map`, `clone`, `reduce`, `paths`, `nodes`):
+**modern ≈ {{ results.summary.memory.traversal['neotraverse modern'] }}× less**, **legacy ≈ {{ results.summary.memory.traversal['neotraverse legacy'] }}× less** (traverse B/op ÷ neotraverse B/op).
+
 </blockquote>
 
 These numbers come from [`packages/neotraverse/bench/run.ts`](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/bench/run.ts)
@@ -43,7 +46,7 @@ These are **runtime** benchmarks.
 | Path helpers only (`get` / `has` / `set`) | **~{{ brotli.pathOnlyMin }} KB** |
 | All functions except deprecated `Traverse` | **~{{ brotli.allFunctionsMax }} KB** |
 
-**Range: {{ bundleSizes.summary.rangeLabel }}** — floor ≈ single traversal, ceiling ≈ full toolkit.
+**Range: {{ bundleSizes.summary.rangeLabel }}**, floor ≈ single traversal, ceiling ≈ full toolkit.
 
 Source: [`bench/bundle-sizes.json`](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/bench/bundle-sizes.json) (`pnpm bundle-size` in `packages/neotraverse`). For a third-party **`traverse` vs neotraverse** comparison, see
 <a :href="compareUrl" target="_blank" rel="noreferrer">bundle-roast ↗</a>.
@@ -52,13 +55,15 @@ Source: [`bench/bundle-sizes.json`](https://github.com/PuruVJ/neotraverse/blob/m
 
 ## Notes
 
-- **Traversal operations** (`forEach`, `map`, `clone`, `reduce`, `paths`, `nodes`) are ~5–7× faster than
-  `traverse` on the **modern** build (which also allocates 3–5× less per op) and ~2.7–3.3× on **legacy**.
-- **`clone` legacy vs modern is a tie.** Both builds compile from the *same* `clone()` / `copy()` source, so for
-  cloning they're equal within measurement noise — the per-run winner just flips. Treat any ~1–2% gap there as
-  jitter, not a real difference.
+- **Traversal operations** (`forEach`, `map`, `clone`, `reduce`, `paths`, `nodes`) on the **functional** build
+  (`neotraverse/modern`) average **~5.6×** vs `traverse` and peak at **~10×** (`clone · small`), with **~5.7× less
+  heap per op** on average (up to **~11×** on `forEach · wide`). The **legacy** drop-in build averages **~2.3×**
+  speed and **~2×** less allocation across core walks.
+- **`clone` peaks at ~10×** on the functional build (`clone · small`). Legacy and modern share the same
+  `clone()` / `copy()` source, but the modern bundle inlines a leaner walk, so modern often wins by a wide margin
+  on smaller shapes while wide flat objects stay closer (~3×).
 - The **`get` / `has` / `set`** path helpers are fastest on the **modern** build. The **legacy** build is slower
   for these because it targets ES2015, which downlevels the class's private `#fields` to WeakMaps. For
   path-heavy hot code, prefer `neotraverse/modern`.
 - **Memory** figures are an approximate bytes-allocated-per-op signal (median of GC-bracketed samples). JS memory
-  measurement is noisy — treat them as ballpark, like the throughput margins of error (`rme`) in the JSON.
+  measurement is noisy, treat them as ballpark, like the throughput margins of error (`rme`) in the JSON.

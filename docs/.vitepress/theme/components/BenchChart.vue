@@ -36,7 +36,7 @@ const fmtOps = (n) => {
 	return String(Math.round(n));
 };
 const fmtMem = (b) => {
-	if (b == null) return '—';
+	if (b == null) return '-';
 	if (b >= 1024) return (b / 1024).toFixed(b >= 1024 * 100 ? 0 : 1) + ' KB';
 	return Math.round(b) + ' B';
 };
@@ -100,7 +100,7 @@ function rows(suite) {
 		<div v-for="g in groups" :key="g.operation" class="bench-group">
 			<h3 class="bench-op">{{ g.operation }}</h3>
 			<div v-for="s in g.suites" :key="s.label" class="bench-suite">
-				<div class="bench-shape">{{ s.dataset }} — {{ s.description }}</div>
+				<div class="bench-shape">{{ s.dataset }}, {{ s.description }}</div>
 				<div
 					v-for="row in rows(s)"
 					:key="row.name"

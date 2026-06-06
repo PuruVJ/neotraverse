@@ -1,0 +1,59 @@
+{
+  "_curated": "Hand-picked direct npm dependents for homepage. Not auto-refreshed on build. Audit hint: pnpm discover-npm → neotraverse-npm-dependents.json",
+  "lastReviewed": "2026-06-05",
+  "directCount": 29,
+  "packages": [
+    {
+      "name": "astro",
+      "npmUrl": "https://www.npmjs.com/package/astro"
+    },
+    {
+      "name": "swagger-client",
+      "npmUrl": "https://www.npmjs.com/package/swagger-client"
+    },
+    {
+      "name": "@compodoc/compodoc",
+      "npmUrl": "https://www.npmjs.com/package/@compodoc/compodoc"
+    },
+    {
+      "name": "openapi-to-postmanv2",
+      "npmUrl": "https://www.npmjs.com/package/openapi-to-postmanv2"
+    },
+    {
+      "name": "renovate",
+      "npmUrl": "https://www.npmjs.com/package/renovate"
+    },
+    {
+      "name": "@builder.io/mitosis",
+      "npmUrl": "https://www.npmjs.com/package/@builder.io/mitosis"
+    },
+    {
+      "name": "loopback-datasource-juggler",
+      "npmUrl": "https://www.npmjs.com/package/loopback-datasource-juggler"
+    },
+    {
+      "name": "@apideck/portman",
+      "npmUrl": "https://www.npmjs.com/package/@apideck/portman"
+    },
+    {
+      "name": "@textlint/markdown-to-ast",
+      "npmUrl": "https://www.npmjs.com/package/@textlint/markdown-to-ast"
+    },
+    {
+      "name": "feathers-hooks-common",
+      "npmUrl": "https://www.npmjs.com/package/feathers-hooks-common"
+    },
+    {
+      "name": "openapi-format",
+      "npmUrl": "https://www.npmjs.com/package/openapi-format"
+    },
+    {
+      "name": "aws-sdk-mock",
+      "npmUrl": "https://www.npmjs.com/package/aws-sdk-mock"
+    },
+    {
+      "name": "state-machine-cat",
+      "npmUrl": "https://www.npmjs.com/package/state-machine-cat"
+    }
+  ]
+}

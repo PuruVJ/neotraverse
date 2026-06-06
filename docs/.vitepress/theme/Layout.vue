@@ -4,6 +4,7 @@ import { useRoute } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import pkg from '../../../packages/neotraverse/package.json';
 import NpmDownloads from './components/NpmDownloads.vue';
+import ThemeToggle from './components/ThemeToggle.vue';
 import UsedBy from './components/UsedBy.vue';
 
 const { Layout } = DefaultTheme;
@@ -15,6 +16,9 @@ const isHome = computed(() => route.path === '/' || route.path === '/index.html'
 	<Layout>
 		<template #nav-bar-title-after>
 			<span class="nt-version">v{{ pkg.version }}</span>
+		</template>
+		<template #nav-bar-content-after>
+			<ThemeToggle class="nt-theme-nav" />
 		</template>
 		<template #home-features-after>
 			<UsedBy v-if="isHome" />

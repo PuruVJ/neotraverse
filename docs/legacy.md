@@ -5,16 +5,16 @@ outline: deep
 
 # Legacy / Classic API
 
-This is the original `traverse`-compatible API — a **drop-in replacement** for
+This is the original `traverse`-compatible API, a **drop-in replacement** for
 [`traverse`](https://github.com/ljharb/js-traverse). The traversal context is the callback's `this` binding
 (rather than a `ctx` argument). Two builds ship it:
 
-- **`neotraverse`** — the default ESM build (ES2022).
-- **`neotraverse/legacy`** — a CJS + ESM build targeting **ES2015**, for older bundlers / runtimes.
+- **`neotraverse`:** the default ESM build (ES2022).
+- **`neotraverse/legacy`:** a CJS + ESM build targeting **ES2015**, for older bundlers / runtimes.
 
 ::: tip Building something new?
 See [**Differences from traverse**](/guide/vs-traverse) for a full comparison. For new code, prefer the
-[**modern build**](/guide) (`neotraverse/modern`) — the same engine, but with a `ctx` argument, query /
+[**modern build**](/guide) (`neotraverse/modern`), the same engine, but with a `ctx` argument, query /
 iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page documents the stable
 classic API, which stays a faithful `traverse` drop-in.
 :::
@@ -56,19 +56,18 @@ const traverse = require('neotraverse/legacy');
 
 ::: warning Breaking change in 0.7
 The legacy build now targets **ES2015** instead of ES5 (it is built with rolldown/oxc, whose floor is ES2015).
-It remains a CJS + ESM drop-in for `traverse`; only environments that required literal ES5 output — e.g. IE11 —
-are no longer supported by the prebuilt bundle.
+It remains a CJS + ESM drop-in for `traverse`; only environments that required literal ES5 output, e.g. IE11, are no longer supported by the prebuilt bundle.
 :::
 
 ## Security
 
-The classic API has the same hardening as the modern build — it's safe to run on **untrusted data**.
+The classic API has the same hardening as the modern build, it's safe to run on **untrusted data**.
 
 - **No prototype pollution.** `set(path, value)` refuses `__proto__` / `constructor` / `prototype`.
 - **No prototype injection.** `clone()` / `map()` of hostile JSON like `{"__proto__":{"isAdmin":true}}` keep
   their real prototype; `result.isAdmin` is `undefined`.
-- **Prototype preservation still works** — `instanceof` survives a clone.
-- **No prototype-chain disclosure** — `get()` / `has()` only follow own properties.
+- **Prototype preservation still works**, `instanceof` survives a clone.
+- **No prototype-chain disclosure**, `get()` / `has()` only follow own properties.
 
 ```ts
 import traverse from 'neotraverse';
@@ -76,14 +75,14 @@ import traverse from 'neotraverse';
 const evil = JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
 const safe = traverse(evil).clone();
 
-safe.isAdmin;                         // undefined — not polluted
+safe.isAdmin;                         // undefined, not polluted
 Object.getPrototypeOf(safe);          // Object.prototype
-({}).isAdmin;                         // undefined — global prototype untouched
+({}).isAdmin;                         // undefined, global prototype untouched
 ```
 
 Read the full audit story in the [**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
 
-### DoS guard — `maxDepth`
+### DoS guard: `maxDepth`
 
 Bound recursion on deeply-nested hostile input; a catchable `RangeError` is thrown before the native overflow.
 Unlimited when omitted.
@@ -145,7 +144,7 @@ Read / write / test the element at an array `path`. `get`/`has` only follow own 
 prototype-polluting keys.
 
 > The query / iteration / async helpers (`find`, `filter`, `for…of`, `forEachAsync`, …) and `Map`/`Set` cloning
-> are **modern-build only** — see the [modern API reference](/guide/api/core).
+> are **modern-build only**, see the [modern API reference](/guide/api/core).
 
 ## Context
 
@@ -165,7 +164,7 @@ Every callback runs with the context bound to `this`:
 | `this.update(value, stopHere?)`     | Set a new value for the node. Stops descending when `stopHere` is true. |
 | `this.remove(stopHere?)`            | Remove from the output (spliced from arrays, deleted otherwise).        |
 | `this.delete(stopHere?)`            | `delete` from the parent (even on arrays).                              |
-| `this.keys`                         | The node's keys — assign in `before()` to traverse in a custom order.   |
+| `this.keys`                         | The node's keys, assign in `before()` to traverse in a custom order.   |
 | `this.before(fn)` / `this.after(fn)`| Run before / after all children are traversed.                         |
 | `this.pre(fn)` / `this.post(fn)`    | Run before / after **each** child is traversed.                        |
 | `this.stop()`                       | Stop the entire traversal.                                              |
@@ -173,7 +172,7 @@ Every callback runs with the context bound to `this`:
 
 ## Migrating from `traverse`
 
-Swap the import — that's the whole migration:
+Swap the import, that's the whole migration:
 
 ```diff
 -import traverse from 'traverse';
@@ -184,4 +183,4 @@ See the [**Migration guide**](/migration) for the full `traverse → neotraverse
 
 ## License
 
-[MIT](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/LICENSE) — [Puru Vijay](https://puruvj.dev).
+[MIT](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/LICENSE), [Puru Vijay](https://puruvj.dev).

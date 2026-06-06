@@ -1,0 +1,196 @@
+{
+  "generatedAt": "2026-06-05T16:37:00.391Z",
+  "package": "neotraverse",
+  "version": "0.7.0",
+  "sources": {
+    "depsDev": {
+      "version": "0.6.18",
+      "dependentCount": 2331,
+      "directDependentCount": 29,
+      "indirectDependentCount": 2307
+    },
+    "githubUsersJson": true,
+    "registryVerification": true
+  },
+  "summary": {
+    "verifiedDirect": 16,
+    "depsDevDirectCount": 29,
+    "candidatesChecked": 32
+  },
+  "verified": [
+    {
+      "name": "aws-sdk-mock",
+      "url": "https://www.npmjs.com/package/aws-sdk-mock",
+      "github": "https://github.com/dwyl/aws-sdk-mock",
+      "weeklyDownloads": 191635,
+      "latestVersion": "6.2.2"
+    },
+    {
+      "name": "@apideck/portman",
+      "url": "https://www.npmjs.com/package/%40apideck%2Fportman",
+      "github": "https://github.com/apideck-libraries/portman",
+      "weeklyDownloads": null,
+      "latestVersion": "1.35.0"
+    },
+    {
+      "name": "@builder.io/mitosis",
+      "url": "https://www.npmjs.com/package/%40builder.io%2Fmitosis",
+      "github": "https://github.com/BuilderIO/mitosis",
+      "weeklyDownloads": null,
+      "latestVersion": "0.13.2"
+    },
+    {
+      "name": "@compodoc/compodoc",
+      "url": "https://www.npmjs.com/package/%40compodoc%2Fcompodoc",
+      "github": "https://github.com/compodoc/compodoc",
+      "weeklyDownloads": null,
+      "latestVersion": "1.2.1"
+    },
+    {
+      "name": "@into-mini/sfc-template-traverse",
+      "url": "https://www.npmjs.com/package/%40into-mini%2Fsfc-template-traverse",
+      "github": "https://github.com/into-mini/into-mini",
+      "weeklyDownloads": null,
+      "latestVersion": "0.1.2"
+    },
+    {
+      "name": "@textlint/markdown-to-ast",
+      "url": "https://www.npmjs.com/package/%40textlint%2Fmarkdown-to-ast",
+      "github": "https://github.com/textlint/textlint",
+      "weeklyDownloads": null,
+      "latestVersion": "15.7.1"
+    },
+    {
+      "name": "astro",
+      "url": "https://www.npmjs.com/package/astro",
+      "github": "https://github.com/withastro/astro",
+      "weeklyDownloads": null,
+      "latestVersion": "6.4.4"
+    },
+    {
+      "name": "feathers-hooks-common",
+      "url": "https://www.npmjs.com/package/feathers-hooks-common",
+      "github": "https://github.com/feathersjs-ecosystem/feathers-hooks-common",
+      "weeklyDownloads": null,
+      "latestVersion": "8.2.1"
+    },
+    {
+      "name": "feathers-utils",
+      "url": "https://www.npmjs.com/package/feathers-utils",
+      "github": "https://github.com/feathersjs/feathers-utils",
+      "weeklyDownloads": null,
+      "latestVersion": "10.0.2"
+    },
+    {
+      "name": "loopback-datasource-juggler",
+      "url": "https://www.npmjs.com/package/loopback-datasource-juggler",
+      "github": "https://github.com/loopbackio/loopback-datasource-juggler",
+      "weeklyDownloads": null,
+      "latestVersion": "6.0.6"
+    },
+    {
+      "name": "openapi-format",
+      "url": "https://www.npmjs.com/package/openapi-format",
+      "github": "https://github.com/thim81/openapi-format",
+      "weeklyDownloads": null,
+      "latestVersion": "1.33.0"
+    },
+    {
+      "name": "openapi-to-postmanv2",
+      "url": "https://www.npmjs.com/package/openapi-to-postmanv2",
+      "github": "https://github.com/postmanlabs/openapi-to-postman",
+      "weeklyDownloads": null,
+      "latestVersion": "6.0.1"
+    },
+    {
+      "name": "renovate",
+      "url": "https://www.npmjs.com/package/renovate",
+      "github": "https://github.com/renovatebot/renovate",
+      "weeklyDownloads": null,
+      "latestVersion": "43.213.3"
+    },
+    {
+      "name": "state-machine-cat",
+      "url": "https://www.npmjs.com/package/state-machine-cat",
+      "github": "https://github.com/sverweij/state-machine-cat",
+      "weeklyDownloads": null,
+      "latestVersion": "15.0.4"
+    },
+    {
+      "name": "swagger-client",
+      "url": "https://www.npmjs.com/package/swagger-client",
+      "github": "https://github.com/swagger-api/swagger-js",
+      "weeklyDownloads": null,
+      "latestVersion": "3.37.4"
+    },
+    {
+      "name": "textlint-plugin-html",
+      "url": "https://www.npmjs.com/package/textlint-plugin-html",
+      "github": "https://github.com/textlint/textlint-plugin-html",
+      "weeklyDownloads": null,
+      "latestVersion": "1.0.1"
+    }
+  ],
+  "rejected": [
+    {
+      "name": "@borosboyo/ng2-completer",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "@mapbox/geojson-extent",
+      "reason": "no direct neotraverse dependency in latest"
+    },
+    {
+      "name": "@nl-design-system-community/theme-wizard-website",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "@swarmion/serverless-cdk-plugin",
+      "reason": "no direct neotraverse dependency in latest"
+    },
+    {
+      "name": "cvmcakkesite",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "fde-demo-firefly-to-aem",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "inspecto",
+      "reason": "no direct neotraverse dependency in latest"
+    },
+    {
+      "name": "jsx-emitter",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "module-replacements-codemods",
+      "reason": "no direct neotraverse dependency in latest"
+    },
+    {
+      "name": "multi-scrobbler",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "privletter",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "standardiser",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "tender-tower",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "upc-app",
+      "reason": "not on npm registry"
+    },
+    {
+      "name": "wikidata-query-gui",
+      "reason": "no direct neotraverse dependency in latest"
+    }
+  ]
+}

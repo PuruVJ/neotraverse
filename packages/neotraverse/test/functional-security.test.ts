@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { clone, get, has, set } from '../src/modern';
+import { clone, deepEqual, diff, get, has, merge, set } from '../src/modern';
 
 const PROBE_KEYS = ['polluted', 'isAdmin', 'pp'] as const;
 
@@ -36,5 +36,36 @@ describe('functional security', () => {
 		expect(get(inherited, ['secret'])).toBeUndefined();
 		expect(has(inherited, ['secret'])).toBe(false);
 		expect(has({ a: 1 }, ['a'])).toBe(true);
+	});
+
+	test('set with a rejected unsafe path performs NO partial mutation (S-3)', () => {
+		const o: any = {};
+		set(o, ['a', '__proto__', 'x'], 9);
+		expect(o).toEqual({});
+		expect(({} as any).x).toBeUndefined();
+		expect(protoIsClean()).toBe(true);
+	});
+
+	test('merge of hostile JSON never pollutes the prototype (C-14)', () => {
+		merge({ a: 1 }, JSON.parse('{"__proto__":{"polluted":"yes"},"b":2}'));
+		expect(({} as any).polluted).toBeUndefined();
+		expect(protoIsClean()).toBe(true);
+	});
+});
+
+describe('functional DoS bounding (S-1)', () => {
+	function deep(n: number): any {
+		const root: any = {};
+		let cur = root;
+		for (let i = 0; i < n; i++) cur = cur.next = {};
+		return root;
+	}
+
+	test('deepEqual bounds depth instead of overflowing the native stack', () => {
+		expect(() => deepEqual(deep(8000), deep(8000), { maxDepth: 100 } as any)).toThrow(/maximum traversal depth/);
+	});
+
+	test('diff bounds depth instead of overflowing the native stack', () => {
+		expect(() => diff(deep(8000), deep(8000), { maxDepth: 100 } as any)).toThrow(/maximum traversal depth/);
 	});
 });

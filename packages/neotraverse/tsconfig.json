@@ -10,6 +10,8 @@
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"skipLibCheck": true,
 		"declaration": true,
 		"emitDeclarationOnly": true,
