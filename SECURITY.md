@@ -23,6 +23,11 @@ and [`test/security-audit.test.ts`](packages/neotraverse/test/security-audit.tes
   before the guard, so a boxed/object key (`new String('__proto__')`, `{toString:…}`) or a
   TOCTOU `toString` cannot slip past the check or fire the `__proto__` setter. Injected
   `__proto__` from JSON is kept as an inert own data property, never the prototype.
+- **`sanitize` for the trust boundary.** If you must hand untrusted parsed JSON to code that
+  is *not* pollution-hardened (a naive deep-merge, an ORM, a template engine), `sanitize(obj)`
+  returns a deep clone with every own `__proto__`/`constructor`/`prototype` key removed at
+  every level. It strips the key-injection vector only — it does not bound depth/size or
+  sanitize path-based writes, and it is not a blanket "make this safe" guarantee.
 - **DoS bounding.** `merge`, `diff`, and `deepEqual` are cycle-safe (they terminate on
   circular input); `dereference` follows `$ref` chains iteratively (no stack overflow) and
   memoizes resolved targets (no O(N²) re-walk); `diff` memoizes equal pairs (no exponential

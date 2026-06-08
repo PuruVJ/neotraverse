@@ -5,7 +5,7 @@ outline: [2, 3]
 
 # Paths & metrics
 
-Import as `import * as t from 'neotraverse/modern'`.
+Import as `import * as t from 'neotraverse'`.
 
 ## findPaths · filterPaths {#findPaths}
 
@@ -15,7 +15,7 @@ Return **where** a match occurred, not only the value. `t.findPaths` stops at th
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const tree = { users: [{ id: 1 }, { id: 2, flag: true }] };
 
@@ -32,7 +32,7 @@ String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Po
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const config = { server: { host: 'localhost', port: 3000 } };
 
@@ -51,7 +51,7 @@ t.getPath(config, '/server/host'); // 'localhost' after set
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const tree = { a: 1, b: { c: 2 } };
 t.size(tree);                        // 4 (root + a + b + c)
@@ -70,7 +70,7 @@ Glob path query: `*`, `key[*]`, dot segments. For predicate search, use `t.filte
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const data = { users: [{ email: 'a@x.com' }, { email: 'b@x.com' }] };
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { clone, diff, patch } from '../src/modern';
+import { clone, diff, patch } from '../src/index';
 
 /**
  * Behavior spec for diff/patch. Pins the INTENDED contract (audit C-1, C-5, C-6, S-1).

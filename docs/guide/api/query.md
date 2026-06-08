@@ -5,7 +5,7 @@ outline: [2, 3]
 
 # Query helpers
 
-Import as `import * as t from 'neotraverse/modern'`.
+Import as `import * as t from 'neotraverse'`.
 
 ## find · filter · some · every {#find}
 
@@ -15,7 +15,7 @@ first match; `every` stops at the first failure.
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const tree = { a: 1, b: { c: 2, d: 3 } };
 
@@ -28,7 +28,7 @@ t.every(tree, (ctx, x) => typeof x !== 'string'); // true
 ### Example: collect leaf nodes
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const leaves = t.filter({ a: [1, 2, 3], b: 4, d: { e: [7, 8], f: 9 } }, (ctx) => ctx.isLeaf);
 // → [ 1, 2, 3, 4, 7, 8, 9 ]
@@ -42,7 +42,7 @@ seedless behaviour.
 ### Example: sum numbers
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const nested = { a: 1, b: { c: 2, d: 3 } };
 const sum = t.reduce(nested, (_, acc, x) => (typeof x === 'number' ? acc + x : acc), 0);

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { clone, deepEqual, diff, get, has, merge, set } from '../src/modern';
+import { clone, deepEqual, diff, get, has, merge, set } from '../src/index';
 
 const PROBE_KEYS = ['polluted', 'isAdmin', 'pp'] as const;
 

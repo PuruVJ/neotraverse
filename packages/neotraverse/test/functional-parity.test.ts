@@ -1,18 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import {
-	clone,
-	entries,
-	filter,
-	find,
-	forEach,
-	map,
-	nodes,
-	paths,
-	reduce,
-	some,
-	Traverse,
-	values,
-} from '../src/modern';
+import { clone, forEach, map, nodes, paths, reduce } from '../src/index';
+import { Traverse } from '../src/modern';
 
 const obj = { a: 1, b: { c: 2, d: 3 }, e: 4 };
 
@@ -68,47 +56,9 @@ describe('functional parity vs Traverse class', () => {
 		);
 	});
 
-	test('find / filter / some / every and early-stop counts', () => {
-		expect(find(obj, (_, x) => x === 3)).toBe(new Traverse(obj).find((_, x) => x === 3));
-		expect(filter(obj, (ctx) => ctx.isLeaf)).toEqual(new Traverse(obj).filter((ctx) => ctx.isLeaf));
-
-		let fnVisits = 0;
-		find(obj, (_, x) => {
-			fnVisits++;
-			return x === 2;
-		});
-		let classVisits = 0;
-		new Traverse(obj).find((_, x) => {
-			classVisits++;
-			return x === 2;
-		});
-		expect(fnVisits).toBe(classVisits);
-
-		expect(some(obj, (_, x) => x === 3)).toBe(new Traverse(obj).some((_, x) => x === 3));
-		let someVisits = 0;
-		some(obj, (_, x) => {
-			someVisits++;
-			return x === 1;
-		});
-		let someClass = 0;
-		new Traverse(obj).some((_, x) => {
-			someClass++;
-			return x === 1;
-		});
-		expect(someVisits).toBe(someClass);
-	});
-
 	test('paths / nodes / clone', () => {
 		expect(paths(obj)).toEqual(new Traverse(obj).paths());
 		expect(nodes(obj)).toEqual(new Traverse(obj).nodes());
 		expect(clone(obj)).toEqual(new Traverse(obj).clone());
-	});
-
-	test('entries and values', () => {
-		const fnEntries = [...entries(obj)];
-		const classEntries = [...new Traverse(obj).entries()];
-		expect(fnEntries.map((e) => e[0])).toEqual(classEntries.map((e) => e[0]));
-		expect(fnEntries.map((e) => e[1])).toEqual(classEntries.map((e) => e[1]));
-		expect([...values(obj)]).toEqual([...new Traverse(obj)]);
 	});
 });

@@ -8,7 +8,7 @@ outline: [2, 3]
 Pull nodes without materializing `t.paths` / `t.nodes`. Circular references are visited once and not descended
 into.
 
-Import as `import * as t from 'neotraverse/modern'`.
+Import as `import * as t from 'neotraverse'`.
 
 ## values {#values}
 
@@ -22,7 +22,7 @@ lazy).
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const tree = { a: 1, b: { c: 2 } };
 
@@ -46,7 +46,7 @@ at numeric indices during walks.
 ### Example: descend into Map entries
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const m = new Map([['k', { v: 1 }]]);
 const paths: PropertyKey[][] = [];

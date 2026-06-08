@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { merge } from '../src/modern';
+import { merge } from '../src/index';
 
 /**
  * Behavior spec for merge (audit C-12, C-14) + the documented merge contracts.

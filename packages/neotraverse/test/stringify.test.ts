@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import traverse from '../src';
+import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 
 test('stringify', () => {
@@ -23,7 +23,7 @@ test('stringify', () => {
 			this.before(function () {
 				s += '{';
 			});
-			this.pre(function (x, key) {
+			this.pre(function (_x, key) {
 				s += '"' + key + '":';
 			});
 			this.post(function (child) {

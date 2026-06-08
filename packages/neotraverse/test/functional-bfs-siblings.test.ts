@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { breadthFirst, forEach, mapBfs, paths } from '../src/modern';
+import { breadthFirst, forEach, mapBfs, paths } from '../src/index';
 
 /**
  * Behavior spec for nextSibling/prevSibling context integrity (C-4) and BFS.

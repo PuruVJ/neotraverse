@@ -2,9 +2,11 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { defineConfig } from 'tsdown';
 
 export default defineConfig([
-	// default build — full, with types
+	// default (`.`) + modern (`./modern`) built together so `modern.js` REUSES `index.js`
+	// instead of re-bundling the whole functional API — `src/modern.ts` is just
+	// `export * from './index.js'` + the deprecated `Traverse` class. Full, with types.
 	{
-		entry: ['src/index.ts'],
+		entry: ['src/index.ts', 'src/modern.ts'],
 		format: ['esm'],
 		dts: true,
 		sourcemap: false,
@@ -12,44 +14,9 @@ export default defineConfig([
 		platform: 'browser',
 		target: 'es2026',
 	},
-	// default build — minified
-	{
-		entry: ['src/index.ts'],
-		format: ['esm'],
-		dts: false,
-		sourcemap: false,
-		clean: false,
-		platform: 'browser',
-		target: 'es2026',
-		minify: true,
-		outDir: 'dist/min',
-	},
-	// modern build — full, with types
-	{
-		entry: ['src/modern.ts'],
-		format: ['esm'],
-		dts: true,
-		sourcemap: false,
-		clean: false,
-		platform: 'browser',
-		target: 'es2026',
-		outDir: 'dist/modern',
-	},
-	// modern build — minified
-	{
-		entry: ['src/modern.ts'],
-		format: ['esm'],
-		dts: false,
-		sourcemap: false,
-		clean: false,
-		platform: 'browser',
-		target: 'es2026',
-		minify: true,
-		outDir: 'dist/modern/min',
-	},
 	// legacy build — CJS + ESM, ES2015 (rolldown's lowest target), drop-in `traverse` replacement
 	{
-		entry: ['src/legacy.cts'],
+		entry: ['src/legacy/legacy.cts'],
 		format: ['cjs', 'esm'],
 		dts: true,
 		sourcemap: false,

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import * as t from '../src/modern';
+import * as t from '../src/index';
 
 /** Every public modern export is callable (tree-shake entry smoke test). */
 describe('modern public exports', () => {
@@ -19,6 +19,7 @@ describe('modern public exports', () => {
 		expect(typeof t.groupBy).toBe('function');
 		expect(typeof t.merge).toBe('function');
 		expect(typeof t.dereference).toBe('function');
+		expect(typeof t.sanitize).toBe('function');
 		expect(typeof t.breadthFirst).toBe('function');
 		expect(typeof t.mapBfs).toBe('function');
 

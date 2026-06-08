@@ -1,16 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 import {
-	breadthFirst,
-	dereference,
-	forEach,
-	forEachAsync,
-	groupBy,
-	mapBfs,
-	merge,
-	paths,
-	skipWhere,
-	walk,
-} from '../src/modern';
+	breadthFirst, dereference, forEach, forEachAsync, groupBy, mapBfs, merge, paths, skipWhere, walk } from '../src/index';
 
 test('skipWhere blocks subtrees', () => {
 	const obj = { a: { b: 1 }, c: 2 };
@@ -71,7 +61,7 @@ test('breadthFirst visits shallower nodes first', () => {
 
 test('mapBfs returns immutable clone', () => {
 	const obj = { a: 1 };
-	const out = mapBfs(obj, (ctx, v) => {
+	const out = mapBfs(obj, (ctx) => {
 		if (ctx.key === 'a') ctx.update(2);
 	});
 	expect(out).toEqual({ a: 2 });

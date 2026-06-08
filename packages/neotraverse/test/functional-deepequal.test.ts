@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { deepEqual } from '../src/modern';
+import { deepEqual } from '../src/index';
 
 /**
  * Behavior spec for deepEqual (audit C-17 SameValueZero, C-15, S-1).

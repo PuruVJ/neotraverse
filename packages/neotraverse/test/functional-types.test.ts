@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { clone, entries, map, Traverse } from '../src/modern';
+import { clone, entries, map, values } from '../src/index';
+import { Traverse } from '../src/modern';
 
 describe('functional Map/Set/circular', () => {
 	test('clone deep-clones Map/Set', () => {
@@ -33,6 +34,6 @@ describe('functional Map/Set/circular', () => {
 		const o: any = { a: 1 };
 		o.self = o;
 		expect([...entries(o)]).toHaveLength(3);
-		expect([...entries(o)].map((e) => e[1])).toEqual([...new Traverse(o)]);
+		expect([...entries(o)].map((e) => e[1])).toEqual([...values(o)]);
 	});
 });

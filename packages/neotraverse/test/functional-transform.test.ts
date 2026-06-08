@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { deleteWhere, groupBy, prune, pruneDeep, select } from '../src/modern';
+import { deleteWhere, groupBy, prune, pruneDeep, select } from '../src/index';
 
 /**
  * Behavior spec for transform helpers (audit C-3) + select glob semantics.

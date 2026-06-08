@@ -28,7 +28,7 @@ Every callback receives a context (`ctx` argument):
 | `block()`                           | Don't descend into the current node's children.                         |
 | `nextSibling()` / `prevSibling()`   | Lightweight sibling context (path snapshot). See below.                  |
 
-Import as `import * as t from 'neotraverse/modern'`. API methods that take callbacks receive this [context](/guide/context).
+Import as `import * as t from 'neotraverse'`. API methods that take callbacks receive this [context](/guide/context).
 
 ## Skip a subtree with `block` {#context-block}
 
@@ -37,7 +37,7 @@ Import as `import * as t from 'neotraverse/modern'`. API methods that take callb
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 t.forEach(config, (ctx) => {
   if (ctx.key === 'skipMe') ctx.block();
@@ -53,7 +53,7 @@ When a node equals an ancestor, `ctx.circular` points at that ancestor and the w
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: 1, b: 2, c: [3, 4] };
 obj.c.push(obj);
@@ -74,7 +74,7 @@ Return a lightweight sibling context (path snapshot only, not a full re-walk). R
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: 1, b: 2, c: 3 };
 

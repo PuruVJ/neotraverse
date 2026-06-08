@@ -10,19 +10,19 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 and **~5× the throughput** with the functional API (up to **~10×** on core walks) and **~6× less allocation** per op.
 
 ::: tip Utility-first, tree-shakeable API
-Import **only what you use** from `neotraverse/modern` (`sideEffects: false`). Named imports like
-`import { forEach } from 'neotraverse/modern'` pull in one walk; importing every function (except the deprecated
-`Traverse` class) is the upper bound. See [Bundle size (brotli)](#bundle-size-brotli) below.
+Import **only what you use** from `neotraverse` (`sideEffects: false`). Named imports like
+`import { forEach } from 'neotraverse'` pull in one walk; importing every function is the upper bound.
+See [Bundle size (brotli)](#bundle-size-brotli) below.
 
-**Coming from `traverse`?** See [**Differences from traverse**](/guide/vs-traverse) (drop-in vs modern) or the
+**Coming from `traverse`?** See [**Differences from traverse**](/guide/vs-traverse) (drop-in vs functional) or the
 [**Legacy / Classic API**](/legacy) for the `this`-bound reference.
 :::
 
-- 🤌 **~2–6 KB brotli** (tree-shaken modern build; see [bundle range](#bundle-size-brotli))
+- 🤌 **~2 to 6 KB brotli** (tree-shaken functional API; see [bundle range](#bundle-size-brotli))
 - 🚥 Zero dependencies, no polyfills
 - 🎹 Types included: drop `@types/traverse`
 - 🛡️ Safe on untrusted input (see [Security](/guide/security))
-- ⚡ ~5× faster and ~6× leaner than `traverse` with `neotraverse/modern`, up to ~10× / ~11× (see [benchmarks](/benchmarks))
+- ⚡ ~5× faster and ~6× leaner than `traverse` with the functional API, up to ~10× / ~11× (see [benchmarks](/benchmarks))
 - 🧰 Query helpers, lazy iteration, async traversal, `Map`/`Set` clone
 
 ## Install
@@ -35,7 +35,7 @@ npm install neotraverse
 ## Quick start
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: 1, b: 2, c: [3, 4] };
 
@@ -45,7 +45,7 @@ t.forEach(obj, (ctx, x) => {
 // → { a: 10, b: 20, c: [30, 40] }
 ```
 
-Named imports work too (`import { forEach, clone } from 'neotraverse/modern'`) when you only need a few ops.
+Named imports work too (`import { forEach, clone } from 'neotraverse'`) when you only need a few ops.
 
 ## Functional API
 
@@ -58,29 +58,29 @@ also pass options positionally; pass an explicit seed (for example `undefined`) 
 
 ## Bundle size (brotli) {#bundle-size-brotli}
 
-Sizes are **minified ESM + brotli** after your bundler tree-shakes `neotraverse/modern` (measured with esbuild;
+Sizes are **brotli** after your bundler minifies and tree-shakes `neotraverse` (measured with esbuild;
 see [`bench/bundle-sizes.json`](https://github.com/PuruVJ/neotraverse/blob/main/packages/neotraverse/bench/bundle-sizes.json)).
 Reproduce with `pnpm bundle-size` in `packages/neotraverse`.
 
 | What you import | Brotli (approx.) | Notes |
 |-----------------|------------------|--------|
 | **One walk terminal** (`forEach`, `map`, `find`, `size`, …) | **~2 KB** | Same ballpark for any single DFS callback op |
-| **Path helpers only** (`get` / `has` / `set`, or `getPath`) | **~0.3–0.5 KB** | No full-tree walk, keyed access / parse only |
+| **Path helpers only** (`get` / `has` / `set`, or `getPath`) | **~0.3 to 0.5 KB** | No full-tree walk, keyed access / parse only |
 | **`clone` only** | **~0.9 KB** | Deep copy without installing the walk callback surface |
-| **All modern functions** (everything except deprecated `Traverse`) | **~5.8 KB** | Upper bound when you use the full toolkit |
+| **All functions** | **~5.8 KB** | Upper bound when you use the full toolkit |
 
-**Range: ~2–6 KB brotli**, floor is one traversal (`forEach`-class import), ceiling is the full function surface.
+**Range: ~2 to 6 KB brotli**, floor is one traversal (`forEach`-class import), ceiling is the full function surface.
 
-::: warning Do not confuse with the prebuilt min file
-Importing the entire `dist/modern/min/modern.js` without tree-shaking is ~5.8 KB brotli, same as “all functions”.
-Always use **named imports** so dead code drops out.
+::: tip Always use named imports
+Pulling in every function without tree-shaking is ~5.8 KB brotli, same as “all functions”.
+Use **named imports** so dead code drops out.
 :::
 
 ## Documentation map
 
 **Getting started**
 
-- [Differences from traverse](/guide/vs-traverse): drop-in vs modern, what's new
+- [Differences from traverse](/guide/vs-traverse): drop-in vs functional, what's new
 - [Options](/guide/options): `immutable`, `maxDepth`, `signal`, `descendIntoMapSet`, `concurrency`
 - [Security](/guide/security): prototype pollution, injection, DoS guard
 
@@ -127,8 +127,8 @@ Runnable snippets live next to each API on the pages above:
 
 ## Builds & browser support
 
-The **modern** build is **ES2022** (Chrome/Edge 94+, Firefox 93+, Safari 15+, Node 18+, Deno, Bun). For the
-classic `this`-bound API and an ES2015 build for older targets, see the [**Legacy / Classic API**](/legacy).
+The default `neotraverse` (functional) build is **ES2022** (Chrome/Edge 94+, Firefox 93+, Safari 15+, Node 18+, Deno, Bun).
+For the classic `this`-bound API and an ES2015 build for older targets, see the [**Legacy / Classic API**](/legacy).
 
 ## Migrating from `traverse`
 

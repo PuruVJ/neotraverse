@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { clone, getType } from '../src/modern';
+import { clone, getType } from '../src/index';
 
 /**
  * Behavior spec for clone() of exotic types (audit C-8, C-16, P-1).

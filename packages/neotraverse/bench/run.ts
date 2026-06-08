@@ -22,7 +22,12 @@ const require = createRequire(import.meta.url);
 // The three contenders — exactly what npm consumers get.
 const traverseOrig = require('traverse'); // original `traverse`
 const traverseLegacy = require('../dist/legacy/legacy.cjs'); // neotraverse legacy (ES2015 CJS)
-const modern = await import('../dist/modern/modern.js'); // neotraverse modern (ES2022 ESM, functional API)
+// Built artifact, resolved at runtime (after `pnpm compile`). The variable specifier keeps
+// tsc from trying to resolve `dist/` during type-checking, when it may not exist yet.
+// The functional API is the default (root) export now; `neotraverse/modern` is the
+// deprecated `Traverse` class only, so the modern contender imports the root build.
+const modernEntry = '../dist/index.js';
+const modern = await import(modernEntry); // neotraverse functional API (ES2022 ESM, the default export)
 
 // ---------------------------------------------------------------------------
 // datasets — a spread of realistic shapes
@@ -185,7 +190,7 @@ async function run_suite(operation: string, dataset: string, factories: Record<C
 	for (const c of CONTENDERS) mem[c] = measure_memory(factories[c](make()));
 
 	const results = bench.tasks.map((t) => {
-		const r = t.result!;
+		const r: any = t.result;
 		return {
 			name: t.name as Contender,
 			opsPerSec: Math.round(r.throughput.mean),
@@ -222,7 +227,7 @@ async function run_modern(label: string, fn: () => void) {
 	const bench = new Bench({ name: label, time: 250, warmupTime: 50 });
 	bench.add('neotraverse modern', fn);
 	await bench.run();
-	const r = bench.tasks[0].result!;
+	const r: any = bench.tasks[0].result;
 	const out = {
 		label,
 		opsPerSec: Math.round(r.throughput.mean),

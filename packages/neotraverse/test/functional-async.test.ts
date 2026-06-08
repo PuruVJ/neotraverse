@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { forEachAsync, mapAsync, paths, Traverse } from '../src/modern';
+import { forEachAsync, mapAsync, paths } from '../src/index';
+import { Traverse } from '../src/modern';
 
 const base = { a: 1, b: { c: 2 }, d: [3, 4] };
 

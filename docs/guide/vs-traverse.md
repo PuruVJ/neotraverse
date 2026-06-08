@@ -6,11 +6,11 @@ outline: [2, 3]
 # Differences from `traverse`
 
 [`traverse`](https://github.com/ljharb/js-traverse) is the classic `this`-bound walker. **neotraverse** keeps that API as a
-drop-in, adds a **utility-first modern** build, and hardens the engine for real-world JSON and config trees.
+drop-in (now at `neotraverse/legacy`), ships a **utility-first functional** API as the default `neotraverse` export, and hardens the engine for real-world JSON and config trees.
 
 ::: tip Pick your path
-**Stay on `traverse` syntax?** `import traverse from 'neotraverse'`, one-line swap.  
-**Starting fresh or want tree-shaking?** `import { forEach } from 'neotraverse/modern'`.  
+**Stay on `traverse` syntax?** `import traverse from 'neotraverse/legacy'`, one-line swap.  
+**Starting fresh or want tree-shaking?** `import { forEach } from 'neotraverse'`.  
 **Step-by-step upgrade?** See [Migrating from traverse](/migration).
 :::
 
@@ -21,22 +21,22 @@ drop-in, adds a **utility-first modern** build, and hardens the engine for real-
 | **Dependencies** | Ships with runtime deps | **Zero**, no polyfills |
 | **Types** | `@types/traverse` | **Built in** |
 | **Untrusted JSON** | Classic behaviour | **Hardened**, pollution & injection safe ([Security](/guide/security)) |
-| **Throughput** | Baseline | **~2.3×** drop-in (`neotraverse` / legacy) · **~5×** functional API (`neotraverse/modern`, up to **~10×** on core walks, [Benchmarks](/benchmarks)) |
+| **Throughput** | Baseline | **~3×** drop-in (`neotraverse/legacy`) · **~5×** functional API (`neotraverse`, up to **~10×** on core walks, [Benchmarks](/benchmarks)) |
 | **Memory / walk** | Baseline | **~2×** less allocation (drop-in) · **~6×** less (functional, up to **~11×** on wide `forEach`, [Benchmarks](/benchmarks)) |
-| **Bundle (modern)** | Monolithic import | **Tree-shakeable** (`sideEffects: false`), [~2–6 KB brotli](/guide#bundle-size-brotli) for typical apps |
-| **Default API** | `traverse(obj).forEach(fn)` | **Same** on `neotraverse` |
-| **Recommended new code** | - | `neotraverse/modern`, `forEach(obj, (ctx, x) => …)` |
+| **Bundle (functional)** | Monolithic import | **Tree-shakeable** (`sideEffects: false`), [~2 to 6 KB brotli](/guide#bundle-size-brotli) for typical apps |
+| **Default API** | `traverse(obj).forEach(fn)` | **Functional** on `neotraverse`; classic drop-in on `neotraverse/legacy` |
+| **Recommended new code** | - | `neotraverse`, `forEach(obj, (ctx, x) => …)` |
 
 ## What stays the same
 
-On the **default** and **legacy** builds, the mental model is unchanged:
+On the **legacy** build, the mental model is unchanged:
 
 - `traverse(obj)` returns an instance with `.forEach`, `.map`, `.reduce`, `.paths`, `.nodes`, `.clone`, `.get`, `.set`, `.has`
 - Callbacks use **`this`** as the traversal context (`this.update`, `this.path`, `this.isLeaf`, …)
 - Options and return shapes match what you already know from `traverse`
 
 ```ts
-import traverse from 'neotraverse';
+import traverse from 'neotraverse/legacy';
 
 traverse({ a: 1, b: 2 }).forEach(function (x) {
   if (typeof x === 'number') this.update(x * 10);
@@ -52,22 +52,22 @@ You get these wins **without** rewriting callbacks:
 | **No `@types/traverse`** | Types ship with the package |
 | **Prototype-pollution safety** | `clone` / `map` / `set` refuse hostile `__proto__` keys ([details](/guide/security)) |
 | **Faster, leaner walks** | Same call shape, higher ops/sec and ~2× less heap per op ([benchmarks](/benchmarks)) |
-| **ESM-first default** | `import traverse from 'neotraverse'` (ES2022); use `neotraverse/legacy` for ES2015 + CJS |
+| **Drop-in lives at `/legacy`** | `import traverse from 'neotraverse/legacy'` (ES2015, CJS + ESM); the classic `this`-bound API stays behaviour-compatible with `traverse` |
 
-## The modern build (`neotraverse/modern`)
+## The functional API (default `neotraverse` export)
 
-This is the biggest *optional* difference, not required to migrate, but what most new projects should use.
+This is the biggest *optional* difference, not required to migrate, but what most new projects should use. It is the recommended entry point.
 
 ### Callback shape: `this` → `ctx`
 
-| | `traverse` / default `neotraverse` | `neotraverse/modern` |
+| | `traverse` / `neotraverse/legacy` | `neotraverse` (functional) |
 |---|-----------------------------------|----------------------|
 | Style | `function (x) { this.update(…) }` | `(ctx, x) => { ctx.update(…) }` |
 | Context | `this` | First argument `ctx` |
 | Imports | Default export, chained methods | **Named** functions, tree-shakeable |
 
 ```ts
-import { forEach } from 'neotraverse/modern';
+import { forEach } from 'neotraverse';
 
 forEach({ a: 1, b: 2 }, (ctx, x) => {
   if (typeof x === 'number') ctx.update(x * 10);
@@ -82,16 +82,16 @@ Every `this.*` field has the same name on `ctx` ([Context reference](/guide/cont
 // traverse
 traverse(obj, { immutable: true }).map(fn);
 
-// modern
-import { map } from 'neotraverse/modern';
+// functional
+import { map } from 'neotraverse';
 map(obj, fn, { immutable: true });
 ```
 
 ### Class API is deprecated
 
-`new Traverse(obj)` still works in **0.7** but is removed in **0.8**. Prefer `import * as t from 'neotraverse/modern'` or named imports.
+`new Traverse(obj)` still works in **1.0** but is removed in **v2**. It lives at `neotraverse/modern` and is trimmed to the legacy method set only. Prefer the named functions from the default `neotraverse` export.
 
-## Only on modern (no `traverse` equivalent)
+## Only on the functional API (no `traverse` equivalent)
 
 These are **additive**, your old code keeps working; you opt in when you need them.
 
@@ -119,33 +119,33 @@ npm uninstall traverse @types/traverse
 
 ```diff [2. Change the import]
 -import traverse from 'traverse';
-+import traverse from 'neotraverse';
++import traverse from 'neotraverse/legacy';
 ```
 
 ```js [3. Or alias in the bundler: zero source edits]
 // vite.config.js
 export default {
-  resolve: { alias: { traverse: 'neotraverse' } },
+  resolve: { alias: { traverse: 'neotraverse/legacy' } },
 };
 ```
 
 :::
 
-Then optionally move hot paths to **`neotraverse/modern`** for tree-shaking and arrow-friendly `ctx` callbacks.
+Then optionally move hot paths to the **functional `neotraverse`** API for tree-shaking and arrow-friendly `ctx` callbacks.
 
 ## Which build should I use?
 
 | Build | Import | Use when |
 |-------|--------|----------|
-| **Default** | `neotraverse` | Drop-in replacement; `this`-bound API; ES2022 ESM |
-| **Modern** | `neotraverse/modern` | New apps, TypeScript, tree-shaking, extra helpers, fastest `get`/`set` |
-| **Legacy** | `neotraverse/legacy` | Older bundlers / CommonJS; still `traverse`-compatible (ES2015) |
+| **Default (functional)** | `neotraverse` | New apps, TypeScript, tree-shaking, extra helpers, fastest `get`/`set`; the recommended entry |
+| **Deprecated class** | `neotraverse/modern` | Only for existing `Traverse` class users; deprecated, removed in v2 |
+| **Legacy** | `neotraverse/legacy` | Drop-in replacement; `this`-bound API; older bundlers / CommonJS; still `traverse`-compatible (ES2015) |
 
 ## What you keep from `traverse`
 
 - Deep walks, in-place updates, immutable `map`, `reduce`, path helpers on the instance
 - The same context vocabulary (`update`, `delete`, `remove`, `block`, `skip`, keys, parents, circular handling)
-- Familiar ergonomics on the default build, [Legacy / Classic API](/legacy)
+- Familiar ergonomics on the legacy build, [Legacy / Classic API](/legacy)
 
 ## Next steps
 

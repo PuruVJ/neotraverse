@@ -1,6 +1,6 @@
 import { runInNewContext } from 'node:vm';
 import { afterEach, describe, expect, test } from 'vitest';
-import { clone, deepEqual, dereference, diff, map, merge, set } from '../src/modern';
+import { clone, deepEqual, dereference, diff, map, merge, sanitize, set } from '../src/index';
 
 /**
  * Regression tests for the security audit findings. These pin attacker-reachable
@@ -149,5 +149,40 @@ describe('D — immutability isolation', () => {
 		const c: any = clone(new Error('boom', { cause }));
 		expect(c.cause).not.toBe(cause);
 		expect(c.cause).toEqual({ x: 1 });
+	});
+});
+
+describe('sanitize — strips pollution keys at the trust boundary', () => {
+	test('removes own __proto__/constructor/prototype keys at every level', () => {
+		const dirty = JSON.parse(
+			'{"user":"bob","__proto__":{"isAdmin":true},"nested":{"constructor":{"prototype":{"x":1}}},"keep":1}',
+		);
+		const clean: any = sanitize(dirty);
+		expect(clean.user).toBe('bob');
+		expect(clean.keep).toBe(1);
+		expect(Object.prototype.hasOwnProperty.call(clean, '__proto__')).toBe(false);
+		expect(Object.prototype.hasOwnProperty.call(clean.nested, 'constructor')).toBe(false);
+		expect(clean.nested).toEqual({});
+	});
+
+	test('the cleaned object is safe to feed to a naive deep-merge', () => {
+		const naiveMerge = (t: any, s: any) => {
+			for (const k of Object.keys(s)) {
+				if (s[k] && typeof s[k] === 'object') naiveMerge((t[k] ??= {}), s[k]);
+				else t[k] = s[k];
+			}
+			return t;
+		};
+		const dirty = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+		naiveMerge({}, sanitize(dirty));
+		expect(({} as any).polluted).toBeUndefined();
+	});
+
+	test('returns a deep, independent clone (does not mutate input)', () => {
+		const input = { a: { b: 1 } };
+		const out: any = sanitize(input);
+		expect(out).toEqual({ a: { b: 1 } });
+		out.a.b = 999;
+		expect(input.a.b).toBe(1);
 	});
 });

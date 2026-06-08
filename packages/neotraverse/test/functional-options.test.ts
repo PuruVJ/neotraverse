@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { clone, entries, forEach, get, has, map, Traverse } from '../src/modern';
+import { clone, entries, forEach, get, has, map } from '../src/index';
+import { Traverse } from '../src/modern';
 
 describe('functional options', () => {
 	test('map forces immutable; forEach with immutable matches class', () => {

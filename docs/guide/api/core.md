@@ -5,7 +5,7 @@ outline: [2, 3]
 
 # Core traversal
 
-Import as `import * as t from 'neotraverse/modern'`. Each callback receives the [context](/guide/context).
+Import as `import * as t from 'neotraverse'`. Each callback receives the [context](/guide/context).
 
 ## map {#map}
 
@@ -15,7 +15,7 @@ Import as `import * as t from 'neotraverse/modern'`. Each callback receives the 
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const input = { a: 1, nested: { b: 2 } };
 const out = t.map(input, (ctx, x) => {
@@ -28,7 +28,7 @@ const out = t.map(input, (ctx, x) => {
 ### Example: scrub circular references
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: 1, b: 2, c: [3, 4] };
 obj.c.push(obj);
@@ -47,7 +47,7 @@ reference).
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = [5, 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
 
@@ -78,7 +78,7 @@ For lazy alternatives, see [Iteration](/guide/api/iteration).
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const live = { count: 0 };
 const snapshot = t.clone(live);
@@ -96,7 +96,7 @@ For string paths, see [Paths & metrics → getPath](/guide/api/paths#getPath).
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: { b: 1 } };
 t.get(obj, ['a', 'b']);           // 1

@@ -20,7 +20,7 @@ outline: [2, 3]
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const evil = JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
 const safe = t.clone(evil);
@@ -31,7 +31,7 @@ Object.getPrototypeOf(safe);          // Object.prototype
 ```
 
 Read the story of the audit that produced these guarantees in the
-[**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
+[**1.0 release post**](https://puruvj.dev/blog/neotraverse-1-0).
 
 ## DoS guard: `maxDepth`
 
@@ -42,7 +42,7 @@ unchanged). See [Options](/guide/options).
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 try {
   t.clone(untrusted, { maxDepth: 1000 });

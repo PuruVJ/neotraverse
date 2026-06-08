@@ -7,16 +7,15 @@ outline: deep
 
 This is the original `traverse`-compatible API, a **drop-in replacement** for
 [`traverse`](https://github.com/ljharb/js-traverse). The traversal context is the callback's `this` binding
-(rather than a `ctx` argument). Two builds ship it:
+(rather than a `ctx` argument). It ships as one build:
 
-- **`neotraverse`:** the default ESM build (ES2022).
-- **`neotraverse/legacy`:** a CJS + ESM build targeting **ES2015**, for older bundlers / runtimes.
+- **`neotraverse/legacy`:** a CJS + ESM build targeting **ES2015**, the one-line swap for users of the original `traverse`.
 
 ::: tip Building something new?
 See [**Differences from traverse**](/guide/vs-traverse) for a full comparison. For new code, prefer the
-[**modern build**](/guide) (`neotraverse/modern`), the same engine, but with a `ctx` argument, query /
-iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page documents the stable
-classic API, which stays a faithful `traverse` drop-in.
+[**functional API**](/guide) (the default `neotraverse` export), the same engine, but tree-shakeable, with a `ctx`
+argument, query / iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page documents
+the stable classic API, which stays a faithful `traverse` drop-in.
 :::
 
 ## Install
@@ -31,7 +30,7 @@ npm uninstall traverse @types/traverse   # types are built in now
 The callback's `this` is the [context](#context):
 
 ```ts
-import traverse from 'neotraverse';
+import traverse from 'neotraverse/legacy';
 
 const obj = { a: 1, b: 2, c: [3, 4] };
 
@@ -41,59 +40,33 @@ traverse(obj).forEach(function (x) {
 // → { a: 10, b: 20, c: [30, 40] }
 ```
 
-For CommonJS / older runtimes, import the legacy build (identical API):
+For CommonJS / older runtimes, require the same build (identical API):
 
 ```js
 const traverse = require('neotraverse/legacy');
 ```
 
-## Builds & browser support
+## Build & browser support
 
-| Build       | Import                | Module    | Target | Browsers                                      |
-| ----------- | --------------------- | --------- | ------ | --------------------------------------------- |
-| **default** | `neotraverse`         | ESM       | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+      |
-| **legacy**  | `neotraverse/legacy`  | CJS + ESM | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+ |
+| Build      | Import               | Module    | Target | Browsers                                      |
+| ---------- | -------------------- | --------- | ------ | --------------------------------------------- |
+| **legacy** | `neotraverse/legacy` | CJS + ESM | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+ |
 
-::: warning Breaking change in 0.7
+::: warning Breaking change in 1.0
 The legacy build now targets **ES2015** instead of ES5 (it is built with rolldown/oxc, whose floor is ES2015).
 It remains a CJS + ESM drop-in for `traverse`; only environments that required literal ES5 output, e.g. IE11, are no longer supported by the prebuilt bundle.
 :::
 
 ## Security
 
-The classic API has the same hardening as the modern build, it's safe to run on **untrusted data**.
+::: warning Hardening lives in the functional API
+The legacy build stays behaviour-compatible with the original `traverse`, so it intentionally does **not** carry
+the 1.0 security hardening (or the performance work). If you run on **untrusted data**, use the default
+[`neotraverse`](/guide) functional API, which refuses prototype-polluting keys, keeps the real prototype on
+`clone` / `map` of hostile JSON, and bounds recursion with `maxDepth`.
+:::
 
-- **No prototype pollution.** `set(path, value)` refuses `__proto__` / `constructor` / `prototype`.
-- **No prototype injection.** `clone()` / `map()` of hostile JSON like `{"__proto__":{"isAdmin":true}}` keep
-  their real prototype; `result.isAdmin` is `undefined`.
-- **Prototype preservation still works**, `instanceof` survives a clone.
-- **No prototype-chain disclosure**, `get()` / `has()` only follow own properties.
-
-```ts
-import traverse from 'neotraverse';
-
-const evil = JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
-const safe = traverse(evil).clone();
-
-safe.isAdmin;                         // undefined, not polluted
-Object.getPrototypeOf(safe);          // Object.prototype
-({}).isAdmin;                         // undefined, global prototype untouched
-```
-
-Read the full audit story in the [**0.7 release post**](https://puruvj.dev/blog/neotraverse-0-7).
-
-### DoS guard: `maxDepth`
-
-Bound recursion on deeply-nested hostile input; a catchable `RangeError` is thrown before the native overflow.
-Unlimited when omitted.
-
-```ts
-try {
-  traverse(untrusted, { maxDepth: 1000 }).clone();
-} catch (e) {
-  // RangeError: neotraverse: maximum traversal depth (1000) exceeded
-}
-```
+Read the full audit story in the [**1.0 release post**](https://puruvj.dev/blog/neotraverse-1-0).
 
 ## Options
 
@@ -101,11 +74,11 @@ try {
 traverse(obj, {
   immutable: false,      // if true, never mutate the original object
   includeSymbols: false, // if true, also traverse own enumerable symbol keys
-  maxDepth: undefined,   // bound recursion depth (throws RangeError when exceeded)
 });
 ```
 
-> The async-only `signal` option lives on the [modern build](/guide/options).
+> Hardening options like `maxDepth` and the async-only `signal` option live on the default
+> [`neotraverse`](/guide/options) functional API.
 
 ## Methods
 
@@ -135,16 +108,15 @@ Return an array of every node.
 
 ### `.clone()`
 
-Create a deep clone. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and is
-prototype-pollution-safe.
+Create a deep clone. Handles circular references and `Date`/`RegExp`/`Error`/typed arrays. For
+prototype-pollution-safe cloning of untrusted data, use the default `neotraverse` functional API.
 
 ### `.get(path)` · `.set(path, value)` · `.has(path)`
 
-Read / write / test the element at an array `path`. `get`/`has` only follow own properties; `set` refuses
-prototype-polluting keys.
+Read / write / test the element at an array `path`.
 
 > The query / iteration / async helpers (`find`, `filter`, `for…of`, `forEachAsync`, …) and `Map`/`Set` cloning
-> are **modern-build only**, see the [modern API reference](/guide/api/core).
+> live in the default [`neotraverse`](/guide/api/core) functional API.
 
 ## Context
 
@@ -176,10 +148,10 @@ Swap the import, that's the whole migration:
 
 ```diff
 -import traverse from 'traverse';
-+import traverse from 'neotraverse';
++import traverse from 'neotraverse/legacy';
 ```
 
-See the [**Migration guide**](/migration) for the full `traverse → neotraverse → neotraverse/modern` path.
+See the [**Migration guide**](/migration) for the full `traverse → neotraverse/legacy → neotraverse` path.
 
 ## License
 

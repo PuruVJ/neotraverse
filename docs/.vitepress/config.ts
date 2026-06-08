@@ -65,7 +65,15 @@ export default defineConfig({
 	head: [
 		['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
 		['meta', { name: 'theme-color', content: '#13c08a' }],
+		['meta', { property: 'og:type', content: 'website' }],
+		['meta', { property: 'og:url', content: 'https://neotraverse.puruvj.dev/' }],
 		['meta', { property: 'og:title', content: 'neotraverse' }],
+		['meta', { property: 'og:image', content: 'https://neotraverse.puruvj.dev/og.png' }],
+		['meta', { property: 'og:image:width', content: '1200' }],
+		['meta', { property: 'og:image:height', content: '630' }],
+		['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+		['meta', { name: 'twitter:title', content: 'neotraverse' }],
+		['meta', { name: 'twitter:image', content: 'https://neotraverse.puruvj.dev/og.png' }],
 		[
 			'meta',
 			{
@@ -80,7 +88,7 @@ export default defineConfig({
 		nav: [
 			{ text: 'Docs', link: '/guide' },
 			{ text: 'Benchmarks', link: '/benchmarks' },
-			{ text: 'Blog', link: 'https://puruvj.dev/blog/neotraverse-0-7' },
+			{ text: 'Blog', link: 'https://puruvj.dev/blog/neotraverse-1-0' },
 			{ text: 'npm', link: 'https://www.npmjs.com/package/neotraverse' },
 		],
 		sidebar: [
@@ -88,16 +96,16 @@ export default defineConfig({
 				text: 'Getting started',
 				items: [
 					{ text: 'Introduction', link: '/guide' },
-					{ text: 'Differences from traverse', link: '/guide/vs-traverse' },
-					{ text: 'Options', link: '/guide/options' },
-					{ text: 'Security', link: '/guide/security' },
+					{ text: 'neotraverse vs traverse', link: '/guide/vs-traverse' },
 				],
 			},
 			{
-				text: 'Concepts',
+				text: 'Core concepts',
 				items: [
+					{ text: 'The context object', link: '/guide/context' },
+					{ text: 'Options', link: '/guide/options' },
 					{ text: 'Types & traversal', link: '/guide/types' },
-					{ text: 'Context', link: '/guide/context' },
+					{ text: 'Security & untrusted input', link: '/guide/security' },
 				],
 			},
 			{
@@ -105,19 +113,24 @@ export default defineConfig({
 				collapsed: false,
 				items: [
 					{ text: 'Core traversal', link: '/guide/api/core' },
-					{ text: 'Paths & metrics', link: '/guide/api/paths' },
+					{ text: 'Walks', link: '/guide/api/walk' },
+					{ text: 'Queries', link: '/guide/api/query' },
+					{ text: 'Paths & selection', link: '/guide/api/paths' },
 					{ text: 'Structural helpers', link: '/guide/api/structural' },
-					{ text: 'Walk variants', link: '/guide/api/walk' },
-					{ text: 'Query helpers', link: '/guide/api/query' },
 					{ text: 'Lazy iteration', link: '/guide/api/iteration' },
 					{ text: 'Async traversal', link: '/guide/api/async' },
 				],
 			},
 			{
-				text: 'More',
+				text: 'Migrating from traverse',
 				items: [
+					{ text: 'Migration guide', link: '/migration' },
 					{ text: 'Legacy / Classic API', link: '/legacy' },
-					{ text: 'Migrating from traverse', link: '/migration' },
+				],
+			},
+			{
+				text: 'Reference',
+				items: [
 					{ text: 'Benchmarks', link: '/benchmarks' },
 					{ text: 'llms.txt', link: '/llms.txt', target: '_blank' },
 				],

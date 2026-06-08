@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { clone, freeze, getType, map, parseDotPath, parsePath, toJSON } from '../src/modern';
+import { clone, freeze, getType, map, parseDotPath, parsePath, toJSON } from '../src/index';
 
 /**
  * Behavior spec for assorted contracts (audit C-9, C-13, C-18, getType).

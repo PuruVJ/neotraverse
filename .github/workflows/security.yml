@@ -20,10 +20,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Typecheck gate (strict: includes noUnusedLocals/noUnusedParameters) so a PR that
-      # weakens a guard's types or leaves dead code is flagged.
+      # Typecheck gate (strict: full strict + noUnusedLocals/noUnusedParameters on the
+      # library source) so a PR that weakens a guard's types or leaves dead code is flagged.
       - name: Typecheck
-        run: pnpm --filter neotraverse exec tsc --noEmit -p tsconfig.json
+        run: pnpm --filter neotraverse exec tsc --noEmit -p tsconfig.build.json
       # Security gate: the prototype-pollution, DoS, type-confusion and isolation
       # regression suites. Any PR that reintroduces an audited vulnerability fails here.
       - name: Run security regression suites

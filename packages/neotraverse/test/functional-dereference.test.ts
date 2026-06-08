@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { dereference } from '../src/modern';
+import { dereference } from '../src/index';
 
 /**
  * Behavior spec for dereference (audit C-7, S-2).

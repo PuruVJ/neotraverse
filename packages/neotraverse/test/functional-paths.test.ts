@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { filterPaths, findPaths, get, has, paths, select, set } from '../src/modern';
+import { filterPaths, findPaths, get, has, paths, select, set } from '../src/index';
 
 /**
  * Behavior spec for path navigation/representation (audit C-2, C-10, C-11, S-3).

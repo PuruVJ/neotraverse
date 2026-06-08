@@ -5,7 +5,7 @@ outline: [2, 3]
 
 # Structural helpers
 
-Import as `import * as t from 'neotraverse/modern'`.
+Import as `import * as t from 'neotraverse'`.
 
 ## deleteWhere · prune {#prune}
 
@@ -15,7 +15,7 @@ the predicate is true (inverse). Map/Set stay whole leaves unless [descendIntoMa
 ### Example: redact secrets
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const apiPayload = {
   user: 'alice',
@@ -37,7 +37,7 @@ not throw.
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const deep = { a: { b: { c: { d: 1 } } } };
 t.pruneDeep(deep, 2);
@@ -56,7 +56,7 @@ Structural compare with an explicit per-type contract (Dates by time, RegExp by 
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const graph: any = { name: 'root' };
 graph.self = graph;
@@ -71,7 +71,7 @@ Deep-freeze in place (children before parents). Pair with `t.clone` when you nee
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const snapshot = t.freeze(t.clone(liveConfig));
 // snapshot is deeply frozen; liveConfig can still change
@@ -85,7 +85,7 @@ Acyclic trees only.
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const v1 = { title: 'Hi', items: [1, 2] };
 const v2 = { title: 'Hello', items: [1, 3], extra: true };

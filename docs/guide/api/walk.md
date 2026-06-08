@@ -5,7 +5,7 @@ outline: [2, 3]
 
 # Walk variants
 
-Import as `import * as t from 'neotraverse/modern'`.
+Import as `import * as t from 'neotraverse'`.
 
 ## walk {#walk}
 
@@ -21,7 +21,7 @@ the queue.
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: { b: 1 }, c: 2 };
 const order: string[] = [];
@@ -40,7 +40,7 @@ Compose with other logic in a single pass. See also [Context → block](/guide/c
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 t.forEach(tree, (ctx, v) => {
   t.skipWhere((c) => c.level > 2)(ctx, v);
@@ -56,7 +56,7 @@ the root object does not land in a bucket.
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: 1, b: 2, c: 3 };
 const buckets = t.groupBy(obj, (ctx, v) =>
@@ -75,7 +75,7 @@ Use `{ array: 'concat' }` to append.
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const target = { a: { x: 1 }, arr: [1, 2] };
 const source = { a: { y: 2 }, arr: [9] };
@@ -93,7 +93,7 @@ unchanged (`localOnly` defaults to `true`).
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const doc = {
   defs: { Foo: { type: 'string' } },
@@ -112,7 +112,7 @@ Use `t.getType(ctx.node)` inside `t.map` / `t.forEach`. Full matrix:
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 t.map(doc, (ctx) => {
   switch (t.getType(ctx.node)) {

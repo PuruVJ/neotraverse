@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import traverse from '../src';
+import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 import { EventEmitter } from 'node:events';
 

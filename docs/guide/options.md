@@ -24,7 +24,7 @@ See also [Security](/guide/security) (`maxDepth` DoS guard) and [Types & travers
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 t.forEach(untrusted, (ctx, x) => {
   /* … */

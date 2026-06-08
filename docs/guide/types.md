@@ -57,7 +57,7 @@ your runtime actually uses them; see the table below for walk vs clone differenc
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 t.forEach(data, (ctx, x) => {
   switch (t.getType(x)) {

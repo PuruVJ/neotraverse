@@ -5,7 +5,7 @@ outline: [2, 3]
 
 # Async traversal
 
-Import as `import * as t from 'neotraverse/modern'`.
+Import as `import * as t from 'neotraverse'`.
 
 ## forEachAsync · mapAsync {#forEachAsync}
 
@@ -17,7 +17,7 @@ The callback may be `async` and is awaited at each node. Pass `signal` in [optio
 ### Example: async transform
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const doc = { title: 'Hello', body: 'world' };
 
@@ -29,7 +29,7 @@ const translated = await t.mapAsync(doc, async (ctx, x) => {
 ### Example: abort
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const controller = new AbortController();
 const walking = t.forEachAsync(big, async (ctx) => { /* … */ }, { signal: controller.signal });
@@ -44,7 +44,7 @@ parallel. Each branch gets an isolated path/parent snapshot, intended for I/O-bo
 ### Example
 
 ```ts
-import * as t from 'neotraverse/modern';
+import * as t from 'neotraverse';
 
 const obj = { a: 0, b: 0, c: 0 };
 
