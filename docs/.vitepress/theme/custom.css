@@ -659,7 +659,19 @@ html {
 .VPNav {
 	background-color: color-mix(in oklch, var(--vp-c-bg) 86%, transparent);
 	backdrop-filter: saturate(1.2) blur(14px);
-	border-bottom: 1px solid var(--vp-c-divider);
+}
+/* Flat top-bar -> sidebar transition: no divider lines. We drop the custom
+ * .VPNav border above, and override the two borders VitePress draws by default
+ * under the brand/sidebar column (.title) and the content area (.divider-line). */
+.VPNavBar.has-sidebar .title,
+.VPNavBar.has-sidebar .content {
+	border-bottom: none !important;
+}
+.VPNavBar .divider-line {
+	background-color: transparent !important;
+}
+.VPSidebar {
+	border-top: none !important;
 }
 .VPLocalNav {
 	background-color: color-mix(in oklch, var(--vp-c-bg) 72%, transparent);
