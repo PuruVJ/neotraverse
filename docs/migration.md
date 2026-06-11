@@ -7,7 +7,9 @@ outline: deep
 
 neotraverse is a **drop-in replacement** for [`traverse`](https://github.com/ljharb/js-traverse). You can adopt it in two steps and stop there, or take one more step to the faster, ergonomic **functional API** (the default `neotraverse` export).
 
-::: info Overview first? For a scannable comparison (same vs different, functional-only helpers, which entry to pick), read [**Differences from traverse**](/guide/vs-traverse) in Getting started. :::
+::: info Overview first?
+For a scannable comparison (same vs different, functional-only helpers, which entry to pick), read [**Differences from traverse**](/guide/vs-traverse) in Getting started.
+:::
 
 ## Step 1: install
 
@@ -79,7 +81,9 @@ The only change between the drop-in and functional styles is **how you reach the
 
 Every context member is identical; only the way you reach it changes. See the [context reference](/guide/context).
 
-::: warning Deprecated `Traverse` class The `Traverse` class at `neotraverse/modern` is **deprecated and will be removed in v2**. It now exposes only the legacy method set (`get`/`has`/`set`/`map`/`forEach`/`reduce`/`paths`/`nodes`/`clone`). Reach for the functional API (the default `neotraverse` export) instead. :::
+::: warning Deprecated `Traverse` class
+The `Traverse` class at `neotraverse/modern` is **deprecated and will be removed in v2**. It now exposes only the legacy method set (`get`/`has`/`set`/`map`/`forEach`/`reduce`/`paths`/`nodes`/`clone`). Reach for the functional API (the default `neotraverse` export) instead.
+:::
 
 ## Old browsers / runtimes: `neotraverse/legacy`
 

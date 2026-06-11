@@ -46,9 +46,11 @@ export default defineConfig({
 		],
 		overrides: [
 			{
-				// Markdown: spaces, no trailing commas, don't reflow prose (matches the old .prettierrc md override)
+				// Markdown: spaces, no trailing commas. proseWrap 'preserve' (NOT 'never'):
+				// 'never' joins multi-line prose onto one line, which collapses VitePress
+				// `:::` containers (title runs into body) and breaks their rendering.
 				files: ['**/*.md'],
-				options: { useTabs: false, tabWidth: 2, trailingComma: 'none', proseWrap: 'never' },
+				options: { useTabs: false, tabWidth: 2, trailingComma: 'none', proseWrap: 'preserve' },
 			},
 		],
 	},

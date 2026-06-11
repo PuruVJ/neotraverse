@@ -20,23 +20,23 @@ Typical API/config/document trees need nothing special. Add **`Date`**, **`RegEx
 
 ## Full type reference
 
-| Kind | `getType()` | `forEach` / `map` walk | `clone()` | Notes |
-| --- | --- | --- | --- | --- |
-| `null` | `'null'` | Visited | Copied |  |
-| `string`, `number`, `boolean`, `bigint`, `symbol`, `undefined` | `'primitive'` | Visited as values | Copied | Use `typeof` to branch |
-| `function` | `'function'` | Node value only; not invoked | Same reference on properties | Stripped by `toJSON()` |
-| Plain object, class instance | `'object'` | Descends into **own enumerable** keys | Deep clone; keeps prototype | Boxed `new String()` etc. are `'object'` **leaves** |
-| `Array` | `'array'` | Descends indices | Deep clone |  |
-| `Date` | `'date'` | Leaf (no keys) | Cloned via `getTime()` |  |
-| `RegExp` | `'regexp'` | Leaf | Cloned |  |
-| `Map` | `'map'` | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each **value** at its key | **Deep-clones entries** | See [Iteration](/guide/api/iteration) |
-| `Set` | `'set'` | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each element at a numeric index | **Deep-clones values** | Same as `Map` |
-| `WeakMap` / `WeakSet` | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk) | **`clone` / `copy` return the same reference** | Cannot query weak refs after GC |
-| Typed array (`Uint8Array`, …) | `'typed-array'` | Descends index keys; `copy` uses `.slice()` | Leaf in deep clone (buffer copied) |  |
-| `ArrayBuffer` | `'arraybuffer'` | Leaf | `.slice(0)` |  |
-| `DataView` | `'dataview'` | Leaf | Clones viewed byte range |  |
-| `Error` | `'error'` | Leaf | Deep clone; shallow `map` copy is lossy (`message` only) | `deepEqual`: `message` + `name` |
-| `Promise`, `URL`, DOM nodes, … | `'object'` | Own enumerable keys only, if any | Generic object copy | Host objects may behave oddly |
+| Kind                                                           | `getType()`               | `forEach` / `map` walk                                                                         | `clone()`                                                | Notes                                               |
+| -------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------- |
+| `null`                                                         | `'null'`                  | Visited                                                                                        | Copied                                                   |                                                     |
+| `string`, `number`, `boolean`, `bigint`, `symbol`, `undefined` | `'primitive'`             | Visited as values                                                                              | Copied                                                   | Use `typeof` to branch                              |
+| `function`                                                     | `'function'`              | Node value only; not invoked                                                                   | Same reference on properties                             | Stripped by `toJSON()`                              |
+| Plain object, class instance                                   | `'object'`                | Descends into **own enumerable** keys                                                          | Deep clone; keeps prototype                              | Boxed `new String()` etc. are `'object'` **leaves** |
+| `Array`                                                        | `'array'`                 | Descends indices                                                                               | Deep clone                                               |                                                     |
+| `Date`                                                         | `'date'`                  | Leaf (no keys)                                                                                 | Cloned via `getTime()`                                   |                                                     |
+| `RegExp`                                                       | `'regexp'`                | Leaf                                                                                           | Cloned                                                   |                                                     |
+| `Map`                                                          | `'map'`                   | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each **value** at its key       | **Deep-clones entries**                                  | See [Iteration](/guide/api/iteration)               |
+| `Set`                                                          | `'set'`                   | **Leaf** by default; with `{ descendIntoMapSet: true }` visits each element at a numeric index | **Deep-clones values**                                   | Same as `Map`                                       |
+| `WeakMap` / `WeakSet`                                          | `'weakmap'` / `'weakset'` | **Leaf** (not enumerable in walk)                                                              | **`clone` / `copy` return the same reference**           | Cannot query weak refs after GC                     |
+| Typed array (`Uint8Array`, …)                                  | `'typed-array'`           | Descends index keys; `copy` uses `.slice()`                                                    | Leaf in deep clone (buffer copied)                       |                                                     |
+| `ArrayBuffer`                                                  | `'arraybuffer'`           | Leaf                                                                                           | `.slice(0)`                                              |                                                     |
+| `DataView`                                                     | `'dataview'`              | Leaf                                                                                           | Clones viewed byte range                                 |                                                     |
+| `Error`                                                        | `'error'`                 | Leaf                                                                                           | Deep clone; shallow `map` copy is lossy (`message` only) | `deepEqual`: `message` + `name`                     |
+| `Promise`, `URL`, DOM nodes, …                                 | `'object'`                | Own enumerable keys only, if any                                                               | Generic object copy                                      | Host objects may behave oddly                       |
 
 ## Deliberate limits
 

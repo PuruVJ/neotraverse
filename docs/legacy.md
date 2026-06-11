@@ -9,7 +9,9 @@ This is the original `traverse`-compatible API, a **drop-in replacement** for [`
 
 - **`neotraverse/legacy`:** a CJS + ESM build targeting **ES2015**, the one-line swap for users of the original `traverse`.
 
-::: tip Building something new? See [**Differences from traverse**](/guide/vs-traverse) for a full comparison. For new code, prefer the [**functional API**](/guide) (the default `neotraverse` export), the same engine, but tree-shakeable, with a `ctx` argument, query / iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page documents the stable classic API, which stays a faithful `traverse` drop-in. :::
+::: tip Building something new?
+See [**Differences from traverse**](/guide/vs-traverse) for a full comparison. For new code, prefer the [**functional API**](/guide) (the default `neotraverse` export), the same engine, but tree-shakeable, with a `ctx` argument, query / iteration / async helpers, `Map`/`Set` clone, and the fastest path operations. This page documents the stable classic API, which stays a faithful `traverse` drop-in.
+:::
 
 ## Install
 
@@ -41,15 +43,19 @@ const traverse = require('neotraverse/legacy');
 
 ## Build & browser support
 
-| Build | Import | Module | Target | Browsers |
-| --- | --- | --- | --- | --- |
+| Build      | Import               | Module    | Target | Browsers                                      |
+| ---------- | -------------------- | --------- | ------ | --------------------------------------------- |
 | **legacy** | `neotraverse/legacy` | CJS + ESM | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+ |
 
-::: warning Breaking change in 1.0 The legacy build now targets **ES2015** instead of ES5 (it is built with rolldown/oxc, whose floor is ES2015). It remains a CJS + ESM drop-in for `traverse`; only environments that required literal ES5 output, e.g. IE11, are no longer supported by the prebuilt bundle. :::
+::: warning Breaking change in 1.0
+The legacy build now targets **ES2015** instead of ES5 (it is built with rolldown/oxc, whose floor is ES2015). It remains a CJS + ESM drop-in for `traverse`; only environments that required literal ES5 output, e.g. IE11, are no longer supported by the prebuilt bundle.
+:::
 
 ## Security
 
-::: warning Hardening lives in the functional API The legacy build stays behaviour-compatible with the original `traverse`, so it intentionally does **not** carry the 1.0 security hardening (or the performance work). If you run on **untrusted data**, use the default [`neotraverse`](/guide) functional API, which refuses prototype-polluting keys, keeps the real prototype on `clone` / `map` of hostile JSON, and bounds recursion with `maxDepth`. :::
+::: warning Hardening lives in the functional API
+The legacy build stays behaviour-compatible with the original `traverse`, so it intentionally does **not** carry the 1.0 security hardening (or the performance work). If you run on **untrusted data**, use the default [`neotraverse`](/guide) functional API, which refuses prototype-polluting keys, keeps the real prototype on `clone` / `map` of hostile JSON, and bounds recursion with `maxDepth`.
+:::
 
 Read the full audit story in the [**1.0 release post**](https://puruvj.dev/blog/neotraverse-1-0).
 
@@ -102,25 +108,25 @@ Read / write / test the element at an array `path`.
 
 Every callback runs with the context bound to `this`:
 
-| Property | Description |
-| --- | --- |
-| `this.node` | The present node. |
-| `this.path` | Array of keys from the root to the present node. |
-| `this.parent` / `this.parents` | The parent context / all ancestor contexts. |
-| `this.key` | The key of the present node in its parent (`undefined` at the root). |
-| `this.isRoot` / `this.notRoot` | Whether the node is the root. |
-| `this.isLeaf` / `this.notLeaf` | Whether the node has no children. |
-| `this.isFirst` / `this.isLast` | Whether the node is the first / last sibling. |
-| `this.level` | Depth of the node within the traversal. |
-| `this.circular` | The ancestor context this node is a cycle back to, if any. |
-| `this.update(value, stopHere?)` | Set a new value for the node. Stops descending when `stopHere` is true. |
-| `this.remove(stopHere?)` | Remove from the output (spliced from arrays, deleted otherwise). |
-| `this.delete(stopHere?)` | `delete` from the parent (even on arrays). |
-| `this.keys` | The node's keys, assign in `before()` to traverse in a custom order. |
-| `this.before(fn)` / `this.after(fn)` | Run before / after all children are traversed. |
-| `this.pre(fn)` / `this.post(fn)` | Run before / after **each** child is traversed. |
-| `this.stop()` | Stop the entire traversal. |
-| `this.block()` | Don't descend into the current node's children. |
+| Property                             | Description                                                             |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| `this.node`                          | The present node.                                                       |
+| `this.path`                          | Array of keys from the root to the present node.                        |
+| `this.parent` / `this.parents`       | The parent context / all ancestor contexts.                             |
+| `this.key`                           | The key of the present node in its parent (`undefined` at the root).    |
+| `this.isRoot` / `this.notRoot`       | Whether the node is the root.                                           |
+| `this.isLeaf` / `this.notLeaf`       | Whether the node has no children.                                       |
+| `this.isFirst` / `this.isLast`       | Whether the node is the first / last sibling.                           |
+| `this.level`                         | Depth of the node within the traversal.                                 |
+| `this.circular`                      | The ancestor context this node is a cycle back to, if any.              |
+| `this.update(value, stopHere?)`      | Set a new value for the node. Stops descending when `stopHere` is true. |
+| `this.remove(stopHere?)`             | Remove from the output (spliced from arrays, deleted otherwise).        |
+| `this.delete(stopHere?)`             | `delete` from the parent (even on arrays).                              |
+| `this.keys`                          | The node's keys, assign in `before()` to traverse in a custom order.    |
+| `this.before(fn)` / `this.after(fn)` | Run before / after all children are traversed.                          |
+| `this.pre(fn)` / `this.post(fn)`     | Run before / after **each** child is traversed.                         |
+| `this.stop()`                        | Stop the entire traversal.                                              |
+| `this.block()`                       | Don't descend into the current node's children.                         |
 
 ## Migrating from `traverse`
 

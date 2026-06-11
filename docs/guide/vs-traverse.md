@@ -7,22 +7,26 @@ outline: [2, 3]
 
 [`traverse`](https://github.com/ljharb/js-traverse) is the classic `this`-bound walker. **neotraverse** keeps that API as a drop-in (now at `neotraverse/legacy`), ships a **utility-first functional** API as the default `neotraverse` export, and hardens the engine for real-world JSON and config trees.
 
-::: tip Pick your path **Stay on `traverse` syntax?** `import traverse from 'neotraverse/legacy'`, one-line swap.  
-**Starting fresh or want tree-shaking?** `import { forEach } from 'neotraverse'`.  
-**Step-by-step upgrade?** See [Migrating from traverse](/migration). :::
+::: tip Pick your path
+**Stay on `traverse` syntax?** `import traverse from 'neotraverse/legacy'`, one-line swap.
+
+**Starting fresh or want tree-shaking?** `import { forEach } from 'neotraverse'`.
+
+**Step-by-step upgrade?** See [Migrating from traverse](/migration).
+:::
 
 ## At a glance
 
-|  | `traverse` | **neotraverse** |
-| --- | --- | --- |
-| **Dependencies** | Ships with runtime deps | **Zero**, no polyfills |
-| **Types** | `@types/traverse` | **Built in** |
-| **Untrusted JSON** | Classic behaviour | **Hardened**, pollution & injection safe ([Security](/guide/security)) |
-| **Throughput** | Baseline | **~3×** drop-in (`neotraverse/legacy`) · **~5×** functional API (`neotraverse`, up to **~10×** on core walks, [Benchmarks](/benchmarks)) |
-| **Memory / walk** | Baseline | **~2×** less allocation (drop-in) · **~6×** less (functional, up to **~11×** on wide `forEach`, [Benchmarks](/benchmarks)) |
-| **Bundle (functional)** | Monolithic import | **Tree-shakeable** (`sideEffects: false`), [~2 to 6 KB brotli](/guide#bundle-size-brotli) for typical apps |
-| **Default API** | `traverse(obj).forEach(fn)` | **Functional** on `neotraverse`; classic drop-in on `neotraverse/legacy` |
-| **Recommended new code** | - | `neotraverse`, `forEach(obj, (ctx, x) => …)` |
+|                          | `traverse`                  | **neotraverse**                                                                                                                          |
+| ------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dependencies**         | Ships with runtime deps     | **Zero**, no polyfills                                                                                                                   |
+| **Types**                | `@types/traverse`           | **Built in**                                                                                                                             |
+| **Untrusted JSON**       | Classic behaviour           | **Hardened**, pollution & injection safe ([Security](/guide/security))                                                                   |
+| **Throughput**           | Baseline                    | **~3×** drop-in (`neotraverse/legacy`) · **~5×** functional API (`neotraverse`, up to **~10×** on core walks, [Benchmarks](/benchmarks)) |
+| **Memory / walk**        | Baseline                    | **~2×** less allocation (drop-in) · **~6×** less (functional, up to **~11×** on wide `forEach`, [Benchmarks](/benchmarks))               |
+| **Bundle (functional)**  | Monolithic import           | **Tree-shakeable** (`sideEffects: false`), [~2 to 6 KB brotli](/guide#bundle-size-brotli) for typical apps                               |
+| **Default API**          | `traverse(obj).forEach(fn)` | **Functional** on `neotraverse`; classic drop-in on `neotraverse/legacy`                                                                 |
+| **Recommended new code** | -                           | `neotraverse`, `forEach(obj, (ctx, x) => …)`                                                                                             |
 
 ## What stays the same
 
@@ -44,11 +48,11 @@ traverse({ a: 1, b: 2 }).forEach(function (x) {
 
 You get these wins **without** rewriting callbacks:
 
-| Change | Why it matters |
-| --- | --- |
-| **No `@types/traverse`** | Types ship with the package |
-| **Prototype-pollution safety** | `clone` / `map` / `set` refuse hostile `__proto__` keys ([details](/guide/security)) |
-| **Faster, leaner walks** | Same call shape, higher ops/sec and ~2× less heap per op ([benchmarks](/benchmarks)) |
+| Change                         | Why it matters                                                                                                                           |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **No `@types/traverse`**       | Types ship with the package                                                                                                              |
+| **Prototype-pollution safety** | `clone` / `map` / `set` refuse hostile `__proto__` keys ([details](/guide/security))                                                     |
+| **Faster, leaner walks**       | Same call shape, higher ops/sec and ~2× less heap per op ([benchmarks](/benchmarks))                                                     |
 | **Drop-in lives at `/legacy`** | `import traverse from 'neotraverse/legacy'` (ES2015, CJS + ESM); the classic `this`-bound API stays behaviour-compatible with `traverse` |
 
 ## The functional API (default `neotraverse` export)
@@ -92,16 +96,16 @@ map(obj, fn, { immutable: true });
 
 These are **additive**, your old code keeps working; you opt in when you need them.
 
-| Area | Examples |
-| --- | --- |
-| **String paths** | `getPath`, `setPath`, `hasPath`, `parseDotPath`, `parseJsonPointer` |
-| **Path search** | `findPaths`, `filterPaths`, `select` (glob), `count`, `size` |
-| **Structural** | `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch` |
-| **Walk control** | `walk`, `breadthFirst`, `mapBfs`, `skipWhere`, `groupBy`, `merge`, `dereference` |
-| **Typing** | `getType`, explicit node kinds (object, array, Map, Set, …) |
-| **Lazy iteration** | `entries`, `values` generators |
-| **Async** | `forEachAsync`, `mapAsync` with `concurrency` and `AbortSignal` |
-| **Map / Set** | `descendIntoMapSet`, traverse collection entries, not just object keys |
+| Area               | Examples                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------- |
+| **String paths**   | `getPath`, `setPath`, `hasPath`, `parseDotPath`, `parseJsonPointer`                   |
+| **Path search**    | `findPaths`, `filterPaths`, `select` (glob), `count`, `size`                          |
+| **Structural**     | `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch` |
+| **Walk control**   | `walk`, `breadthFirst`, `mapBfs`, `skipWhere`, `groupBy`, `merge`, `dereference`      |
+| **Typing**         | `getType`, explicit node kinds (object, array, Map, Set, …)                           |
+| **Lazy iteration** | `entries`, `values` generators                                                        |
+| **Async**          | `forEachAsync`, `mapAsync` with `concurrency` and `AbortSignal`                       |
+| **Map / Set**      | `descendIntoMapSet`, traverse collection entries, not just object keys                |
 
 Full reference: [API docs](/guide/api/core) · [Example index](/guide#example-index).
 
@@ -132,11 +136,11 @@ Then optionally move hot paths to the **functional `neotraverse`** API for tree-
 
 ## Which build should I use?
 
-| Build | Import | Use when |
-| --- | --- | --- |
-| **Default (functional)** | `neotraverse` | New apps, TypeScript, tree-shaking, extra helpers, fastest `get`/`set`; the recommended entry |
-| **Deprecated class** | `neotraverse/modern` | Only for existing `Traverse` class users; deprecated, removed in v2 |
-| **Legacy** | `neotraverse/legacy` | Drop-in replacement; `this`-bound API; older bundlers / CommonJS; still `traverse`-compatible (ES2015) |
+| Build                    | Import               | Use when                                                                                               |
+| ------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Default (functional)** | `neotraverse`        | New apps, TypeScript, tree-shaking, extra helpers, fastest `get`/`set`; the recommended entry          |
+| **Deprecated class**     | `neotraverse/modern` | Only for existing `Traverse` class users; deprecated, removed in v2                                    |
+| **Legacy**               | `neotraverse/legacy` | Drop-in replacement; `this`-bound API; older bundlers / CommonJS; still `traverse`-compatible (ES2015) |
 
 ## What you keep from `traverse`
 

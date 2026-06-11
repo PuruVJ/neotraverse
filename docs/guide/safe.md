@@ -119,14 +119,14 @@ next === state; // true if nothing matched. Identity means "no change"
 next.profile === state.profile; // true. Untouched subtree shared by reference
 ```
 
-| return | meaning |
-| --- | --- |
-| `undefined` / nothing | keep the value, descend into it |
-| `replace(value)` | substitute. **Final**: not re-visited, not descended. `replace(undefined)` sets `undefined` |
-| `replace(value, { descend: true })` | substitute, then descend into the replacement's children |
-| `remove()` | delete the entry (arrays splice, no holes). `TypeError` at the root |
-| `skip()` | keep the value, don't descend |
-| `stop()` | end the pass. Edits already made still fold up |
+| return                              | meaning                                                                                     |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `undefined` / nothing               | keep the value, descend into it                                                             |
+| `replace(value)`                    | substitute. **Final**: not re-visited, not descended. `replace(undefined)` sets `undefined` |
+| `replace(value, { descend: true })` | substitute, then descend into the replacement's children                                    |
+| `remove()`                          | delete the entry (arrays splice, no holes). `TypeError` at the root                         |
+| `skip()`                            | keep the value, don't descend                                                               |
+| `stop()`                            | end the pass. Edits already made still fold up                                              |
 
 Returning anything else throws a `TypeError` (and is a compile error in TS, since commands are branded).
 
@@ -222,4 +222,6 @@ Two caveats:
 
 See [Benchmarks](/benchmarks) for the full throughput matrix.
 
-::: tip Platform `neotraverse/safe` requires Node 22+ / evergreen browsers (it uses native ES2025 iterator helpers). The default `neotraverse` has no such floor. :::
+::: tip Platform
+`neotraverse/safe` requires Node 22+ / evergreen browsers (it uses native ES2025 iterator helpers). The default `neotraverse` has no such floor.
+:::

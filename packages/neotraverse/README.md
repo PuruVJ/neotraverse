@@ -12,15 +12,16 @@ Traverse and transform objects by visiting every node on a recursive walk. A Typ
 - 🛡️ Safe on untrusted input ([prototype-pollution & injection hardened](#security))
 - ⚡ **~5× faster** and **~6× leaner** than `traverse` with the functional API (up to **~10×** / **~11×**); **~3×** speed and **~2×** less memory on the legacy drop-in build
 - 🛸 ESM-first, with a legacy ES2015 CJS/ESM build
+- 🛟 **[`neotraverse/safe`](#neotraversesafe):** an opt-in, stack-safe iterative core that walks **200,000-deep** trees recursion can't, with a lazy `visit` iterator and copy-on-write `transform` (Node 22+)
 
 ## Benchmarks (summary)
 
 Geometric-mean speedup versus the original `traverse` across the full operation × shape matrix:
 
-| Build | Speedup vs `traverse` | Allocation vs `traverse` (core walks) |
-| --- | --- | --- |
+| Build                               | Speedup vs `traverse`                                               | Allocation vs `traverse` (core walks)               |
+| ----------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------- |
 | **neotraverse modern** (functional) | **≈ 4.9×** (full matrix) · **≈ 5.6×** (core walks) · **up to ~10×** | **≈ 5.7× less** · **up to ~11×** (`forEach · wide`) |
-| **neotraverse legacy** (drop-in) | **≈ 3×** | **≈ 2× less** |
+| **neotraverse legacy** (drop-in)    | **≈ 3×**                                                            | **≈ 2× less**                                       |
 
 Core traversal ops (`forEach` / `map` / `clone` / `reduce` / `paths` / `nodes`) on the **functional** build land at **~3–10×** throughput and **~6× less heap** on average vs `traverse` (peaks: `clone · small` **~9.9×** speed, `forEach · wide` **~11×** memory). See the [full table](#benchmarks-full) or the [interactive benchmarks page](https://neotraverse.puruvj.dev/benchmarks). Reproduce with `pnpm bench`.
 
@@ -65,13 +66,37 @@ traverse({ a: 1, b: 2, c: [3, 4] }).forEach(function (x) {
 import { Traverse } from 'neotraverse/modern';
 ```
 
+## `neotraverse/safe`
+
+A second, opt-in entry point for input that is **deep, untrusted, huge, or only partially consumed**. The default `neotraverse` walk is recursive (fast, but it overflows the call stack on deep enough input). `neotraverse/safe` runs on an **iterative** engine, so it traverses arbitrarily deep trees that crash a recursive walker (measured: the default overflows past **~2,000** levels; `/safe` handles **200,000+**). It is also lazy and copy-on-write.
+
+```ts
+import { visit, transform } from 'neotraverse/safe';
+
+// lazy iteration: stop early, never materialize the rest
+const first5 = visit(huge)
+  .filter((v) => typeof v.value === 'string')
+  .take(5)
+  .toArray();
+
+// copy-on-write: shares untouched subtrees, returns the input by identity on a no-op
+const redacted = transform(doc, {
+  '**.{password,token}': (v, { replace }) => replace('***')
+});
+```
+
+It ships a twelve-export surface: `visit`, `transform` / `transformAsync`, `get` / `set` / `has`, `clone`, `equal`, `merge`, `diff`, `patch`, `resolveRefs`.
+
+**The honest trade-off:** on a full eager scan `/safe` runs at roughly **0.8×** the default (still ~4× faster than `traverse`), and materializing a whole tree costs a little more memory. It wins on **stack safety**, on **early-exit memory** (~6× less peak on a `filter().take()` chain), and on **copy-on-write** edits. Requires **Node 22+** / evergreen browsers (it uses native ES2025 iterator helpers). See the [`/safe` guide](https://neotraverse.puruvj.dev/guide/safe).
+
 ## Builds & browser support
 
-| Build | Import | Contents | Module | Target | Browsers |
-| --- | --- | --- | --- | --- | --- |
-| **default** | `neotraverse` | functional API (recommended) | ESM | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+ |
-| **modern** | `neotraverse/modern` | deprecated `Traverse` class only | ESM | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+ |
-| **legacy** | `neotraverse/legacy` | classic `traverse` drop-in | CJS + ESM | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+ |
+| Build       | Import               | Contents                           | Module    | Target | Browsers                                      |
+| ----------- | -------------------- | ---------------------------------- | --------- | ------ | --------------------------------------------- |
+| **default** | `neotraverse`        | functional API (recommended)       | ESM       | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+      |
+| **safe**    | `neotraverse/safe`   | stack-safe iterative core (opt-in) | ESM       | ES2024 | Node 22+, evergreen browsers                  |
+| **modern**  | `neotraverse/modern` | deprecated `Traverse` class only   | ESM       | ES2022 | Chrome/Edge 94+, Firefox 93+, Safari 15+      |
+| **legacy**  | `neotraverse/legacy` | classic `traverse` drop-in         | CJS + ESM | ES2015 | Chrome 51+, Firefox 54+, Safari 10+, Edge 15+ |
 
 > ⚠️ **1.0 breaking changes:** the default export (`neotraverse`) is now the functional API, not the classic `traverse` default. Move classic drop-in imports to `neotraverse/legacy`, and `import { Traverse }` to `neotraverse/modern`. The legacy build also targets **ES2015** (was ES5); only environments needing literal ES5 (e.g. IE11) are affected.
 

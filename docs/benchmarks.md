@@ -68,11 +68,11 @@ On a full eager scan, `/safe`'s lazy iterator runs at roughly **0.8×** the defa
 
 <small>Reproduce with <code>pnpm bench:safe-memory</code> · {{ safeMem.treeSize.toLocaleString() }}-node tree · Node {{ safeMem.runtime.node }}</small>
 
-| Scenario | default `neotraverse` | `neotraverse/safe` | Verdict |
-| --- | --- | --- | --- |
-| **Deep input** (linked tree, levels) | overflows past **~{{ safeMem.stackSafety.v1MaxDepth.toLocaleString() }}** 💥 | **{{ safeMem.stackSafety.safeDepthTested.toLocaleString() }}+**, no overflow | **/safe only** |
-| **First 5 of a filtered scan** (peak MB) | {{ earlyExit.v1Mb }} MB | **{{ earlyExit.safeMb }} MB** | **/safe {{ earlyExit.ratio }}× less** |
-| **Materialize the whole tree** (peak MB) | **{{ fullScan.v1Mb }} MB** | {{ fullScan.safeMb }} MB | default wins ({{ (fullScan.safeMb / fullScan.v1Mb).toFixed(1) }}× more) |
+| Scenario                                 | default `neotraverse`                                                        | `neotraverse/safe`                                                           | Verdict                                                                 |
+| ---------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Deep input** (linked tree, levels)     | overflows past **~{{ safeMem.stackSafety.v1MaxDepth.toLocaleString() }}** 💥 | **{{ safeMem.stackSafety.safeDepthTested.toLocaleString() }}+**, no overflow | **/safe only**                                                          |
+| **First 5 of a filtered scan** (peak MB) | {{ earlyExit.v1Mb }} MB                                                      | **{{ earlyExit.safeMb }} MB**                                                | **/safe {{ earlyExit.ratio }}× less**                                   |
+| **Materialize the whole tree** (peak MB) | **{{ fullScan.v1Mb }} MB**                                                   | {{ fullScan.safeMb }} MB                                                     | default wins ({{ (fullScan.safeMb / fullScan.v1Mb).toFixed(1) }}× more) |
 
 **Read this honestly:**
 

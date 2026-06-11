@@ -289,15 +289,15 @@ state.users === next.users; // true for untouched subtrees (structural sharing)
 
 The `Edits` command factory is the visitor's **second argument** (CURSOR-KERNEL graft): nothing to import, fully autocompleted, zero export-budget cost. Commands are opaque `unique symbol`-branded objects; **there are no exported sentinel values anywhere in the library** (no `REMOVE`, no `STOP`). Every command and its exact meaning:
 
-| Command | Allocation | Meaning |
-| --- | --- | --- |
-| `return undefined` / no return | none | Keep the value. In `'pre'`: descend into children. In `'post'`: keep the (already folded) value. This is unambiguous because plain values are never commands. |
-| `edit.replace(value)` | one `{ tag, value, descend }` box, only when an edit happens | Substitute `value` for this node. **The replacement is final**: the visitor is not re-invoked on it and traversal does not descend into it (judges 2 and 3, 2:1 over judge 1: kills the self-feeding-visitor infinite loop; the safe default is the only reversible door). `edit.replace(undefined)` sets `undefined`; the v0.7 return-undefined ambiguity is closed by construction. |
-| `edit.replace(value, { descend: true })` | same box | Substitute `value`, then descend into the **children of the replacement** (the replacement node itself is never re-visited). Opt-in restores v0.7 `ctx.update` descent for nested rewrites. A visitor that re-matches its own output under `descend: true` will recurse; documented as the user's explicit choice. |
-| `edit.remove()` | none (module singleton) | Delete this entry from its parent: arrays **splice** (never holes; removals compacted in one pass at fold time), objects `delete`, Map entries deleted, Set elements deleted (order of survivors preserved). Children are never visited. At the root: `TypeError: neotraverse: cannot remove the root`. |
-| `edit.skip()` | none (singleton) | Keep the value, do not descend. In `order: 'post'`: documented no-op (children were already visited; rule sets are reusable across orders). |
-| `edit.stop()` | none (singleton) | Keep the value, end the whole pass immediately. **Edits already made still fold up** (well-defined partial output); the possibly-new root is returned. |
-| anything else returned | n/a | `TypeError: neotraverse: visitor returned a non-command value; did you mean edit.replace(...)?` thrown immediately (KEEL guard, demanded by judges 1 and 3). The classic `(v) => v.value` accident fails loudly in plain JS, and the `Command` brand makes it a compile error in TS. |
+| Command                                  | Allocation                                                   | Meaning                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `return undefined` / no return           | none                                                         | Keep the value. In `'pre'`: descend into children. In `'post'`: keep the (already folded) value. This is unambiguous because plain values are never commands.                                                                                                                                                                                                                         |
+| `edit.replace(value)`                    | one `{ tag, value, descend }` box, only when an edit happens | Substitute `value` for this node. **The replacement is final**: the visitor is not re-invoked on it and traversal does not descend into it (judges 2 and 3, 2:1 over judge 1: kills the self-feeding-visitor infinite loop; the safe default is the only reversible door). `edit.replace(undefined)` sets `undefined`; the v0.7 return-undefined ambiguity is closed by construction. |
+| `edit.replace(value, { descend: true })` | same box                                                     | Substitute `value`, then descend into the **children of the replacement** (the replacement node itself is never re-visited). Opt-in restores v0.7 `ctx.update` descent for nested rewrites. A visitor that re-matches its own output under `descend: true` will recurse; documented as the user's explicit choice.                                                                    |
+| `edit.remove()`                          | none (module singleton)                                      | Delete this entry from its parent: arrays **splice** (never holes; removals compacted in one pass at fold time), objects `delete`, Map entries deleted, Set elements deleted (order of survivors preserved). Children are never visited. At the root: `TypeError: neotraverse: cannot remove the root`.                                                                               |
+| `edit.skip()`                            | none (singleton)                                             | Keep the value, do not descend. In `order: 'post'`: documented no-op (children were already visited; rule sets are reusable across orders).                                                                                                                                                                                                                                           |
+| `edit.stop()`                            | none (singleton)                                             | Keep the value, end the whole pass immediately. **Edits already made still fold up** (well-defined partial output); the possibly-new root is returned.                                                                                                                                                                                                                                |
+| anything else returned                   | n/a                                                          | `TypeError: neotraverse: visitor returned a non-command value; did you mean edit.replace(...)?` thrown immediately (KEEL guard, demanded by judges 1 and 3). The classic `(v) => v.value` accident fails loudly in plain JS, and the `Command` brand makes it a compile error in TS.                                                                                                  |
 
 ### Visitor forms and composition (single pass, always)
 
@@ -394,19 +394,19 @@ escapes  :=  '\.'  '\*'  '\{'  '\}'  '\,'  '\\'   inside literals
 
 ## F. Cross-cutting option semantics (one table)
 
-| Option | Accepted by | Meaning |
-| --- | --- | --- |
-| `order` | visit (`pre`/`post`/`breadth`), transform + transformAsync (`pre`/`post` only) | I1 ordering; no BFS writes, ever |
-| `match` | visit, transform, transformAsync (function/array forms) | compiled pattern; visitor/yield only on accepting states; descent pruned to viable prefixes |
-| `symbols` | visit, transform(+Async), clone, equal, merge | include own enumerable symbol keys; default false |
-| `mapSet` | visit, transform(+Async) | descend Map/Set **recursively at every level**; default false (Map/Set are leaves). Pairwise ops have fixed contracts instead (law 4) |
-| `maxDepth` | every traversing/recursing op | `RangeError` past the bound; the untrusted-input knob; the iterative kernel cannot stack-overflow regardless |
-| `mutate` | transform(+Async), set, merge, patch | in-place applier; default false (COW + sharing + identity) |
-| `signal` | transformAsync ONLY | rejects with `signal.reason` at the next visit (law 7) |
-| `concurrency` | transformAsync only | max parallel sibling visits; default 1 |
-| `arrays`, `at` | merge | array strategy + per-pattern overrides |
-| `compare` | equal | leaf-level override; `undefined` falls through |
-| `fallback` (3rd arg) | get | returned only when the path is absent |
+| Option               | Accepted by                                                                    | Meaning                                                                                                                               |
+| -------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `order`              | visit (`pre`/`post`/`breadth`), transform + transformAsync (`pre`/`post` only) | I1 ordering; no BFS writes, ever                                                                                                      |
+| `match`              | visit, transform, transformAsync (function/array forms)                        | compiled pattern; visitor/yield only on accepting states; descent pruned to viable prefixes                                           |
+| `symbols`            | visit, transform(+Async), clone, equal, merge                                  | include own enumerable symbol keys; default false                                                                                     |
+| `mapSet`             | visit, transform(+Async)                                                       | descend Map/Set **recursively at every level**; default false (Map/Set are leaves). Pairwise ops have fixed contracts instead (law 4) |
+| `maxDepth`           | every traversing/recursing op                                                  | `RangeError` past the bound; the untrusted-input knob; the iterative kernel cannot stack-overflow regardless                          |
+| `mutate`             | transform(+Async), set, merge, patch                                           | in-place applier; default false (COW + sharing + identity)                                                                            |
+| `signal`             | transformAsync ONLY                                                            | rejects with `signal.reason` at the next visit (law 7)                                                                                |
+| `concurrency`        | transformAsync only                                                            | max parallel sibling visits; default 1                                                                                                |
+| `arrays`, `at`       | merge                                                                          | array strategy + per-pattern overrides                                                                                                |
+| `compare`            | equal                                                                          | leaf-level override; `undefined` falls through                                                                                        |
+| `fallback` (3rd arg) | get                                                                            | returned only when the path is absent                                                                                                 |
 
 Aliasing contract (documented loudly): results of `transform`/`set`/`merge`/`patch`/`resolveRefs` may share subtrees with their inputs. Treat inputs as immutable afterward, or compose with `clone`. This is Immer's contract, replacing v0.7's half-immutable copy-on-walk.
 
@@ -648,59 +648,59 @@ const short = await transformAsync(
 
 Mechanical rules first: every callback `(ctx, v)` becomes a `Visit` record `v` (`v.value` ~ old node, `v.depth` ~ `ctx.level`, `v.parent.value` ~ `ctx.parent.node`); `ctx.update(x)` -> `return edit.replace(x)` (add `{ descend: true }` if you relied on post-update descent); `ctx.remove()/delete()` -> `return edit.remove()` (remove always splices; delete-leaves-a-hole has no replacement); `ctx.block()` -> `return edit.skip()` / `v.skip()`; `ctx.stop()` -> `return edit.stop()` / `break`.
 
-| v0.7 export | v2 replacement |
-| --- | --- | --- |
-| `walk(o, cb)` (read) | `for (const v of visit(o)) cb2(v)` (passing a function as arg 2 of `visit` throws with this hint) |
-| `walk` / `forEach` (mutating) | `transform(o, visitor, { mutate: true })` |
-| `map(o, cb)` | `transform(o, visitor)` — now copies only edited spines; `clone(transform(...))` for v0.7 full independence |
-| `mapBfs(o, cb)` / `breadthFirst(o, cb)` (write) | dropped (BFS rewrite was incoherent); use pre/post `transform`, or collect in a breadth read and apply with `set` |
-| `breadthFirst(o, cb)` (read) | `for (const v of visit(o, { order: 'breadth' }))` |
-| `forEachAsync(o, cb)` | `for (const v of visit(o)) await cb2(v)` (read) or `transformAsync(o, visitor, { mutate: true })` |
-| `mapAsync(o, cb)` | `transformAsync(o, visitor)` |
-| `entries(o)` | `visit(o).map(v => [v.path, v.value])` |
-| `values(o)` | `visit(o).map(v => v.value)` |
-| `paths(o)` | `visit(o).map(v => v.path).toArray()` |
-| `nodes(o)` | `visit(o).map(v => v.value).toArray()` |
-| `find(o, p)` | `visit(o).find(p)?.value` |
-| `filter(o, p)` | `visit(o).filter(p).map(v => v.value).toArray()` |
-| `some(o, p)` / `every(o, p)` | `visit(o).some(p)` / `visit(o).every(p)` |
-| `count(o, p)` | `visit(o).filter(p).reduce(n => n + 1, 0)` |
-| `size(o)` | `visit(o).reduce(n => n + 1, 0)` |
-| `reduce(o, f, init)` | `visit(o).reduce((acc, v) => f2(acc, v), init)` (seedless root-skip magic removed; pass a seed) |
-| `groupBy(o, k)` | `Map.groupBy(visit(o), v => k2(v))` (safe: fresh records) |
-| `skipWhere(p)` | `if (p(v)) v.skip()` in the loop; `(v, edit) => p(v) ? edit.skip() : undefined` in transforms |
-| `deleteWhere(o, p)` | `transform(o, (v, edit) => p(v) ? edit.remove() : undefined)` |
-| `prune(o, keep)` | `transform(o, (v, edit) => v.parent && !keep(v) ? edit.remove() : undefined)` |
-| `pruneDeep(o, n, r)` | `transform(o, (v, edit) => v.depth > n ? edit.replace(r ?? null) : undefined)` (replace never descends) |
-| `sanitize(o)` | `transform(o, { '**.{__proto__,constructor,prototype}': (v, edit) => edit.remove() })` |
-| `freeze(o)` | `for (const v of visit(o, { order: 'post' })) if (typeof v.value === 'object' && v.value) Object.freeze(v.value)` |
-| `toJSON(o)` | `JSON.stringify(transform(o, (v, edit) => v.circular ? edit.replace(null) : typeof v.value === 'bigint' ? edit.replace(String(v.value)) : undefined))` |
-| `flatten` (never shipped) | `Object.fromEntries(visit(o).filter(v => v.isLeaf).map(v => [v.pointer, v.value]))` |
-| `get(o, keys)` / `getPath(o, s)` | `get(o, path)` — one function: arrays, dot strings, pointers; optional absent-only `fallback` |
-| `has(o, keys)` / `hasPath(o, s)` | `has(o, path)` |
-| `set(o, keys, v)` / `setPath(o, s, v)` | `set(o, path, v, { mutate: true })` — **BREAKING: default `set` is now copy-on-write and returns the new root**; unsafe segments now throw instead of silently no-oping |
-| `parsePath` / `parseDotPath` / `parseJsonPointer` | dropped; strings are accepted directly everywhere (parsed and cached internally); exact form: pass `PropertyKey[]` |
-| `pointerPath(keys)` | `v.pointer` on visits; raw arrays: `'/' + keys.map(k => String(k).replaceAll('~','~0').replaceAll('/','~1')).join('/')` |
-| `findPaths(o, p)` | `visit(o).find(p)?.path` |
-| `filterPaths(o, p)` | `visit(o).filter(p).map(v => ({ path: v.path, value: v.value })).toArray()` |
-| `select(o, glob)` | `visit(o, { match: pattern })` — `key[*]` is now `key.*`; adds `**` and `{a,b}`; now lazy and actually prunes descent |
-| `parseGlob` | dropped (internal compiler) |
-| `clone(o)` | `clone(o)` (engine unchanged; `includeSymbols` renamed `symbols`) |
-| `deepEqual(a, b, { compareFn })` | `equal(a, b, { compare })` (renamed; hook kept) |
-| `merge(t, s, { array })` | `merge(t, s, { arrays, at })` — adds `'union'`, `{ by }`, per-pattern `at`; **result now shares kept branches**; `clone(merge(a, b))` for v0.7 isolation |
-| `diff(a, b)` | `diff(a, b)` — same format; **now throws `TypeError` on cycles** instead of silently truncating |
-| `patch(o, ops)` | `patch(o, ops)` — same format; now copy-on-write instead of clone-then-mutate; `{ mutate: true }` for in-place |
-| `dereference(o, { localOnly })` | `resolveRefs(o)` (`localOnly` dropped: non-local refs always kept as-is) |
-| `getType(v)` | dropped; `typeof` / `Array.isArray` / `instanceof` (doc snippet provided) |
-| `pipe()` (idea) | array visitors or record rules in one `transform` pass |
-| `Traverse` class (`neotraverse/modern`) | removed; `neotraverse/legacy` stays frozen for classic-traverse code |
-| ctx `update/remove/delete/stop/block` | `edit.replace` / `edit.remove()` / (no holes) / `edit.stop()` or `break` / `edit.skip()` or `v.skip()` |
-| ctx `before/after/pre/post` hooks | `order: 'pre' | 'post'`; per-child hooks dropped (use a post-order pass) |
-| ctx `parents` / `isFirst` / `isLast` / siblings | walk the `v.parent` chain; sibling logic reads `v.parent.value` |
-| options `immutable` | inverted: immutable + sharing is the default; `mutate: true` opts out |
-| options `includeSymbols` / `descendIntoMapSet` | `symbols` / `mapSet` (now recursive at every level) |
-| options `signal` on sync ops (silently ignored) | removed from sync signatures; `transformAsync` only |
-| options `concurrency` | `transformAsync` only (sibling batches) |
+| v0.7 export                                       | v2 replacement                                                                                                                                                          |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `walk(o, cb)` (read)                              | `for (const v of visit(o)) cb2(v)` (passing a function as arg 2 of `visit` throws with this hint)                                                                       |
+| `walk` / `forEach` (mutating)                     | `transform(o, visitor, { mutate: true })`                                                                                                                               |
+| `map(o, cb)`                                      | `transform(o, visitor)` — now copies only edited spines; `clone(transform(...))` for v0.7 full independence                                                             |
+| `mapBfs(o, cb)` / `breadthFirst(o, cb)` (write)   | dropped (BFS rewrite was incoherent); use pre/post `transform`, or collect in a breadth read and apply with `set`                                                       |
+| `breadthFirst(o, cb)` (read)                      | `for (const v of visit(o, { order: 'breadth' }))`                                                                                                                       |
+| `forEachAsync(o, cb)`                             | `for (const v of visit(o)) await cb2(v)` (read) or `transformAsync(o, visitor, { mutate: true })`                                                                       |
+| `mapAsync(o, cb)`                                 | `transformAsync(o, visitor)`                                                                                                                                            |
+| `entries(o)`                                      | `visit(o).map(v => [v.path, v.value])`                                                                                                                                  |
+| `values(o)`                                       | `visit(o).map(v => v.value)`                                                                                                                                            |
+| `paths(o)`                                        | `visit(o).map(v => v.path).toArray()`                                                                                                                                   |
+| `nodes(o)`                                        | `visit(o).map(v => v.value).toArray()`                                                                                                                                  |
+| `find(o, p)`                                      | `visit(o).find(p)?.value`                                                                                                                                               |
+| `filter(o, p)`                                    | `visit(o).filter(p).map(v => v.value).toArray()`                                                                                                                        |
+| `some(o, p)` / `every(o, p)`                      | `visit(o).some(p)` / `visit(o).every(p)`                                                                                                                                |
+| `count(o, p)`                                     | `visit(o).filter(p).reduce(n => n + 1, 0)`                                                                                                                              |
+| `size(o)`                                         | `visit(o).reduce(n => n + 1, 0)`                                                                                                                                        |
+| `reduce(o, f, init)`                              | `visit(o).reduce((acc, v) => f2(acc, v), init)` (seedless root-skip magic removed; pass a seed)                                                                         |
+| `groupBy(o, k)`                                   | `Map.groupBy(visit(o), v => k2(v))` (safe: fresh records)                                                                                                               |
+| `skipWhere(p)`                                    | `if (p(v)) v.skip()` in the loop; `(v, edit) => p(v) ? edit.skip() : undefined` in transforms                                                                           |
+| `deleteWhere(o, p)`                               | `transform(o, (v, edit) => p(v) ? edit.remove() : undefined)`                                                                                                           |
+| `prune(o, keep)`                                  | `transform(o, (v, edit) => v.parent && !keep(v) ? edit.remove() : undefined)`                                                                                           |
+| `pruneDeep(o, n, r)`                              | `transform(o, (v, edit) => v.depth > n ? edit.replace(r ?? null) : undefined)` (replace never descends)                                                                 |
+| `sanitize(o)`                                     | `transform(o, { '**.{__proto__,constructor,prototype}': (v, edit) => edit.remove() })`                                                                                  |
+| `freeze(o)`                                       | `for (const v of visit(o, { order: 'post' })) if (typeof v.value === 'object' && v.value) Object.freeze(v.value)`                                                       |
+| `toJSON(o)`                                       | `JSON.stringify(transform(o, (v, edit) => v.circular ? edit.replace(null) : typeof v.value === 'bigint' ? edit.replace(String(v.value)) : undefined))`                  |
+| `flatten` (never shipped)                         | `Object.fromEntries(visit(o).filter(v => v.isLeaf).map(v => [v.pointer, v.value]))`                                                                                     |
+| `get(o, keys)` / `getPath(o, s)`                  | `get(o, path)` — one function: arrays, dot strings, pointers; optional absent-only `fallback`                                                                           |
+| `has(o, keys)` / `hasPath(o, s)`                  | `has(o, path)`                                                                                                                                                          |
+| `set(o, keys, v)` / `setPath(o, s, v)`            | `set(o, path, v, { mutate: true })` — **BREAKING: default `set` is now copy-on-write and returns the new root**; unsafe segments now throw instead of silently no-oping |
+| `parsePath` / `parseDotPath` / `parseJsonPointer` | dropped; strings are accepted directly everywhere (parsed and cached internally); exact form: pass `PropertyKey[]`                                                      |
+| `pointerPath(keys)`                               | `v.pointer` on visits; raw arrays: `'/' + keys.map(k => String(k).replaceAll('~','~0').replaceAll('/','~1')).join('/')`                                                 |
+| `findPaths(o, p)`                                 | `visit(o).find(p)?.path`                                                                                                                                                |
+| `filterPaths(o, p)`                               | `visit(o).filter(p).map(v => ({ path: v.path, value: v.value })).toArray()`                                                                                             |
+| `select(o, glob)`                                 | `visit(o, { match: pattern })` — `key[*]` is now `key.*`; adds `**` and `{a,b}`; now lazy and actually prunes descent                                                   |
+| `parseGlob`                                       | dropped (internal compiler)                                                                                                                                             |
+| `clone(o)`                                        | `clone(o)` (engine unchanged; `includeSymbols` renamed `symbols`)                                                                                                       |
+| `deepEqual(a, b, { compareFn })`                  | `equal(a, b, { compare })` (renamed; hook kept)                                                                                                                         |
+| `merge(t, s, { array })`                          | `merge(t, s, { arrays, at })` — adds `'union'`, `{ by }`, per-pattern `at`; **result now shares kept branches**; `clone(merge(a, b))` for v0.7 isolation                |
+| `diff(a, b)`                                      | `diff(a, b)` — same format; **now throws `TypeError` on cycles** instead of silently truncating                                                                         |
+| `patch(o, ops)`                                   | `patch(o, ops)` — same format; now copy-on-write instead of clone-then-mutate; `{ mutate: true }` for in-place                                                          |
+| `dereference(o, { localOnly })`                   | `resolveRefs(o)` (`localOnly` dropped: non-local refs always kept as-is)                                                                                                |
+| `getType(v)`                                      | dropped; `typeof` / `Array.isArray` / `instanceof` (doc snippet provided)                                                                                               |
+| `pipe()` (idea)                                   | array visitors or record rules in one `transform` pass                                                                                                                  |
+| `Traverse` class (`neotraverse/modern`)           | removed; `neotraverse/legacy` stays frozen for classic-traverse code                                                                                                    |
+| ctx `update/remove/delete/stop/block`             | `edit.replace` / `edit.remove()` / (no holes) / `edit.stop()` or `break` / `edit.skip()` or `v.skip()`                                                                  |
+| ctx `before/after/pre/post` hooks                 | `order: 'pre'                                                                                                                                                           | 'post'`; per-child hooks dropped (use a post-order pass) |
+| ctx `parents` / `isFirst` / `isLast` / siblings   | walk the `v.parent` chain; sibling logic reads `v.parent.value`                                                                                                         |
+| options `immutable`                               | inverted: immutable + sharing is the default; `mutate: true` opts out                                                                                                   |
+| options `includeSymbols` / `descendIntoMapSet`    | `symbols` / `mapSet` (now recursive at every level)                                                                                                                     |
+| options `signal` on sync ops (silently ignored)   | removed from sync signatures; `transformAsync` only                                                                                                                     |
+| options `concurrency`                             | `transformAsync` only (sibling batches)                                                                                                                                 |
 
 ## J. Perf invariants the implementation must hit
 
