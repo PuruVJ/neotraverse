@@ -6,13 +6,15 @@ export default defineConfig([
 	// instead of re-bundling the whole functional API — `src/modern.ts` is just
 	// `export * from './index.js'` + the deprecated `Traverse` class. Full, with types.
 	{
-		entry: ['src/index.ts', 'src/modern.ts'],
+		entry: ['src/index.ts', 'src/modern.ts', 'src/safe/index.ts'],
 		format: ['esm'],
 		dts: true,
 		sourcemap: false,
 		clean: true,
 		platform: 'browser',
 		target: 'es2026',
+		// Strip the in-source `if (import.meta.vitest)` unit-test blocks from the build.
+		define: { 'import.meta.vitest': 'undefined' },
 	},
 	// legacy build — CJS + ESM, ES2015 (rolldown's lowest target), drop-in `traverse` replacement
 	{

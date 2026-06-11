@@ -19,6 +19,10 @@
 			"types": "./dist/modern.d.ts",
 			"default": "./dist/modern.js"
 		},
+		"./safe": {
+			"types": "./dist/safe/index.d.ts",
+			"default": "./dist/safe/index.js"
+		},
 		"./legacy": {
 			"require": {
 				"types": "./dist/legacy/legacy.d.cts",
@@ -37,6 +41,10 @@
 		"test": "vitest run",
 		"test:cov": "vitest run --coverage",
 		"bench": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run.ts",
+		"bench:safe": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run-safe.ts",
+		"bench:safe-memory": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/safe-memory.ts",
+		"typecheck": "tsc --noEmit",
+		"test:types": "vitest --typecheck.only --typecheck run test/safe-types.test-d.ts",
 		"bundle-size": "node scripts/measure-bundle.mjs"
 	},
 	"repository": {

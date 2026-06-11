@@ -122,6 +122,10 @@ export default defineConfig({
 				],
 			},
 			{
+				text: 'neotraverse/safe',
+				items: [{ text: 'Why /safe', link: '/guide/safe' }],
+			},
+			{
 				text: 'Migrating from traverse',
 				items: [
 					{ text: 'Migration guide', link: '/migration' },
