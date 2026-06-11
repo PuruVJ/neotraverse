@@ -1,0 +1,35 @@
+{
+	"generatedAt": "2026-06-11T05:26:45.115Z",
+	"runtime": {
+		"node": "v24.1.0",
+		"v8": "13.6.233.10-node.16"
+	},
+	"treeSize": 100000,
+	"metric": "live memory (MB) the result retains after GC; ratio = v1 ÷ safe (>1 = safe leaner)",
+	"rows": [
+		{
+			"pattern": "First 5 of a filtered scan",
+			"detail": "ALGORITHMIC: v1.filter builds an array of ALL ~100k matches before slice; safe.filter.take(5) stops at 5",
+			"v1Mb": 19.4,
+			"safeMb": 3.1,
+			"ratio": 6.3
+		},
+		{
+			"pattern": "Genuinely need ALL nodes (fair)",
+			"detail": "both materialize the full set — roughly parity (safe slightly higher: one Visit per node)",
+			"v1Mb": 42.6,
+			"safeMb": 77,
+			"ratio": 0.6
+		}
+	],
+	"stackSafety": {
+		"v1MaxDepth": 2000,
+		"safeDepthTested": 200000,
+		"safeSurvives": true
+	},
+	"honestCaveats": [
+		"Full eager scans: safe allocates ~1 Visit/node (≈ v1 WalkContext/node); memory ≈ parity, throughput ~0.8× v1.",
+		"safe wins memory only when you DO NOT keep the whole tree: early-exit chains and streaming.",
+		"safe wins outright on stack safety (deep/untrusted input) — v1 cannot traverse it at all."
+	]
+}

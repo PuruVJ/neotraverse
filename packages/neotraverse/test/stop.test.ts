@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
-import traverse from '../src';
+import { expect, test } from 'vite-plus/test';
+import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 
 test('stop', () => {

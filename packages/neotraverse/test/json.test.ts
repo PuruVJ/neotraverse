@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
-import traverse from '../src';
+import { expect, test } from 'vite-plus/test';
+import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 
 test('json test', () => {
@@ -58,6 +58,7 @@ test('json test_modern', () => {
 
 	expect(callbacks).toEqual({
 		54: { id: 54, f: obj.moo, path: ['moo'] },
-		55: { id: 55, f: obj.foo[3], path: ['foo', '3'] },
+		// C-10: array indices are numbers in the modern build.
+		55: { id: 55, f: obj.foo[3], path: ['foo', 3] },
 	});
 });

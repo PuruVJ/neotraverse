@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
-import traverse from '../src';
+import { expect, test } from 'vite-plus/test';
+import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 
 test('siblings', () => {
@@ -45,7 +45,8 @@ test('siblings_modern', () => {
 			acc[p] = {
 				siblings: ctx.parent.keys,
 				key: ctx.key,
-				index: ctx.key ? ctx.parent.keys?.indexOf(ctx.key) : -1,
+				// `!== undefined` (not truthiness) so a numeric index 0 isn't treated as absent.
+				index: ctx.key !== undefined ? ctx.parent.keys?.indexOf(ctx.key) : -1,
 			};
 		} else {
 			acc[p] = {
@@ -57,13 +58,14 @@ test('siblings_modern', () => {
 		return acc;
 	}, {});
 
+	// C-10: array indices (siblings keys + key) are numbers in the modern build.
 	expect(res).toEqual({
 		'/': { siblings: [], key: undefined, index: -1 },
 		'/a': { siblings: ['a', 'b', 'c'], key: 'a', index: 0 },
 		'/b': { siblings: ['a', 'b', 'c'], key: 'b', index: 1 },
 		'/c': { siblings: ['a', 'b', 'c'], key: 'c', index: 2 },
-		'/c/0': { siblings: ['0', '1', '2'], key: '0', index: 0 },
-		'/c/1': { siblings: ['0', '1', '2'], key: '1', index: 1 },
-		'/c/2': { siblings: ['0', '1', '2'], key: '2', index: 2 },
+		'/c/0': { siblings: [0, 1, 2], key: 0, index: 0 },
+		'/c/1': { siblings: [0, 1, 2], key: 1, index: 1 },
+		'/c/2': { siblings: [0, 1, 2], key: 2, index: 2 },
 	});
 });

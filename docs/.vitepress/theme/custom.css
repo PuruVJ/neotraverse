@@ -1,5 +1,5 @@
 /**
- * neotraverse docs — "readable brutalism" in the bundle-roast family.
+ * neotraverse docs, "readable brutalism" in the bundle-roast family.
  * Rounded surfaces + hard offset shadows + mono uppercase LABELS + concrete
  * grunge + the §-divider. Accent retuned to emerald.
  */
@@ -7,7 +7,8 @@
 :root {
 	--radius: 0.625rem;
 
-	--vp-font-family-base: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+	--vp-font-family-base:
+		'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 	--vp-font-family-mono: ui-monospace, 'SF Mono', 'Menlo', 'Cascadia Code', 'Fira Code', monospace;
 
 	/* emerald brand */
@@ -31,9 +32,18 @@
 
 	--vp-layout-max-width: 1520px;
 
-	/* hard offset shadow (the bundle-roast signature) */
-	--br-shadow: 4px 4px 0 0 oklch(0.2 0.01 60 / 0.16);
+	/* brutalist depth: ink offset stamp (light mode) */
+	--br-border: 2px solid var(--vp-c-border);
+	--br-shadow: 4px 4px 0 0 oklch(0.2 0.01 60 / 0.18);
+	--br-shadow-card: 8px 8px 0 0 oklch(0.2 0.01 60 / 0.22);
+	--br-card-border: var(--br-border);
 	--br-shadow-hover: 6px 6px 0 0 var(--vp-c-brand-1);
+	--br-btn-brand-fill: var(--vp-c-bg-elv);
+	--br-btn-brand-tint: var(--vp-c-brand-soft);
+	--br-btn-brand-sweep: var(--vp-c-brand-2);
+	--br-btn-brand-hover-text: oklch(0.11 0.035 160);
+	--br-btn-alt-sweep: var(--vp-c-brand-2);
+	--br-btn-alt-hover-text: oklch(0.11 0.035 160);
 
 	--vp-button-brand-bg: var(--vp-c-brand-3);
 	--vp-button-brand-hover-bg: var(--vp-c-brand-2);
@@ -42,7 +52,11 @@
 	--vp-button-brand-hover-text: oklch(0.12 0.03 160);
 
 	--vp-home-hero-name-color: transparent;
-	--vp-home-hero-name-background: linear-gradient(100deg, oklch(0.56 0.16 162), oklch(0.5 0.13 196));
+	--vp-home-hero-name-background: linear-gradient(
+		100deg,
+		oklch(0.56 0.16 162),
+		oklch(0.5 0.13 196)
+	);
 	--vp-home-hero-image-background-image: linear-gradient(
 		135deg,
 		oklch(0.7 0.16 162 / 0.4),
@@ -70,22 +84,42 @@
 	--vp-c-brand-3: oklch(0.67 0.15 162);
 	--vp-c-brand-soft: oklch(0.72 0.16 162 / 0.16);
 
-	--br-shadow: 4px 4px 0 0 oklch(0 0 0 / 0.5);
+	/* brutalist depth: emerald offset stamp + hairline (dark mode) */
+	--br-border: 2px solid oklch(1 0 0 / 0.14);
+	--br-shadow:
+		4px 4px 0 0 color-mix(in oklch, var(--vp-c-brand-1) 52%, transparent),
+		inset 0 1px 0 oklch(1 0 0 / 0.06);
+	/* cards: flat panels (buttons keep emerald offset stamp via --br-shadow) */
+	--br-shadow-card: none;
+	--br-card-border: none;
+	--br-shadow-hover:
+		6px 6px 0 0 color-mix(in oklch, var(--vp-c-brand-1) 72%, transparent),
+		inset 0 1px 0 oklch(1 0 0 / 0.08);
+	--br-btn-brand-fill: var(--vp-c-bg-elv);
+	--br-btn-brand-tint: transparent;
+	--br-btn-brand-sweep: var(--vp-c-brand-2);
+	--br-btn-brand-hover-text: oklch(0.1 0.03 160);
+	--br-btn-alt-sweep: oklch(0.96 0.008 85);
+	--br-btn-alt-hover-text: oklch(0.12 0.055 162);
 
 	--vp-button-brand-text: oklch(0.12 0.03 160);
 	--vp-button-brand-hover-text: oklch(0.1 0.03 160);
-	--vp-home-hero-name-background: linear-gradient(100deg, oklch(0.86 0.16 162), oklch(0.76 0.13 190));
+	--vp-home-hero-name-background: linear-gradient(
+		100deg,
+		oklch(0.86 0.16 162),
+		oklch(0.76 0.13 190)
+	);
 }
 
 /* ---------------------------------------------------------------------------
- * Concrete grunge — fixed, behind everything (ported from bundle-roast)
+ * Concrete grunge, fixed, behind everything (ported from bundle-roast)
  * ------------------------------------------------------------------------- */
 .dark body {
 	background-image:
 		radial-gradient(ellipse at center, transparent 60%, oklch(0 0 0 / 18%) 100%),
 		radial-gradient(ellipse 80vw 60vh at 6% -8%, oklch(0.34 0.07 162 / 8%), transparent 62%),
 		radial-gradient(ellipse 80vw 60vh at 114% 22%, oklch(0.2 0.05 235 / 6%), transparent 68%),
-		/* greyish-green grid — barely there */
+		/* greyish-green grid, barely there */
 		linear-gradient(oklch(0.74 0.05 162 / 3%) 1px, transparent 1px),
 		linear-gradient(90deg, oklch(0.74 0.05 162 / 3%) 1px, transparent 1px),
 		repeating-linear-gradient(
@@ -101,18 +135,28 @@
 		),
 		url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 	background-attachment: fixed;
-	background-size: 100% 100%, 100% 100%, 100% 100%, 38px 38px, 38px 38px, 360px 360px, 240px 240px;
+	background-size:
+		100% 100%,
+		100% 100%,
+		100% 100%,
+		38px 38px,
+		38px 38px,
+		360px 360px,
+		240px 240px;
 	background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, repeat;
 }
 
 :root:not(.dark) body {
 	background-image:
-		/* greyish-green grid — barely there */
+		/* greyish-green grid, barely there */
 		linear-gradient(oklch(0.5 0.06 162 / 3%) 1px, transparent 1px),
 		linear-gradient(90deg, oklch(0.5 0.06 162 / 3%) 1px, transparent 1px),
 		url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 	background-attachment: fixed;
-	background-size: 38px 38px, 38px 38px, 240px 240px;
+	background-size:
+		38px 38px,
+		38px 38px,
+		240px 240px;
 	background-repeat: repeat, repeat, repeat;
 }
 
@@ -121,7 +165,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Typography — bold sans headings (tight tracking); mono for LABELS only
+ * Typography, bold sans headings (tight tracking); mono for LABELS only
  * ------------------------------------------------------------------------- */
 .vp-doc h1 {
 	font-weight: 800;
@@ -161,7 +205,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * The §-divider — bundle-roast's signature section break, on <hr>
+ * The §-divider, bundle-roast's signature section break, on <hr>
  * ------------------------------------------------------------------------- */
 .vp-doc hr {
 	position: relative;
@@ -191,49 +235,348 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Feature cards — rounded, thin border, hard offset shadow, lift on hover
+ * Feature cards (linked cards lift + arrow on hover)
  * ------------------------------------------------------------------------- */
-.VPFeature {
-	border: 1px solid var(--vp-c-border);
-	background: var(--vp-c-bg-soft);
-	box-shadow: var(--br-shadow);
-	transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+.VPFeature,
+.VPFeature .box {
+	border-radius: 0 !important;
 }
-.VPFeature:hover {
-	transform: translate(-2px, -2px);
-	box-shadow: var(--br-shadow-hover);
-	border-color: var(--vp-c-brand-1);
+
+.VPFeature {
+	border: var(--br-card-border);
+	background: var(--vp-c-bg-soft);
+	box-shadow: var(--br-shadow-card);
 }
 .VPFeature .title {
 	font-weight: 800;
 	letter-spacing: -0.02em;
 }
+.VPFeature .details {
+	color: var(--vp-c-text-2);
+	line-height: 1.55;
+}
+
+/* dark: flat info panels, not button-shaped CTAs */
+html.dark .VPHome .VPFeature {
+	border: none;
+	border-left: 3px solid color-mix(in oklch, var(--vp-c-brand-1) 34%, transparent);
+	background: var(--vp-c-bg-soft);
+	box-shadow: none !important;
+}
+.dark .VPFeature .icon {
+	font-size: 1.65rem;
+	opacity: 0.92;
+	filter: grayscale(0.15);
+}
+.dark .VPFeature .title {
+	color: var(--vp-c-text-1);
+	font-family: var(--vp-font-family-base);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	text-transform: none;
+}
+
+/* linked feature card (Drop-in → vs-traverse) */
+a.VPFeature.link {
+	position: relative;
+	display: block;
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
+	transition:
+		transform 0.12s ease,
+		box-shadow 0.12s ease,
+		border-color 0.12s ease;
+}
+
+a.VPFeature.link::after {
+	content: '→';
+	position: absolute;
+	right: 1rem;
+	bottom: 0.85rem;
+	font-family: var(--vp-font-family-mono);
+	font-size: 1.25rem;
+	font-weight: 800;
+	line-height: 1;
+	color: var(--vp-c-brand-1);
+	transform: skewX(-10deg);
+	transition:
+		transform 0.12s ease,
+		color 0.12s ease;
+	pointer-events: none;
+}
+
+a.VPFeature.link:hover,
+a.VPFeature.link:focus-visible {
+	border-color: var(--vp-c-brand-1);
+}
+
+:root:not(.dark) a.VPFeature.link:hover,
+:root:not(.dark) a.VPFeature.link:focus-visible {
+	transform: translate(-3px, -3px);
+	box-shadow: var(--br-shadow-hover);
+}
+
+.dark a.VPFeature.link:hover,
+.dark a.VPFeature.link:focus-visible {
+	transform: none;
+	box-shadow: none;
+	border-left-color: var(--vp-c-brand-1);
+	background: color-mix(in oklch, var(--vp-c-brand-soft) 22%, var(--vp-c-bg-soft));
+}
+
+a.VPFeature.link:hover::after,
+a.VPFeature.link:focus-visible::after {
+	transform: skewX(-10deg) translate(3px, -3px);
+	color: var(--vp-c-brand-2);
+}
+
+a.VPFeature.link .box {
+	padding-right: 2.5rem;
+	padding-bottom: 2.25rem;
+}
 
 /* ---------------------------------------------------------------------------
- * Buttons — rounded, mono uppercase, hard offset shadow + lift
+ * Buttons, brutalist: raised surface + slanted hover wash (text always on top)
+ * ::before = resting fill · ::after = skewed sweep · both z-index -1
  * ------------------------------------------------------------------------- */
-.VPButton.brand {
-	border: 1px solid var(--vp-c-text-1);
-	box-shadow: 3px 3px 0 0 oklch(0 0 0 / 0.28);
-	font-family: var(--vp-font-family-mono);
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	font-weight: 700;
-	transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-.VPButton.brand:hover {
-	transform: translate(-2px, -2px);
-	box-shadow: 5px 5px 0 0 oklch(0 0 0 / 0.32);
-}
+.VPButton.brand,
 .VPButton.alt {
+	position: relative;
+	z-index: 0;
+	isolation: isolate;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background: transparent !important;
+	border: 2px solid var(--vp-c-text-1);
+	border-radius: 2px;
+	box-shadow: var(--br-shadow);
 	font-family: var(--vp-font-family-mono);
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	font-weight: 700;
+	letter-spacing: 0.08em;
+	font-weight: 800;
+	font-size: 0.78rem;
+	line-height: 1.1;
+	transition:
+		transform 0.12s ease,
+		box-shadow 0.12s ease,
+		border-color 0.12s ease,
+		color 0.15s ease,
+		-webkit-text-fill-color 0.15s ease;
+}
+
+/* resting surface (always visible) */
+.VPButton.brand::before,
+.VPButton.alt::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+}
+
+.VPButton.brand::before {
+	background:
+		linear-gradient(var(--br-btn-brand-tint), var(--br-btn-brand-tint)), var(--br-btn-brand-fill);
+}
+
+/* slanted hover wash (behind label) */
+.VPButton.brand::after,
+.VPButton.alt::after {
+	content: '';
+	position: absolute;
+	inset: -8px -40%;
+	z-index: -1;
+	transform: skewX(-14deg) translateX(-110%);
+	transition: transform 0.22s cubic-bezier(0.33, 1, 0.68, 1);
+	pointer-events: none;
+}
+
+.VPButton.brand::after {
+	background: var(--br-btn-brand-sweep);
+}
+
+.VPButton.alt::after {
+	background: var(--br-btn-alt-sweep);
+}
+
+.VPButton.brand:hover::after,
+.VPButton.alt:hover::after,
+.VPButton.brand:focus-visible::after,
+.VPButton.alt:focus-visible::after {
+	transform: skewX(-14deg) translateX(0);
+}
+
+.VPButton.brand {
+	border-color: var(--vp-c-brand-1);
+	color: var(--vp-c-text-1) !important;
+	-webkit-text-fill-color: currentColor !important;
+}
+
+.VPButton.brand:hover,
+.VPButton.brand:focus-visible {
+	transform: translate(-3px, -3px);
+	box-shadow: var(--br-shadow-hover);
+	border-color: var(--vp-c-brand-1);
+	color: var(--br-btn-brand-hover-text) !important;
+}
+
+.VPButton.alt {
+	border-color: var(--vp-c-border);
+	color: var(--vp-c-text-1) !important;
+	-webkit-text-fill-color: currentColor !important;
+}
+
+.VPButton.alt::before {
+	background: var(--vp-c-bg-elv);
+}
+
+.VPButton.alt:hover,
+.VPButton.alt:focus-visible,
+.VPHero .actions a.VPButton.alt:hover,
+.VPHero .actions a.VPButton.alt:focus-visible {
+	transform: translate(-3px, -3px);
+	box-shadow: var(--br-shadow-hover);
+	border-color: var(--vp-c-brand-1);
+	color: var(--br-btn-alt-hover-text) !important;
+}
+
+.VPButton:active {
+	transform: translate(-1px, -1px) !important;
+	box-shadow: var(--br-shadow) !important;
+}
+
+/* Homepage hero CTAs */
+.VPHero .actions {
+	gap: 0.85rem;
+	margin-top: 0.15rem;
+}
+
+.VPHero .actions .action {
+	margin: 0;
+}
+
+.VPHero .actions .VPButton {
+	min-width: 10rem;
+	padding: 0.9rem 1.55rem;
+	font-size: 0.82rem;
+	letter-spacing: 0.11em;
+	border-width: 2px;
+	border-radius: 2px !important;
+}
+
+.VPHero .actions .VPButton.brand {
+	border-color: var(--vp-c-brand-1);
+}
+
+.dark .VPButton.brand::before {
+	background: var(--vp-c-bg-elv);
 }
 
 /* ---------------------------------------------------------------------------
- * Blockquotes — emerald accent bar + soft tint
+ * Theme switcher, compact nav control (not a hero CTA)
+ * ------------------------------------------------------------------------- */
+.VPNavBarAppearance,
+.VPNavBarExtra .item.appearance,
+.VPNavScreenAppearance {
+	display: none !important;
+}
+
+.VPNavBar .content-body {
+	display: flex;
+	align-items: center;
+}
+
+.VPNavBarSearch {
+	order: 10;
+}
+.VPNavBarMenu {
+	order: 20;
+}
+.VPNavBarTranslations {
+	order: 30;
+}
+.VPNavBarExtra {
+	order: 44;
+}
+.nt-theme-nav {
+	order: 45;
+	display: flex;
+	align-items: center;
+}
+.VPNavBarSocialLinks {
+	order: 50;
+}
+.VPNavBarHamburger {
+	order: 60;
+}
+
+.nt-theme {
+	position: relative;
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: var(--vp-c-text-2);
+	cursor: pointer;
+	transition: color 0.25s ease;
+}
+
+.nt-theme:hover {
+	color: var(--vp-c-text-1);
+}
+
+.nt-theme:focus-visible {
+	outline: 2px solid var(--vp-c-brand-1);
+	outline-offset: 2px;
+}
+
+.nt-theme__icons {
+	position: relative;
+	display: block;
+	width: 20px;
+	height: 20px;
+}
+
+.nt-theme__icon {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease;
+}
+
+.nt-theme__icon--sun {
+	opacity: 1;
+	transform: rotate(0deg);
+}
+
+.nt-theme__icon--moon {
+	opacity: 0;
+	transform: rotate(-12deg) scale(0.92);
+}
+
+html.dark .nt-theme__icon--sun {
+	opacity: 0;
+	transform: rotate(24deg) scale(0.92);
+}
+
+html.dark .nt-theme__icon--moon {
+	opacity: 1;
+	transform: rotate(0deg);
+}
+
+/* ---------------------------------------------------------------------------
+ * Blockquotes, emerald accent bar + soft tint
  * ------------------------------------------------------------------------- */
 .vp-doc blockquote {
 	border-left: 3px solid var(--vp-c-brand-1);
@@ -258,7 +601,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Tables — framed, mono uppercase header, zebra, tabular numerics
+ * Tables, framed, mono uppercase header, zebra, tabular numerics
  * ------------------------------------------------------------------------- */
 .vp-doc table {
 	display: table;
@@ -309,8 +652,20 @@ html {
 /* ---------------------------------------------------------------------------
  * Let the grunge show through the chrome (sidebar transparent, nav blurred)
  * ------------------------------------------------------------------------- */
-.VPSidebar {
-	background-color: transparent !important;
+@media (min-width: 960px) {
+	.VPSidebar {
+		background-color: transparent !important;
+	}
+}
+
+/* mobile drawer: solid panel (desktop transparent rule must not apply here) */
+@media (max-width: 959px) {
+	.VPSidebar {
+		background-color: var(--vp-sidebar-bg-color) !important;
+	}
+	.VPSidebar.open {
+		backdrop-filter: saturate(1.15) blur(14px);
+	}
 }
 .VPNavBar,
 .VPNavBar .wrapper,
@@ -324,7 +679,19 @@ html {
 .VPNav {
 	background-color: color-mix(in oklch, var(--vp-c-bg) 86%, transparent);
 	backdrop-filter: saturate(1.2) blur(14px);
-	border-bottom: 1px solid var(--vp-c-divider);
+}
+/* Flat top-bar -> sidebar transition: no divider lines. We drop the custom
+ * .VPNav border above, and override the two borders VitePress draws by default
+ * under the brand/sidebar column (.title) and the content area (.divider-line). */
+.VPNavBar.has-sidebar .title,
+.VPNavBar.has-sidebar .content {
+	border-bottom: none !important;
+}
+.VPNavBar .divider-line {
+	background-color: transparent !important;
+}
+.VPSidebar {
+	border-top: none !important;
 }
 .VPLocalNav {
 	background-color: color-mix(in oklch, var(--vp-c-bg) 72%, transparent);
@@ -333,4 +700,586 @@ html {
 /* the doc content stays readable on its own surface */
 .VPContent {
 	background-color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+ * npm download counter (build-time data)
+ * ------------------------------------------------------------------------- */
+.nt-downloads {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0.35rem 0.65rem;
+	margin: 0 auto;
+	padding: 0.55rem 1rem;
+	max-width: 100%;
+	font-family: var(--vp-font-family-mono);
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: var(--vp-c-text-2);
+	border: 1px solid var(--vp-c-border);
+	border-radius: var(--radius);
+	background: color-mix(in oklch, var(--vp-c-bg-elv) 88%, transparent);
+	box-shadow: var(--br-shadow);
+	transition:
+		color 0.12s ease,
+		border-color 0.12s ease,
+		box-shadow 0.12s ease,
+		transform 0.12s ease;
+}
+.nt-downloads:hover {
+	color: var(--vp-c-brand-1);
+	border-color: var(--vp-c-brand-1);
+	box-shadow: var(--br-shadow-hover);
+	transform: translate(-1px, -1px);
+}
+.nt-downloads__count {
+	font-size: 1.05rem;
+	font-weight: 800;
+	color: var(--vp-c-brand-1);
+	letter-spacing: 0.02em;
+}
+.nt-downloads--hero {
+	margin-top: 1.25rem;
+}
+.nt-downloads--footer {
+	display: flex;
+	width: 100%;
+	max-width: none;
+	margin: 0 auto;
+	padding: 1rem 1rem 1.25rem;
+	font-size: 0.68rem;
+	border: none;
+	border-top: 1px solid var(--vp-c-gutter);
+	border-radius: 0;
+	box-shadow: none;
+	background: var(--vp-c-bg);
+}
+.nt-downloads--footer:hover {
+	transform: none;
+	box-shadow: none;
+}
+.nt-downloads__since {
+	font-weight: 500;
+	color: var(--vp-c-text-3);
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.nt-downloads--band {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	width: 100%;
+	margin: 1.5rem auto 1.75rem;
+	padding: 0;
+	text-align: center;
+	text-transform: none;
+	letter-spacing: 0;
+	border: none;
+	background: none;
+	box-shadow: none;
+}
+
+.nt-downloads--band .nt-downloads__count--full {
+	display: block;
+	font-family: var(--vp-font-family-mono);
+	font-size: clamp(2.25rem, 7vw, 3.75rem);
+	font-weight: 900;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.045em;
+	line-height: 1;
+	color: var(--vp-c-brand-1);
+	white-space: nowrap;
+}
+
+.nt-downloads--band .nt-downloads__label {
+	display: block;
+	font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--vp-c-text-3);
+}
+
+/* Clear feature-card shadows before the used-by band */
+.VPHome .VPFeatures {
+	padding-bottom: 2.5rem;
+	margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * Used by (homepage hero band)
+ * ------------------------------------------------------------------------- */
+.nt-used-by {
+	margin: 2.75rem 0 0;
+	padding: 0;
+	width: 100%;
+	background: var(--vp-c-bg);
+	border-top: 1px solid var(--vp-c-divider);
+	position: relative;
+	z-index: 0;
+}
+
+.nt-used-by__band {
+	max-width: 72rem;
+	margin: 0 auto;
+	padding: 3rem 1.5rem 3.5rem;
+	background: transparent;
+}
+
+.nt-used-by__eyebrow {
+	margin: 0 0 0.5rem;
+	font-family: var(--vp-font-family-mono);
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	text-align: center;
+	color: var(--vp-c-brand-1);
+}
+
+.nt-used-by__title {
+	margin: 0 auto 0.75rem;
+	max-width: 36rem;
+	font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.12;
+	text-align: center;
+	color: var(--vp-c-text-1);
+}
+
+.nt-used-by__lead {
+	margin: 0 auto 1.5rem;
+	max-width: 40rem;
+	font-size: 0.95rem;
+	line-height: 1.55;
+	text-align: center;
+	color: var(--vp-c-text-2);
+}
+
+.nt-used-by__lead code {
+	font-size: 0.88em;
+	background: var(--vp-c-bg-soft);
+	border: 1px solid var(--vp-c-divider);
+}
+
+.nt-used-by__stats {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 0.75rem 1.25rem;
+	margin: 0 0 2.5rem;
+	padding: 0;
+	list-style: none;
+}
+
+.nt-used-by__stat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.1rem;
+}
+
+.nt-used-by__stat-value {
+	font-family: var(--vp-font-family-mono);
+	font-size: 1.35rem;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1;
+	color: var(--vp-c-text-1);
+}
+
+.nt-used-by__stat-label {
+	font-family: var(--vp-font-family-mono);
+	font-size: 0.62rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--vp-c-text-3);
+}
+
+.nt-used-by__stat-divider {
+	font-family: var(--vp-font-family-mono);
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--vp-c-text-3);
+	opacity: 0.45;
+}
+
+.nt-used-by__band--after-marquee {
+	padding-top: 1.75rem;
+}
+
+/* Full-bleed logo marquee, fade at edges, solid in center */
+.nt-used-by__marquee {
+	width: 100%;
+	margin: 0 0 0.5rem;
+	padding: 1.35rem 0 1.65rem;
+	border-block: 1px solid var(--vp-c-divider);
+	background: var(--vp-c-bg-alt);
+}
+
+.nt-used-by__marquee-viewport {
+	overflow: hidden;
+	width: 100%;
+	-webkit-mask-image: linear-gradient(
+		90deg,
+		transparent 0%,
+		oklch(0 0 0) 14%,
+		oklch(0 0 0) 86%,
+		transparent 100%
+	);
+	mask-image: linear-gradient(
+		90deg,
+		transparent 0%,
+		oklch(0 0 0) 14%,
+		oklch(0 0 0) 86%,
+		transparent 100%
+	);
+}
+
+.nt-used-by__marquee-track {
+	display: flex;
+	align-items: center;
+	gap: clamp(2.5rem, 6vw, 4.5rem);
+	width: max-content;
+	padding: 0.35rem 2rem;
+	animation: nt-used-by-marquee 48s linear infinite;
+}
+
+.nt-used-by__marquee-track:hover {
+	animation-play-state: paused;
+}
+
+@keyframes nt-used-by-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+.nt-used-by__logo-link {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	min-width: 5.5rem;
+	padding: 0 0.35rem;
+	text-decoration: none;
+	border-radius: var(--radius);
+	transition: transform 0.15s ease;
+}
+
+.nt-used-by__logo-cell {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.nt-used-by__logo-link:hover {
+	transform: scale(1.03);
+}
+
+.nt-used-by__logo-link:focus-visible {
+	outline: 2px solid var(--vp-c-brand-1);
+	outline-offset: 3px;
+}
+
+.nt-used-by__logo {
+	display: block;
+	width: auto;
+	max-width: 7.5rem;
+	height: 1.75rem;
+	object-fit: contain;
+	object-position: center;
+	filter: grayscale(1);
+	opacity: 0.55;
+	transition:
+		filter 0.15s ease,
+		opacity 0.15s ease;
+}
+
+/* Local SVGs are pre-greyscaled; IBM lettermark is wide */
+.nt-used-by__logo[src^='/logos/'] {
+	filter: none;
+	opacity: 0.62;
+}
+
+.nt-used-by__logo[src='/logos/ibm.svg'] {
+	max-width: 5.25rem;
+}
+
+.nt-used-by__logo[src='/logos/builderio.svg'] {
+	max-width: 2rem;
+	height: 2rem;
+}
+
+.nt-used-by__logo-link:hover .nt-used-by__logo {
+	filter: grayscale(0);
+	opacity: 0.92;
+}
+
+.nt-used-by__logo-link:hover .nt-used-by__logo[src^='/logos/'] {
+	filter: none;
+	opacity: 0.88;
+}
+
+.nt-used-by__logo-label {
+	display: block;
+	max-width: 6.5rem;
+	font-size: 0.62rem;
+	font-weight: 500;
+	line-height: 1.2;
+	letter-spacing: 0.02em;
+	text-align: center;
+	color: var(--vp-c-text-3);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: color 0.15s ease;
+}
+
+.nt-used-by__logo-link:hover .nt-used-by__logo-label {
+	color: var(--vp-c-text-2);
+}
+
+.nt-used-by__also {
+	margin: 0 auto 2rem;
+	max-width: 44rem;
+	font-size: 0.88rem;
+	line-height: 1.65;
+	text-align: center;
+	color: var(--vp-c-text-2);
+}
+
+.nt-used-by__text-link {
+	font-weight: 600;
+	color: var(--vp-c-text-1);
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition:
+		color 0.12s ease,
+		border-color 0.12s ease;
+}
+
+.nt-used-by__text-link:hover {
+	color: var(--vp-c-brand-1);
+	border-bottom-color: var(--vp-c-brand-1);
+}
+
+.nt-used-by__text-link:focus-visible {
+	outline: 2px solid var(--vp-c-brand-1);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+.nt-used-by__also-sep {
+	color: var(--vp-c-text-3);
+	font-weight: 400;
+}
+
+.nt-used-by__npm-section {
+	margin-top: 2.5rem;
+	padding-top: 2rem;
+	border-top: 1px solid var(--vp-c-divider);
+}
+
+.nt-used-by__npm-title {
+	margin: 0 0 0.5rem;
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	text-align: center;
+	color: var(--vp-c-text-1);
+}
+
+.nt-used-by__npm-lead {
+	margin: 0 auto 1.15rem;
+	max-width: 40rem;
+	font-size: 0.85rem;
+	line-height: 1.5;
+	text-align: center;
+	color: var(--vp-c-text-2);
+}
+
+.nt-used-by__npm-panel {
+	max-width: 52rem;
+	margin: 0 auto;
+	padding: 1.15rem 1.25rem;
+	border: 1px solid var(--vp-c-border);
+	border-radius: var(--radius);
+	background: var(--vp-c-bg-soft);
+	box-shadow: var(--br-shadow);
+}
+
+.nt-used-by__npm-list {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem 0.75rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nt-used-by__npm-list a {
+	display: block;
+	padding: 0.35rem 0.65rem;
+	font-family: var(--vp-font-family-mono);
+	font-size: 0.72rem;
+	font-weight: 600;
+	text-decoration: none;
+	text-align: center;
+	color: var(--vp-c-text-2);
+	border: 1px solid var(--vp-c-border);
+	border-radius: var(--radius);
+	background: var(--vp-c-bg-elv);
+	transition:
+		border-color 0.12s ease,
+		color 0.12s ease,
+		box-shadow 0.12s ease,
+		transform 0.12s ease;
+}
+
+.nt-used-by__npm-list a:hover {
+	color: var(--vp-c-brand-1);
+	border-color: var(--vp-c-brand-1);
+	box-shadow: 2px 2px 0 0 var(--vp-c-brand-1);
+	transform: translate(-1px, -1px);
+}
+
+.dark .nt-used-by__npm-panel {
+	border: 1px solid oklch(1 0 0 / 0.08);
+	border-radius: 0;
+	background: var(--vp-c-bg-alt);
+	box-shadow: none;
+}
+
+.dark .nt-used-by__npm-list a {
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.dark .nt-used-by__npm-list a:hover,
+.dark .nt-used-by__npm-list a:focus-visible {
+	transform: none;
+	box-shadow: none;
+	background: color-mix(in oklch, var(--vp-c-brand-soft) 35%, transparent);
+}
+
+.nt-used-by__npm-list a:focus-visible {
+	outline: 2px solid var(--vp-c-brand-1);
+	outline-offset: 2px;
+}
+
+.nt-used-by__more {
+	margin: 1.5rem 0 0;
+	text-align: center;
+	font-size: 0.82rem;
+	color: var(--vp-c-text-3);
+}
+
+.nt-used-by__more a {
+	font-weight: 600;
+	color: var(--vp-c-text-2);
+	text-decoration: none;
+	transition: color 0.12s ease;
+}
+
+.nt-used-by__more a:hover {
+	color: var(--vp-c-brand-1);
+}
+
+.nt-used-by__more a:focus-visible {
+	outline: 2px solid var(--vp-c-brand-1);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nt-used-by__marquee-track {
+		flex-wrap: wrap;
+		justify-content: center;
+		width: 100%;
+		max-width: 52rem;
+		margin: 0 auto;
+		animation: none;
+		padding: 0.5rem 1rem;
+		gap: 1.5rem 2rem;
+	}
+
+	.nt-used-by__marquee-viewport {
+		-webkit-mask-image: none;
+		mask-image: none;
+	}
+}
+
+@media (max-width: 960px) {
+	.nt-used-by__npm-list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 640px) {
+	.VPHome .VPFeatures {
+		padding-bottom: 2rem;
+	}
+
+	.nt-used-by {
+		margin-top: 2rem;
+	}
+
+	.nt-downloads--band .nt-downloads__count--full {
+		font-size: clamp(1.85rem, 8vw, 2.5rem);
+	}
+
+	.nt-used-by__band {
+		padding: 2.25rem 1rem 1.5rem;
+	}
+
+	.nt-used-by__band--after-marquee {
+		padding: 1.25rem 1rem 2.5rem;
+	}
+
+	.nt-used-by__marquee-viewport {
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			oklch(0 0 0) 8%,
+			oklch(0 0 0) 92%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			oklch(0 0 0) 8%,
+			oklch(0 0 0) 92%,
+			transparent 100%
+		);
+	}
+
+	.nt-used-by__logo {
+		height: 1.5rem;
+		max-width: 6rem;
+	}
+
+	.nt-used-by__npm-list {
+		grid-template-columns: 1fr;
+	}
+
+	.nt-used-by__stat-divider {
+		display: none;
+	}
 }

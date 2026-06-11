@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
-import traverse from '../src';
+import { expect, test } from 'vite-plus/test';
+import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 
 test('circular', () => {
@@ -48,7 +48,8 @@ test('deepCirc_modern', () => {
 	new Traverse(obj).forEach((ctx) => {
 		if (ctx.circular) {
 			expect(ctx.circular?.path).toEqual([]);
-			expect(ctx.path).toEqual(['y', '2']);
+			// C-10: array indices are numbers in the modern build.
+			expect(ctx.path).toEqual(['y', 2]);
 		}
 	});
 });
@@ -90,10 +91,11 @@ test('doubleCirc_modern', () => {
 		}
 	});
 
-	expect(circs[0].self.path).toEqual(['x', '3', '2']);
+	// C-10: array indices are numbers in the modern build.
+	expect(circs[0].self.path).toEqual(['x', 3, 2]);
 	expect(circs[0].circ.path).toEqual([]);
 
-	expect(circs[1].self.path).toEqual(['y', '2']);
+	expect(circs[1].self.path).toEqual(['y', 2]);
 	expect(circs[1].circ.path).toEqual([]);
 
 	expect(circs.length).toEqual(2);

@@ -1,0 +1,2139 @@
+{
+	"generatedAt": "2026-06-05T16:29:18.919Z",
+	"method": "GitHub code search",
+	"queryStats": [
+		{
+			"q": "\"neotraverse\" in:file filename:package.json",
+			"total": 55
+		},
+		{
+			"q": "\"neotraverse/modern\" in:file",
+			"total": 179
+		},
+		{
+			"q": "from \"neotraverse\" in:file extension:ts",
+			"total": 107
+		},
+		{
+			"q": "from \"neotraverse\" in:file extension:js",
+			"total": 36
+		},
+		{
+			"q": "require('neotraverse') in:file",
+			"total": 2
+		},
+		{
+			"q": "\"neotraverse\" in:file filename:pnpm-lock.yaml",
+			"error": "Error: GitHub 403: {\"message\":\"API rate limit exceeded for user ID 47742487. If you reach out to GitHub Support for help, please include the request ID F423:1A6D05:12E0D40:14321CC:6A22F8B3 and timestamp 2026-06-05 16:26:30 UTC. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service)\",\"documentation_url\":\"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api\",\"status\":\"403\"}"
+		}
+	],
+	"summary": {
+		"totalRepos": 308,
+		"featured": 11,
+		"confirmed": 80
+	},
+	"featured": [
+		{
+			"repo": "withastro/astro",
+			"url": "https://github.com/withastro/astro",
+			"stars": 59862,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/astro/package.json",
+				"packages/astro/src/content/runtime.ts",
+				"packages/integrations/cloudflare/src/index.ts",
+				"packages/astro/src/content/mutable-data-store.ts",
+				"packages/astro/src/content/runtime.ts",
+				"packages/astro/src/content/mutable-data-store.ts"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "renovatebot/renovate",
+			"url": "https://github.com/renovatebot/renovate",
+			"stars": 21700,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "lib/logger/config-serializer.ts", "test/exec-util.ts"],
+			"tier": "featured"
+		},
+		{
+			"repo": "BuilderIO/mitosis",
+			"url": "https://github.com/BuilderIO/mitosis",
+			"stars": 13834,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/core/package.json",
+				"packages/core/src/helpers/has.ts",
+				"packages/core/src/helpers/apply-meta-tagname.ts",
+				"packages/core/src/helpers/styles/collect-styled-components.ts",
+				"packages/core/src/helpers/get-refs.ts",
+				"packages/core/src/helpers/has-stateful-dom.ts"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "compodoc/compodoc",
+			"url": "https://github.com/compodoc/compodoc",
+			"stars": 4110,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/app/engines/export-llm-md.engine.ts",
+				"src/utils/router-parser.util.ts",
+				"tsdown.config.ts",
+				"src/app/engines/dependencies.engine.ts",
+				"src/app/application.ts"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "textlint/textlint",
+			"url": "https://github.com/textlint/textlint",
+			"stars": 3131,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/@textlint/markdown-to-ast/package.json",
+				"packages/@textlint/markdown-to-ast/src/index.ts",
+				"packages/@textlint/markdown-to-ast/test/markdown-parser.test.ts"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "swagger-api/swagger-js",
+			"url": "https://github.com/swagger-api/swagger-js",
+			"stars": 2692,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/resolver/specmap/helpers.js",
+				"test/resolver/specmap/index.js"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "dwyl/aws-sdk-mock",
+			"url": "https://github.com/dwyl/aws-sdk-mock",
+			"stars": 1135,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "src/index.ts"],
+			"tier": "featured"
+		},
+		{
+			"repo": "FoxxMD/multi-scrobbler",
+			"url": "https://github.com/FoxxMD/multi-scrobbler",
+			"stars": 1085,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/core/PlayMarshalUtils.ts",
+				"src/core/tests/utils/fixtures.ts",
+				"src/core/PlayMarshalUtils.ts",
+				"src/core/tests/utils/fixtures.ts"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "postmanlabs/openapi-to-postman",
+			"url": "https://github.com/postmanlabs/openapi-to-postman",
+			"stars": 1050,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"lib/relatedFiles.js",
+				"lib/bundle.js",
+				"lib/deref.js",
+				"lib/schemaUtils.js"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "apideck-libraries/portman",
+			"url": "https://github.com/apideck-libraries/portman",
+			"stars": 682,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/application/Fuzzer.ts",
+				"src/application/globals/stripResponseExamples.ts",
+				"src/application/tests/testResponseJsonSchema.ts"
+			],
+			"tier": "featured"
+		},
+		{
+			"repo": "sverweij/state-machine-cat",
+			"url": "https://github.com/sverweij/state-machine-cat",
+			"stars": 861,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "featured"
+		}
+	],
+	"confirmed": [
+		{
+			"repo": "loopbackio/loopback-datasource-juggler",
+			"url": "https://github.com/loopbackio/loopback-datasource-juggler",
+			"stars": 280,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"lib/utils.js",
+				"lib/datasource.js",
+				"lib/model-definition.js",
+				"test/introspection.test.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "es-tooling/module-replacements-codemods",
+			"url": "https://github.com/es-tooling/module-replacements-codemods",
+			"stars": 216,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"types/codemods/traverse/index.d.ts",
+				"codemods/traverse/neotraverse/index.js",
+				"codemods/traverse/index.js",
+				"test/fixtures/traverse/case-1/after.js",
+				"test/fixtures/traverse/case-1/result.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "feathersjs-ecosystem/feathers-hooks-common",
+			"url": "https://github.com/feathersjs-ecosystem/feathers-hooks-common",
+			"stars": 195,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "src/common/traverse.ts", "src/hooks/mongo-keys.ts"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "thim81/openapi-format",
+			"url": "https://github.com/thim81/openapi-format",
+			"stars": 169,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "openapi-format.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "swarmion/swarmion",
+			"url": "https://github.com/swarmion/swarmion",
+			"stars": 150,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/serverless-cdk-plugin/package.json",
+				"packages/serverless-cdk-plugin/src/utils/resolveVariablesInCdkOutput.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "textlint/textlint-plugin-html",
+			"url": "https://github.com/textlint/textlint-plugin-html",
+			"stars": 26,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "src/html-to-ast.ts"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "into-mini/into-mini",
+			"url": "https://github.com/into-mini/into-mini",
+			"stars": 2,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/sfc-template-traverse/package.json",
+				"packages/sfc-template-traverse/index.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "epam/ChemInspector",
+			"url": "https://github.com/epam/ChemInspector",
+			"stars": 2,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "utils/visit.ts", "utils/visit.ts", "utils/visit.test.ts"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "feathersjs/feathers-utils",
+			"url": "https://github.com/feathersjs/feathers-utils",
+			"stars": 1,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/common/traverse.ts",
+				"src/hooks/traverse/traverse.hook.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "FredKSchott/astro",
+			"url": "https://github.com/FredKSchott/astro",
+			"stars": 1,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/astro/package.json",
+				"packages/astro/src/content/runtime.ts",
+				"packages/integrations/cloudflare/src/index.ts",
+				"packages/astro/src/content/mutable-data-store.ts",
+				"packages/astro/src/content/runtime.ts",
+				"packages/integrations/cloudflare/src/index.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "KooshaPari/Tracera",
+			"url": "https://github.com/KooshaPari/Tracera",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"ARCHIVE/CONFIG/default/neotraverse@0.6.18@@@1/package.json",
+				"ARCHIVE/CONFIG/default/swagger-client@3.36.0@@@1/package.json",
+				"ARCHIVE/CONFIG/default/neotraverse@0.6.18@@@1/legacy.d.ts",
+				"ARCHIVE/CONFIG/default/neotraverse@0.6.18@@@1/legacy.d.ts",
+				"ARCHIVE/CONFIG/default/swagger-client@3.36.0@@@1/es/resolver/specmap/helpers.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "vilakshan2996/openapi-to-postman-nested-tags-supported",
+			"url": "https://github.com/vilakshan2996/openapi-to-postman-nested-tags-supported",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"lib/schemaUtils.js",
+				"lib/bundle.js",
+				"lib/relatedFiles.js",
+				"lib/deref.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "CorwynRavenwing/classes",
+			"url": "https://github.com/CorwynRavenwing/classes",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"swagger/LATER/swagger-js/package.json",
+				"swagger/LATER/swagger-js/src/resolver/specmap/helpers.js",
+				"swagger/LATER/swagger-js/test/resolver/specmap/index.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "michel47/mobile-astro",
+			"url": "https://github.com/michel47/mobile-astro",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/astro/package.json",
+				"packages/astro/src/content/mutable-data-store.ts",
+				"packages/astro/src/content/runtime.ts",
+				"packages/astro/src/content/mutable-data-store.ts",
+				"packages/astro/src/content/runtime.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "mend-detection-qa/astro",
+			"url": "https://github.com/mend-detection-qa/astro",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"packages/astro/package.json",
+				"packages/astro/src/content/runtime.ts",
+				"packages/integrations/cloudflare/src/index.ts",
+				"packages/astro/src/content/mutable-data-store.ts",
+				"packages/integrations/cloudflare/src/index.ts",
+				"packages/astro/src/content/runtime.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "ravenruckus/jsx-emitter",
+			"url": "https://github.com/ravenruckus/jsx-emitter",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/internal/get-props-ref.ts",
+				"src/internal/get-refs.ts",
+				"src/internal/jsx-helpers.ts",
+				"src/internal/rsc-detect.ts",
+				"src/internal/state.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "doeixd/upc-app",
+			"url": "https://github.com/doeixd/upc-app",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": [
+				"package.json",
+				"src/renderer/src/main.tsx",
+				"electron.vite.config.ts",
+				"electron.vite.config.ts"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "autodesk-forks/renovate",
+			"url": "https://github.com/autodesk-forks/renovate",
+			"stars": 0,
+			"kinds": ["package.json", "source"],
+			"samplePaths": ["package.json", "lib/logger/config-serializer.ts", "test/exec-util.ts"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "mapbox/geojson-extent",
+			"url": "https://github.com/mapbox/geojson-extent",
+			"stars": 74,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "nl-design-system/theme-wizard",
+			"url": "https://github.com/nl-design-system/theme-wizard",
+			"stars": 6,
+			"kinds": ["package.json", "other"],
+			"samplePaths": [
+				"packages/theme-wizard-website/package.json",
+				"packages/theme-wizard-website/src/pages/components/[...slug]/tokens.astro"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "wbstack/queryservice-ui",
+			"url": "https://github.com/wbstack/queryservice-ui",
+			"stars": 2,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Andrewshin-7th-technology-student/bad-testing-2024",
+			"url": "https://github.com/Andrewshin-7th-technology-student/bad-testing-2024",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "lines-of-codes/cvmcakkesite",
+			"url": "https://github.com/lines-of-codes/cvmcakkesite",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "borosboyo/ng2-completer",
+			"url": "https://github.com/borosboyo/ng2-completer",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "LANman2000/PrivateLetterVault",
+			"url": "https://github.com/LANman2000/PrivateLetterVault",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["privletter/package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Blowy/standardiser",
+			"url": "https://github.com/Blowy/standardiser",
+			"stars": 0,
+			"kinds": ["package.json", "other"],
+			"samplePaths": [
+				"package.json",
+				"src/routes/app/standards/[slug]/+page.svelte",
+				"src/lib/aegis-block-document/document-structure.svelte"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "renovate-testing/test-35866-abandonment",
+			"url": "https://github.com/renovate-testing/test-35866-abandonment",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "gabrielpettewaydib/fde-demo-firefly-to-aem",
+			"url": "https://github.com/gabrielpettewaydib/fde-demo-firefly-to-aem",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "renovate-testing/test-mem-cache",
+			"url": "https://github.com/renovate-testing/test-mem-cache",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "timektt/tender-tower",
+			"url": "https://github.com/timektt/tender-tower",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "renovate-testing/test-34130-abandonment-preset",
+			"url": "https://github.com/renovate-testing/test-34130-abandonment-preset",
+			"stars": 0,
+			"kinds": ["package.json"],
+			"samplePaths": ["package.json"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "fatbobman/fatbobman.github.io",
+			"url": "https://github.com/fatbobman/fatbobman.github.io",
+			"stars": 4,
+			"kinds": ["source"],
+			"samplePaths": ["docs/chunks/metaData_Cr-Y257r.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "kievechua/js-neo4j",
+			"url": "https://github.com/kievechua/js-neo4j",
+			"stars": 3,
+			"kinds": ["source"],
+			"samplePaths": ["doc/assets/behavior.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Wilson88888888/netstation",
+			"url": "https://github.com/Wilson88888888/netstation",
+			"stars": 2,
+			"kinds": ["source"],
+			"samplePaths": [
+				".astro/chunks/blog_DVXIG-_V.mjs",
+				".astro/chunks/blog_BDY90N3R.mjs",
+				".astro/chunks/blog_BMveQeSy.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "vantuann205/TuanNgo",
+			"url": "https://github.com/vantuann205/TuanNgo",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_4aWWnM6z.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jofuentesle/calendaris",
+			"url": "https://github.com/jofuentesle/calendaris",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/blog_Dj5byony.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "mofa-org/mofa-org.github.io",
+			"url": "https://github.com/mofa-org/mofa-org.github.io",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": ["docs/assets/BaseLayout.BXRCHrgh.js", "docs/assets/BaseLayout.BXRCHrgh.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "arcaneenergy/arcaneenergy.github.io",
+			"url": "https://github.com/arcaneenergy/arcaneenergy.github.io",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": ["chunks/chunk.BeOicOmz.js", "chunks/chunk.BeOicOmz.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "heeyun-ko/heeyun-ko.github.io",
+			"url": "https://github.com/heeyun-ko/heeyun-ko.github.io",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": [
+				"docs/_astro/_astro_content.Db3qgFEk.js",
+				"docs/_astro/_astro_content.Db3qgFEk.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jofuentesle/calendario",
+			"url": "https://github.com/jofuentesle/calendario",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/blog_Dj5byony.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "darkomike/semanticoder",
+			"url": "https://github.com/darkomike/semanticoder",
+			"stars": 1,
+			"kinds": ["source"],
+			"samplePaths": ["js-projects/openapi-format/openapi-format.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jptorresg/Proyecto-DABD-ADFS",
+			"url": "https://github.com/jptorresg/Proyecto-DABD-ADFS",
+			"stars": 0,
+			"kinds": ["other", "source"],
+			"samplePaths": [
+				"documentacion_travelnow/dir_e6dadd10be2bf923e2f87a1f1c095842.html",
+				"documentacion_travelnow/navtreeindex40.js",
+				"documentacion_travelnow/dir_6f311581c17d2740f62fa0b4fd7feda8.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "GMTrends/ai-news-site",
+			"url": "https://github.com/GMTrends/ai-news-site",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".netlify/functions-internal/ssr/chunks/vendor_BQ-iwbOC.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "SuKuShaing/Astro-5---Server-Islands---Midu",
+			"url": "https://github.com/SuKuShaing/Astro-5---Server-Islands---Midu",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/Layout_CmP__hHN.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "dylanburkey/Dylanburkey.box",
+			"url": "https://github.com/dylanburkey/Dylanburkey.box",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".netlify/functions-internal/ssr/chunks/_astro_content_DfcHRDVO.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "devandres-tech/migohacks-blog",
+			"url": "https://github.com/devandres-tech/migohacks-blog",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_B-ogVSGt.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Sycolee78/Personal-Website",
+			"url": "https://github.com/Sycolee78/Personal-Website",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["docs/chunks/_astro_content_BWMMlk2C.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "raulanto/prueba",
+			"url": "https://github.com/raulanto/prueba",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/utils_DDuO5gsQ.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "dexa88-svg/isrm-website",
+			"url": "https://github.com/dexa88-svg/isrm-website",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".astro/.prerender/chunks/_astro_content_i3ilpNqU.mjs",
+				".astro/.prerender/chunks/_astro_content_CdF3GaXj.mjs",
+				".astro/.prerender/chunks/_astro_content_cSx96CqD.mjs",
+				".astro/.prerender/chunks/_astro_content_B9vzosMX.mjs",
+				".astro/.prerender/chunks/_astro_content_BIXRRMJ4.mjs",
+				".astro/.prerender/chunks/_astro_content_BCLJuLHn.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "MichalsBackup/edge-talk-astro",
+			"url": "https://github.com/MichalsBackup/edge-talk-astro",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".amplify-hosting/compute/default/chunks/_astro_internal-actions_BVmV0wZl.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jpalczewski/jpalczewski.github.io",
+			"url": "https://github.com/jpalczewski/jpalczewski.github.io",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["chunks/content-DbwnCRvJ.js", "chunks/content-DbwnCRvJ.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "redislabs-training/lab-contexteng",
+			"url": "https://github.com/redislabs-training/lab-contexteng",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				"ws/server/chunks/translations_CkXwbV8b.mjs",
+				"all/server/chunks/translations_CPYs2fCg.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "amoca-education/static-software-web",
+			"url": "https://github.com/amoca-education/static-software-web",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				"landing-astro/.vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_BFgP27pN.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "kiaghods/kiaghods.github.io",
+			"url": "https://github.com/kiaghods/kiaghods.github.io",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".astro/chunks/_astro_content_Bfu9kHDx.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Ashtreus1/chatdesk",
+			"url": "https://github.com/Ashtreus1/chatdesk",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".amplify-hosting/compute/default/pages/blogs/_slug_.astro.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Leprosy/paradisekiss.netlify.app",
+			"url": "https://github.com/Leprosy/paradisekiss.netlify.app",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["chunks/_astro_content_GcRk6Uxk.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "JuanQuiro/cliente-1",
+			"url": "https://github.com/JuanQuiro/cliente-1",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/pages/rss.xml.astro.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "as7haro7/sistema-de-gestion-de-almacen",
+			"url": "https://github.com/as7haro7/sistema-de-gestion-de-almacen",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/blog_BTQUgDFQ.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "rishab-rishi/astro-blog-main",
+			"url": "https://github.com/rishab-rishi/astro-blog-main",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_XOADTBZP.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jarrodthompson/astro-blog",
+			"url": "https://github.com/jarrodthompson/astro-blog",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_Cr7aCubD.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "dennys3mf/Portafolio",
+			"url": "https://github.com/dennys3mf/Portafolio",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_uRh5PISs.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "davidbustosdev/plantilla-agencia-marketing",
+			"url": "https://github.com/davidbustosdev/plantilla-agencia-marketing",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_uk9JLtE_.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "khyberwear/pchapp",
+			"url": "https://github.com/khyberwear/pchapp",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_CFw5y03i.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "IanRestrepo/JobApp",
+			"url": "https://github.com/IanRestrepo/JobApp",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_4AvdQFY2.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "madohakja/madohakja-homepage",
+			"url": "https://github.com/madohakja/madohakja-homepage",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_DDGn-_Di.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "luqjos31/natures-life",
+			"url": "https://github.com/luqjos31/natures-life",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_kqV58uhg.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "qbessi/reijane",
+			"url": "https://github.com/qbessi/reijane",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_hLEa1Szu.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Jaouad-Said/iptv-app",
+			"url": "https://github.com/Jaouad-Said/iptv-app",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["site/.vercel/output/_functions/chunks/_astro_content_B65WlXDc.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jarrodthompson/copy-blog-main",
+			"url": "https://github.com/jarrodthompson/copy-blog-main",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				".vercel/output/functions/_render.func/.vercel/output/_functions/chunks/_astro_content_BHuLi0bD.mjs"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "jeremyxxo14/BrayanFootweareStore",
+			"url": "https://github.com/jeremyxxo14/BrayanFootweareStore",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_CxLMK0Ui.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "thetoolverge/thetoolverge",
+			"url": "https://github.com/thetoolverge/thetoolverge",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [
+				"blog/assets/js/BaseLayout.B0_fFrIk.js",
+				"blog/assets/js/BaseLayout.B0_fFrIk.js"
+			],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "EdwinDeeme/pimenta-webpage",
+			"url": "https://github.com/EdwinDeeme/pimenta-webpage",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_DdAnXpNS.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "Eeymoo/Eeymoo.github.io",
+			"url": "https://github.com/Eeymoo/Eeymoo.github.io",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["assets/_astro_content.9a98e2f.js", "assets/_astro_content.9a98e2f.js"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "tictapme/tictap-web",
+			"url": "https://github.com/tictapme/tictap-web",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["src/chunks/_astro_content_Bww9j2hy.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "software-tim/SSR-Blog",
+			"url": "https://github.com/software-tim/SSR-Blog",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["server/chunks/_astro_content_DhWa9HZ5.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "rodri-juarez/portfolio",
+			"url": "https://github.com/rodri-juarez/portfolio",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_BK8rqz_O.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "xpippq/porto-fix",
+			"url": "https://github.com/xpippq/porto-fix",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_CnRsD1Zv.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "LuisMuz/astro-quiz",
+			"url": "https://github.com/LuisMuz/astro-quiz",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": [".vercel/output/_functions/chunks/_astro_content_C4saPIw9.mjs"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "data-team-uhn/participant-portal",
+			"url": "https://github.com/data-team-uhn/participant-portal",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["api/src/hooks/trimWhitespace.ts"],
+			"tier": "confirmed"
+		},
+		{
+			"repo": "shubhamkmt21/shubhamkmt21.github.io",
+			"url": "https://github.com/shubhamkmt21/shubhamkmt21.github.io",
+			"stars": 0,
+			"kinds": ["source"],
+			"samplePaths": ["sample .js"],
+			"tier": "confirmed"
+		}
+	],
+	"lockfileOnly": [
+		{
+			"repo": "invoke-ai/InvokeAI",
+			"url": "https://github.com/invoke-ai/InvokeAI",
+			"stars": 27356,
+			"kinds": ["lockfile"],
+			"samplePaths": ["docs/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "markmead/hyperui",
+			"url": "https://github.com/markmead/hyperui",
+			"stars": 12111,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "moonrunnerkc/swarm-orchestrator",
+			"url": "https://github.com/moonrunnerkc/swarm-orchestrator",
+			"stars": 95,
+			"kinds": ["other"],
+			"samplePaths": ["benchmarks/real-prs/diffs/withastro-astro/16848.diff"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "e18e/framework-tracker",
+			"url": "https://github.com/e18e/framework-tracker",
+			"stars": 33,
+			"kinds": ["lockfile"],
+			"samplePaths": ["packages/starter-astro/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "prezel-app/prezel",
+			"url": "https://github.com/prezel-app/prezel",
+			"stars": 23,
+			"kinds": ["lockfile"],
+			"samplePaths": ["resources/astro-ssr/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ElianCodes/elians-astro-startkit",
+			"url": "https://github.com/ElianCodes/elians-astro-startkit",
+			"stars": 18,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "codebycorey/codebycorey.com",
+			"url": "https://github.com/codebycorey/codebycorey.com",
+			"stars": 15,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "WonderYard/vivarium",
+			"url": "https://github.com/WonderYard/vivarium",
+			"stars": 10,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "stallboy/cfggen",
+			"url": "https://github.com/stallboy/cfggen",
+			"stars": 8,
+			"kinds": ["lockfile"],
+			"samplePaths": ["docs/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "fcjr/shiftapi",
+			"url": "https://github.com/fcjr/shiftapi",
+			"stars": 7,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "vascYT/WoBahn",
+			"url": "https://github.com/vascYT/WoBahn",
+			"stars": 7,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "madcampos/madcampos",
+			"url": "https://github.com/madcampos/madcampos",
+			"stars": 7,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Savecoders/adventjs-solved",
+			"url": "https://github.com/Savecoders/adventjs-solved",
+			"stars": 6,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "angelod1as/portfolio",
+			"url": "https://github.com/angelod1as/portfolio",
+			"stars": 5,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "cchen-hhz/javaCourse_oj",
+			"url": "https://github.com/cchen-hhz/javaCourse_oj",
+			"stars": 5,
+			"kinds": ["lockfile"],
+			"samplePaths": ["fronted/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "alexandr-studio/astro-maintenance",
+			"url": "https://github.com/alexandr-studio/astro-maintenance",
+			"stars": 4,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "MazMorrDev/portfolio.github.io",
+			"url": "https://github.com/MazMorrDev/portfolio.github.io",
+			"stars": 3,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "bradtraversy/bradtraversy.dev",
+			"url": "https://github.com/bradtraversy/bradtraversy.dev",
+			"stars": 3,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "OrigamiKing3612/origamiking3612.com",
+			"url": "https://github.com/OrigamiKing3612/origamiking3612.com",
+			"stars": 2,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "JohnBakhmat/johnbakhmat.dev",
+			"url": "https://github.com/JohnBakhmat/johnbakhmat.dev",
+			"stars": 2,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "dev-shetty/Portfolio",
+			"url": "https://github.com/dev-shetty/Portfolio",
+			"stars": 2,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "SwiftInvention/www-swiftinvention-com",
+			"url": "https://github.com/SwiftInvention/www-swiftinvention-com",
+			"stars": 2,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "sethipher/astro-starter",
+			"url": "https://github.com/sethipher/astro-starter",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "otoshimtoshi/zenn-content",
+			"url": "https://github.com/otoshimtoshi/zenn-content",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "kugimiya/umechan-opti",
+			"url": "https://github.com/kugimiya/umechan-opti",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ItsHarta/itsharta.github.io",
+			"url": "https://github.com/ItsHarta/itsharta.github.io",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "placer-toolkit/placer-toolkit",
+			"url": "https://github.com/placer-toolkit/placer-toolkit",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "FullFran/Blog-astro",
+			"url": "https://github.com/FullFran/Blog-astro",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "jackmcpickle/eliteskills",
+			"url": "https://github.com/jackmcpickle/eliteskills",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "KrLite/KrLite.github.io",
+			"url": "https://github.com/KrLite/KrLite.github.io",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "meryzennn/meryzennn.doc",
+			"url": "https://github.com/meryzennn/meryzennn.doc",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "twhlynch/blog",
+			"url": "https://github.com/twhlynch/blog",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "drugoi/cursor-community.kz",
+			"url": "https://github.com/drugoi/cursor-community.kz",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "afternoon/ben2.com",
+			"url": "https://github.com/afternoon/ben2.com",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "eeonaa/KrunkScript-Documentation",
+			"url": "https://github.com/eeonaa/KrunkScript-Documentation",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "peterciya/ciya",
+			"url": "https://github.com/peterciya/ciya",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "yaralahruthik/fh-personal-website-with-cms",
+			"url": "https://github.com/yaralahruthik/fh-personal-website-with-cms",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "digitalbiblesociety/worldmap",
+			"url": "https://github.com/digitalbiblesociety/worldmap",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "rltorresc/MagicalLandingV2",
+			"url": "https://github.com/rltorresc/MagicalLandingV2",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Francisekang24/wc26",
+			"url": "https://github.com/Francisekang24/wc26",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Alanaktion/blog",
+			"url": "https://github.com/Alanaktion/blog",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "haruki-nikaidou/b-blog",
+			"url": "https://github.com/haruki-nikaidou/b-blog",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "slice-of-bits/hermancake",
+			"url": "https://github.com/slice-of-bits/hermancake",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "hyemin-ht-kang/learn-claude-code",
+			"url": "https://github.com/hyemin-ht-kang/learn-claude-code",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Santilook/Personal-Trainer",
+			"url": "https://github.com/Santilook/Personal-Trainer",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "roobie/roobie.github.io",
+			"url": "https://github.com/roobie/roobie.github.io",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["site/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "shreshthmohan/wildex",
+			"url": "https://github.com/shreshthmohan/wildex",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "renatosanz/riprtx",
+			"url": "https://github.com/renatosanz/riprtx",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Macnolo0x7D4/website",
+			"url": "https://github.com/Macnolo0x7D4/website",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "AkiraThyme/astro-bento-portfolio",
+			"url": "https://github.com/AkiraThyme/astro-bento-portfolio",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "bllchmbrs/sensei",
+			"url": "https://github.com/bllchmbrs/sensei",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["web/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "pogor-dev/trust-pdf",
+			"url": "https://github.com/pogor-dev/trust-pdf",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["docs/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "one-suedwest/onesw-website",
+			"url": "https://github.com/one-suedwest/onesw-website",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "vinodyallur/ESPCLAW",
+			"url": "https://github.com/vinodyallur/ESPCLAW",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["docs/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Obiente/ui",
+			"url": "https://github.com/Obiente/ui",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "HacktronAI/docs",
+			"url": "https://github.com/HacktronAI/docs",
+			"stars": 1,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "b-mendoza/dev-books",
+			"url": "https://github.com/b-mendoza/dev-books",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ecxyzzy/eddychen.ca",
+			"url": "https://github.com/ecxyzzy/eddychen.ca",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Nitrrine/wiki",
+			"url": "https://github.com/Nitrrine/wiki",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "alexanderop/ai-search-example",
+			"url": "https://github.com/alexanderop/ai-search-example",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Danimexivasco/the-witch-king-of-angmar",
+			"url": "https://github.com/Danimexivasco/the-witch-king-of-angmar",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "CodigoSinSiesta/ai-presentation",
+			"url": "https://github.com/CodigoSinSiesta/ai-presentation",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "dicky-budi/portofolio",
+			"url": "https://github.com/dicky-budi/portofolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "mcpport/mcpport-website",
+			"url": "https://github.com/mcpport/mcpport-website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "mimikun/zenn.dev",
+			"url": "https://github.com/mimikun/zenn.dev",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "sitcon-tw/2026-cfp",
+			"url": "https://github.com/sitcon-tw/2026-cfp",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "HenryWashuHe/Personal_Portfolio",
+			"url": "https://github.com/HenryWashuHe/Personal_Portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "NeoPrint3D/bettrfriends",
+			"url": "https://github.com/NeoPrint3D/bettrfriends",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "norowachi/noro.cc",
+			"url": "https://github.com/norowachi/noro.cc",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "luxass/renovate-config",
+			"url": "https://github.com/luxass/renovate-config",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "himadajin/page",
+			"url": "https://github.com/himadajin/page",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "tskovlund/skovlund.dev",
+			"url": "https://github.com/tskovlund/skovlund.dev",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "eyemono-moe/log",
+			"url": "https://github.com/eyemono-moe/log",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "florianbeisel/florianbeisel.github.io",
+			"url": "https://github.com/florianbeisel/florianbeisel.github.io",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Juargo/whatdamnanimewatch",
+			"url": "https://github.com/Juargo/whatdamnanimewatch",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "huangxy29/huangxy29.github.io",
+			"url": "https://github.com/huangxy29/huangxy29.github.io",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "mraspartame/schlernsite",
+			"url": "https://github.com/mraspartame/schlernsite",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Latseng/johnson-dev-blog",
+			"url": "https://github.com/Latseng/johnson-dev-blog",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "d9th/astro-tutorial",
+			"url": "https://github.com/d9th/astro-tutorial",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "javierrm11/portfolio-Javier",
+			"url": "https://github.com/javierrm11/portfolio-Javier",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ObanelGalindo/My-First-Astro",
+			"url": "https://github.com/ObanelGalindo/My-First-Astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "imjonslz/portfolio",
+			"url": "https://github.com/imjonslz/portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "angelcgar/nuvik77",
+			"url": "https://github.com/angelcgar/nuvik77",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ermiich/actividad-2-puk",
+			"url": "https://github.com/ermiich/actividad-2-puk",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "distraction-collective/distraction.fun",
+			"url": "https://github.com/distraction-collective/distraction.fun",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "JonasGruenwald/astro_issue_14252",
+			"url": "https://github.com/JonasGruenwald/astro_issue_14252",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "cavilarts/Oslo",
+			"url": "https://github.com/cavilarts/Oslo",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "omancillav/baloo-catalogo",
+			"url": "https://github.com/omancillav/baloo-catalogo",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "sitek94/astro-actions-demo",
+			"url": "https://github.com/sitek94/astro-actions-demo",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "mikitahimpel/my-blog",
+			"url": "https://github.com/mikitahimpel/my-blog",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "4n-ch4n/portfolio",
+			"url": "https://github.com/4n-ch4n/portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "vincebrown/vincebrown.dev",
+			"url": "https://github.com/vincebrown/vincebrown.dev",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "csantosr/cristiansantos.com",
+			"url": "https://github.com/csantosr/cristiansantos.com",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "jemynew64/Portafolio-Astro",
+			"url": "https://github.com/jemynew64/Portafolio-Astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ignaciochiappero/nachodevportfolio-astro",
+			"url": "https://github.com/ignaciochiappero/nachodevportfolio-astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ticianomorvan/portfolio",
+			"url": "https://github.com/ticianomorvan/portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "manucorporat/portfolio",
+			"url": "https://github.com/manucorporat/portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "dorelljames/sinulog-festival",
+			"url": "https://github.com/dorelljames/sinulog-festival",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "martinkztro/PiedPiper",
+			"url": "https://github.com/martinkztro/PiedPiper",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "logno-dev/bunch-codes",
+			"url": "https://github.com/logno-dev/bunch-codes",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ttak0422/public-note",
+			"url": "https://github.com/ttak0422/public-note",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "AdamFipke/my-astro-app",
+			"url": "https://github.com/AdamFipke/my-astro-app",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "jaabferreira/algarve-tourism",
+			"url": "https://github.com/jaabferreira/algarve-tourism",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "dedasema/landing-tesla",
+			"url": "https://github.com/dedasema/landing-tesla",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Yenser1/copialinda-astro-react",
+			"url": "https://github.com/Yenser1/copialinda-astro-react",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "James-Jhong-Coder/tech-blog",
+			"url": "https://github.com/James-Jhong-Coder/tech-blog",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "UnPAUSE-CIIT/unpause-archive",
+			"url": "https://github.com/UnPAUSE-CIIT/unpause-archive",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "NhomNhem/afterimage-tokyo-docs",
+			"url": "https://github.com/NhomNhem/afterimage-tokyo-docs",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "bharathwaaj/safepaapa",
+			"url": "https://github.com/bharathwaaj/safepaapa",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "mlongano/astro-directus-tutorial",
+			"url": "https://github.com/mlongano/astro-directus-tutorial",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "RaixsG/porfolio_v2",
+			"url": "https://github.com/RaixsG/porfolio_v2",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "SimYunSup/asp-net-for-frontend",
+			"url": "https://github.com/SimYunSup/asp-net-for-frontend",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "MasterIceZ/astro-morph",
+			"url": "https://github.com/MasterIceZ/astro-morph",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "d0vak1n/ramoweb",
+			"url": "https://github.com/d0vak1n/ramoweb",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "NotPiny/Docs",
+			"url": "https://github.com/NotPiny/Docs",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "zhengkyl/website",
+			"url": "https://github.com/zhengkyl/website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "trueberryless/starlight-blog-plus-starlight-sidebar-topics-dropdown",
+			"url": "https://github.com/trueberryless/starlight-blog-plus-starlight-sidebar-topics-dropdown",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "vdanielb/pkms-lab",
+			"url": "https://github.com/vdanielb/pkms-lab",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "IvoJr11/portfolio",
+			"url": "https://github.com/IvoJr11/portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "teaonrocks/icedtea.dev",
+			"url": "https://github.com/teaonrocks/icedtea.dev",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "jamdotjar/humans-of-seycove",
+			"url": "https://github.com/jamdotjar/humans-of-seycove",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Calcifer1331/porfolio-calci-demo",
+			"url": "https://github.com/Calcifer1331/porfolio-calci-demo",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Amleth/me",
+			"url": "https://github.com/Amleth/me",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Solant/fsd-astro",
+			"url": "https://github.com/Solant/fsd-astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "javierrm11/portfoliotest",
+			"url": "https://github.com/javierrm11/portfoliotest",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Alexandra-MartinezOrtiz/Hotel_Ortiz",
+			"url": "https://github.com/Alexandra-MartinezOrtiz/Hotel_Ortiz",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "K3iiX/astro-portfolio",
+			"url": "https://github.com/K3iiX/astro-portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "NicolasdRa/portfolio-astro",
+			"url": "https://github.com/NicolasdRa/portfolio-astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "caseywatts/debuggingyourbrain-website-astro",
+			"url": "https://github.com/caseywatts/debuggingyourbrain-website-astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "fyunusa/aura",
+			"url": "https://github.com/fyunusa/aura",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "aikidoarnhem-nl/website",
+			"url": "https://github.com/aikidoarnhem-nl/website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "moouro/personal-website",
+			"url": "https://github.com/moouro/personal-website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "sixfwa/tr-astro",
+			"url": "https://github.com/sixfwa/tr-astro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "salman3001/website2025",
+			"url": "https://github.com/salman3001/website2025",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["frontend/pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "Noeury/portfolio",
+			"url": "https://github.com/Noeury/portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "cmdrrobin/cmdrrobin.github.io",
+			"url": "https://github.com/cmdrrobin/cmdrrobin.github.io",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "nena-bozeman/nena-public-website",
+			"url": "https://github.com/nena-bozeman/nena-public-website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "antoniorv6/portfolio_website",
+			"url": "https://github.com/antoniorv6/portfolio_website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "tarsturs/notsoeasy",
+			"url": "https://github.com/tarsturs/notsoeasy",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "TakaraDasein/Densidad-Forestal-Global-2000-2020",
+			"url": "https://github.com/TakaraDasein/Densidad-Forestal-Global-2000-2020",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "aldoyh/gcc-tv-wordwall-app",
+			"url": "https://github.com/aldoyh/gcc-tv-wordwall-app",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ahargunyllib/realm",
+			"url": "https://github.com/ahargunyllib/realm",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "deckpilotsite-hue/deckpilot",
+			"url": "https://github.com/deckpilotsite-hue/deckpilot",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "young-do/resume",
+			"url": "https://github.com/young-do/resume",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "mgambill/arisartdesign",
+			"url": "https://github.com/mgambill/arisartdesign",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "slargat/slargat.dev",
+			"url": "https://github.com/slargat/slargat.dev",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "JossD3103/-PokemonAstro",
+			"url": "https://github.com/JossD3103/-PokemonAstro",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "ThatDevShparki/davis-ponjuan-portfolio",
+			"url": "https://github.com/ThatDevShparki/davis-ponjuan-portfolio",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "STIXGT/eco-solutions-website",
+			"url": "https://github.com/STIXGT/eco-solutions-website",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		},
+		{
+			"repo": "thebestmensch/personal-site",
+			"url": "https://github.com/thebestmensch/personal-site",
+			"stars": 0,
+			"kinds": ["lockfile"],
+			"samplePaths": ["pnpm-lock.yaml"],
+			"tier": "lockfile-only"
+		}
+	]
+}

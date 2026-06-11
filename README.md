@@ -1,7 +1,6 @@
-# neotraverse — monorepo
+# neotraverse: monorepo
 
-Traverse and transform objects by visiting every node on a recursive walk. A
-zero-dependency, TypeScript-first, drop-in replacement for [`traverse`](https://github.com/ljharb/js-traverse).
+Traverse and transform objects by visiting every node on a recursive walk. A zero-dependency, TypeScript-first, drop-in replacement for [`traverse`](https://github.com/ljharb/js-traverse).
 
 > 📖 **Docs & benchmarks:** [neotraverse.puruvj.dev](https://neotraverse.puruvj.dev)
 
@@ -25,6 +24,10 @@ pnpm bench          # benchmark vs the original `traverse`
 pnpm docs:dev       # run the docs site locally
 pnpm docs:build     # build the docs site
 ```
+
+## Release
+
+Versioning and npm publish are handled by Changesets on `main` via [`.github/workflows/release.yml`](./.github/workflows/release.yml), using [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC). One-time registry setup: [`.github/PUBLISHING.md`](./.github/PUBLISHING.md).
 
 ## License
 

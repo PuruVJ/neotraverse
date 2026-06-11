@@ -10,6 +10,9 @@ dist
 packages/neotraverse/legacy.js
 packages/neotraverse/legacy.d.ts
 
+# generated bundle-size measurement artifacts
+packages/neotraverse/scripts/bundle-out/
+
 # docs build
 docs/.vitepress/dist
 docs/.vitepress/cache

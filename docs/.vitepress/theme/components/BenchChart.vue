@@ -36,7 +36,7 @@ const fmtOps = (n) => {
 	return String(Math.round(n));
 };
 const fmtMem = (b) => {
-	if (b == null) return '—';
+	if (b == null) return '-';
 	if (b >= 1024) return (b / 1024).toFixed(b >= 1024 * 100 ? 0 : 1) + ' KB';
 	return Math.round(b) + ' B';
 };
@@ -100,24 +100,21 @@ function rows(suite) {
 		<div v-for="g in groups" :key="g.operation" class="bench-group">
 			<h3 class="bench-op">{{ g.operation }}</h3>
 			<div v-for="s in g.suites" :key="s.label" class="bench-suite">
-				<div class="bench-shape">{{ s.dataset }} — {{ s.description }}</div>
-				<div
-					v-for="row in rows(s)"
-					:key="row.name"
-					class="bench-row"
-					:class="{ win: row.fastest }"
-				>
+				<div class="bench-shape">{{ s.dataset }}, {{ s.description }}</div>
+				<div v-for="row in rows(s)" :key="row.name" class="bench-row" :class="{ win: row.fastest }">
 					<span class="bench-lib"
-						><img v-if="libDisplay(row.name).logo" src="/logo.svg" class="logo-n" alt="" />{{ libDisplay(row.name).text }}</span
+						><img v-if="libDisplay(row.name).logo" src="/logo.svg" class="logo-n" alt="" />{{
+							libDisplay(row.name).text
+						}}</span
 					>
 					<span class="bench-track">
 						<span class="bench-fill" :style="{ width: row.pct + '%', '--bar': row.color }"></span>
 					</span>
 					<span class="bench-val">
-						{{ row.label }}<span
-							v-if="row.name !== 'traverse' && row.speed != null"
-							class="bench-x"
-						> · {{ row.speed }}×</span><span v-if="row.fastest" class="bench-crown"> 🏆</span>
+						{{ row.label
+						}}<span v-if="row.name !== 'traverse' && row.speed != null" class="bench-x">
+							· {{ row.speed }}×</span
+						><span v-if="row.fastest" class="bench-crown"> 🏆</span>
 					</span>
 				</div>
 			</div>

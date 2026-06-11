@@ -1,0 +1,11 @@
+{
+	// Strict gate for the published library source only. This is what CI type-checks:
+	// it re-enables the full strict surface (implicit any/this) that tsconfig.json
+	// relaxes for the loose, ported test suite + the throwaway benchmark script.
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noImplicitAny": true,
+		"noImplicitThis": true
+	},
+	"include": ["src"]
+}

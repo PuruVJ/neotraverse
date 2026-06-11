@@ -2,31 +2,46 @@
 	"name": "neotraverse",
 	"version": "0.7.0",
 	"description": "traverse and transform objects by visiting every node on a recursive walk",
-	"main": "dist/legacy/legacy.cjs",
-	"type": "module",
-	"types": "dist/index.d.ts",
+	"keywords": [
+		"clone",
+		"deep",
+		"forEach",
+		"map",
+		"recursive",
+		"traverse",
+		"walk"
+	],
+	"homepage": "https://neotraverse.puruvj.dev",
+	"license": "MIT",
+	"author": {
+		"name": "Puru Vijay",
+		"url": "https://puruvj.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/PuruVJ/neotraverse.git",
+		"directory": "packages/neotraverse"
+	},
 	"files": [
 		"dist",
 		"legacy.*"
 	],
+	"type": "module",
+	"sideEffects": false,
+	"main": "dist/legacy/legacy.cjs",
+	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"import": {
-				"production": "./dist/min/index.js",
-				"development": "./dist/index.js",
-				"default": "./dist/index.js"
-			},
-			"default": "./dist/min/index.js"
+			"default": "./dist/index.js"
 		},
 		"./modern": {
-			"types": "./dist/modern/modern.d.ts",
-			"import": {
-				"production": "./dist/modern/min/modern.js",
-				"development": "./dist/modern/modern.js",
-				"default": "./dist/modern/modern.js"
-			},
-			"default": "./dist/modern/modern.js"
+			"types": "./dist/modern.d.ts",
+			"default": "./dist/modern.js"
+		},
+		"./safe": {
+			"types": "./dist/safe/index.d.ts",
+			"default": "./dist/safe/index.js"
 		},
 		"./legacy": {
 			"require": {
@@ -41,46 +56,28 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"scripts": {
-		"compile": "tsdown && cp dist/legacy/legacy.cjs legacy.js && cp dist/legacy/legacy.d.cts legacy.d.ts",
-		"test": "vitest run",
-		"test:cov": "vitest run --coverage",
-		"bench": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run.ts"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/PuruVJ/neotraverse.git",
-		"directory": "packages/neotraverse"
-	},
-	"homepage": "https://neotraverse.puruvj.dev",
-	"keywords": [
-		"traverse",
-		"walk",
-		"recursive",
-		"map",
-		"forEach",
-		"deep",
-		"clone"
-	],
-	"author": {
-		"name": "Puru Vijay, James Halliday"
-	},
 	"publishConfig": {
 		"provenance": true
 	},
-	"license": "MIT",
-	"engines": {
-		"node": ">= 10"
+	"scripts": {
+		"compile": "vp pack",
+		"test": "vp test",
+		"test:cov": "vp test --coverage",
+		"bench": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run.ts",
+		"bench:safe": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run-safe.ts",
+		"bench:safe-memory": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/safe-memory.ts",
+		"typecheck": "tsc --noEmit",
+		"test:types": "vp test --typecheck",
+		"bundle-size": "node scripts/measure-bundle.mjs"
 	},
 	"devDependencies": {
 		"@types/node": "^25.9.1",
-		"@vitest/coverage-v8": "^4.1.8",
 		"tinybench": "^6.0.2",
 		"traverse": "^0.6.11",
-		"tsdown": "^0.22.2",
 		"tsx": "^4.22.4",
-		"typescript": "^6.0.3",
-		"vite": "^8.0.16",
-		"vitest": "^4.1.8"
+		"typescript": "^6.0.3"
+	},
+	"engines": {
+		"node": ">= 10"
 	}
 }

@@ -1,0 +1,267 @@
+{
+	"_comment": "Maintainer-reviewed homepage list. Evidence: direct neotraverse in package.json only. Refresh hints: pnpm discover-users / pnpm discover-npm.",
+	"lastReviewed": "2026-06-05",
+	"generatedAt": "2026-06-05T16:40:00.000Z",
+	"source": "GitHub org code search + package.json verification",
+	"summary": {
+		"directNpmDependents": 29,
+		"totalRepos": 308,
+		"enterprise": 5,
+		"featured": 5,
+		"community": 3
+	},
+	"moreUrl": "https://github.com/search?q=%22neotraverse%22+filename%3Apackage.json&type=code",
+	"companies": [
+		{
+			"company": "Astro",
+			"companyUrl": "https://astro.build",
+			"product": "Web framework",
+			"subtitle": "withastro org on GitHub",
+			"wordmark": "ASTRO",
+			"tier": "enterprise",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/withastro/astro/blob/main/packages/astro/package.json",
+			"repo": "withastro/astro",
+			"url": "https://github.com/withastro/astro",
+			"npm": "astro",
+			"logoSlug": "astro",
+			"weeklyDownloads": 3100000
+		},
+		{
+			"company": "Renovate",
+			"companyUrl": "https://github.com/renovatebot/renovate",
+			"product": "Dependency automation",
+			"subtitle": "renovatebot on GitHub",
+			"wordmark": "RENOVATE",
+			"tier": "enterprise",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/renovatebot/renovate/blob/main/package.json",
+			"repo": "renovatebot/renovate",
+			"url": "https://github.com/renovatebot/renovate",
+			"npm": "renovate",
+			"logoSlug": "renovate",
+			"weeklyDownloads": 505000
+		},
+		{
+			"company": "Postman",
+			"companyUrl": "https://www.postman.com",
+			"product": "OpenAPI to Postman",
+			"subtitle": "OpenAPI importer",
+			"wordmark": "POSTMAN",
+			"tier": "enterprise",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/postmanlabs/openapi-to-postman/blob/develop/package.json",
+			"repo": "postmanlabs/openapi-to-postman",
+			"url": "https://github.com/postmanlabs/openapi-to-postman",
+			"npm": "openapi-to-postmanv2",
+			"logoSlug": "postman",
+			"weeklyDownloads": 239000
+		},
+		{
+			"company": "Builder.io",
+			"companyUrl": "https://www.builder.io",
+			"product": "Mitosis",
+			"subtitle": "Write once, compile to any framework",
+			"wordmark": "BUILDER.IO",
+			"tier": "enterprise",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/BuilderIO/mitosis/blob/main/packages/core/package.json",
+			"repo": "BuilderIO/mitosis",
+			"url": "https://github.com/BuilderIO/mitosis",
+			"npm": "@builder.io/mitosis",
+			"logoUrl": "/logos/builderio.svg",
+			"weeklyDownloads": 9000
+		},
+		{
+			"company": "IBM",
+			"companyUrl": "https://www.ibm.com",
+			"product": "LoopBack",
+			"subtitle": "Enterprise Node.js framework",
+			"wordmark": "IBM",
+			"tier": "enterprise",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/loopbackio/loopback-datasource-juggler/blob/master/package.json",
+			"repo": "loopbackio/loopback-datasource-juggler",
+			"url": "https://github.com/loopbackio/loopback-datasource-juggler",
+			"npm": "loopback-datasource-juggler",
+			"logoUrl": "/logos/ibm.svg",
+			"weeklyDownloads": 92000
+		},
+		{
+			"company": "SmartBear",
+			"companyUrl": "https://smartbear.com",
+			"product": "Swagger JS",
+			"subtitle": "OpenAPI client toolkit",
+			"wordmark": "SWAGGER",
+			"tier": "featured",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/swagger-api/swagger-js/blob/master/package.json",
+			"repo": "swagger-api/swagger-js",
+			"url": "https://github.com/swagger-api/swagger-js",
+			"npm": "swagger-client",
+			"logoSlug": "swagger",
+			"weeklyDownloads": 1100000
+		},
+		{
+			"company": "textlint",
+			"companyUrl": "https://textlint.github.io",
+			"product": "markdown-to-ast",
+			"subtitle": "Pluggable text linter",
+			"wordmark": "TEXTLINT",
+			"tier": "featured",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/textlint/textlint/blob/master/packages/%40textlint/markdown-to-ast/package.json",
+			"repo": "textlint/textlint",
+			"url": "https://github.com/textlint/textlint",
+			"npm": "@textlint/markdown-to-ast",
+			"weeklyDownloads": 562000
+		},
+		{
+			"company": "Compodoc",
+			"companyUrl": "https://compodoc.app",
+			"product": "Compodoc",
+			"subtitle": "Angular documentation generator",
+			"wordmark": "COMPODOC",
+			"tier": "featured",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/compodoc/compodoc/blob/develop/package.json",
+			"repo": "compodoc/compodoc",
+			"url": "https://github.com/compodoc/compodoc",
+			"npm": "@compodoc/compodoc",
+			"weeklyDownloads": 505000
+		},
+		{
+			"company": "Mapbox",
+			"companyUrl": "https://www.mapbox.com",
+			"product": "geojson-extent",
+			"subtitle": "GeoJSON bounding boxes",
+			"wordmark": "MAPBOX",
+			"tier": "featured",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/mapbox/geojson-extent/blob/master/package.json",
+			"repo": "mapbox/geojson-extent",
+			"url": "https://github.com/mapbox/geojson-extent",
+			"npm": "@mapbox/geojson-extent",
+			"logoSlug": "mapbox",
+			"weeklyDownloads": null
+		},
+		{
+			"company": "Apideck",
+			"companyUrl": "https://www.apideck.com",
+			"product": "Portman",
+			"subtitle": "OpenAPI contract testing",
+			"wordmark": "APIDECK",
+			"tier": "featured",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/apideck-libraries/portman/blob/main/package.json",
+			"repo": "apideck-libraries/portman",
+			"url": "https://github.com/apideck-libraries/portman",
+			"npm": "@apideck/portman",
+			"weeklyDownloads": 19000
+		},
+		{
+			"company": "Feathers",
+			"companyUrl": "https://feathersjs.com",
+			"product": "feathers-hooks-common",
+			"subtitle": "Hooks for Feathers services",
+			"wordmark": "FEATHERS",
+			"tier": "community",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/feathersjs-ecosystem/feathers-hooks-common/blob/master/package.json",
+			"repo": "feathersjs-ecosystem/feathers-hooks-common",
+			"url": "https://github.com/feathersjs-ecosystem/feathers-hooks-common",
+			"npm": "feathers-hooks-common",
+			"weeklyDownloads": 34000
+		},
+		{
+			"company": "openapi-format",
+			"companyUrl": "https://openapi-format.com",
+			"product": "openapi-format",
+			"subtitle": "Format and filter OpenAPI specs",
+			"wordmark": "OPENAPI",
+			"tier": "community",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/thim81/openapi-format/blob/main/package.json",
+			"repo": "thim81/openapi-format",
+			"url": "https://github.com/thim81/openapi-format",
+			"npm": "openapi-format",
+			"weeklyDownloads": 114000
+		},
+		{
+			"company": "dwyl",
+			"companyUrl": "https://github.com/dwyl",
+			"product": "aws-sdk-mock",
+			"subtitle": "Mock AWS SDK calls in tests",
+			"wordmark": "DWYL",
+			"tier": "community",
+			"confidence": "high",
+			"evidenceUrl": "https://github.com/dwyl/aws-sdk-mock/blob/main/package.json",
+			"repo": "dwyl/aws-sdk-mock",
+			"url": "https://github.com/dwyl/aws-sdk-mock",
+			"npm": "aws-sdk-mock",
+			"weeklyDownloads": 192000
+		}
+	],
+	"rejected": [
+		{
+			"claim": "Google",
+			"searchedOrg": "google",
+			"reason": "GitHub search returned 0 repos with neotraverse in package.json under org:google"
+		},
+		{
+			"claim": "Microsoft",
+			"searchedOrg": "microsoft",
+			"reason": "GitHub search returned 0 repos with neotraverse in package.json under org:microsoft"
+		},
+		{
+			"claim": "Amazon / AWS",
+			"searchedOrg": "amazon",
+			"reason": "GitHub search returned 0 repos under org:amazon; dwyl/aws-sdk-mock is community-maintained, not an official AWS dependency"
+		},
+		{
+			"claim": "Meta",
+			"searchedOrg": "meta",
+			"reason": "GitHub search returned 0 repos with neotraverse in package.json under org:meta"
+		},
+		{
+			"claim": "Apple",
+			"searchedOrg": "apple",
+			"reason": "GitHub search returned 0 repos with neotraverse in package.json under org:apple"
+		},
+		{
+			"claim": "Netflix",
+			"searchedOrg": "netflix",
+			"reason": "GitHub search returned 0 repos with neotraverse in package.json under org:netflix"
+		},
+		{
+			"claim": "Uber",
+			"searchedOrg": "uber",
+			"reason": "GitHub search returned 0 repos with neotraverse in package.json under org:uber"
+		},
+		{
+			"claim": "Vercel (org repos)",
+			"searchedOrg": "vercel",
+			"reason": "GitHub search returned 0 repos under org:vercel; direct dependency is in withastro/astro (shown as Vercel · Astro)"
+		},
+		{
+			"claim": "IBM (org repos)",
+			"searchedOrg": "ibm",
+			"reason": "GitHub search returned 0 repos under org:ibm; direct dependency is in loopbackio/loopback-datasource-juggler (shown as IBM · LoopBack)"
+		},
+		{
+			"claim": "InvokeAI",
+			"repo": "invoke-ai/InvokeAI",
+			"reason": "Lockfile-only mention (pnpm-lock.yaml); no direct package.json dependency"
+		},
+		{
+			"claim": "hyperui",
+			"repo": "markmead/hyperui",
+			"reason": "Lockfile-only transitive via Astro; no direct package.json dependency"
+		},
+		{
+			"claim": "es-tooling/module-replacements-codemods",
+			"repo": "es-tooling/module-replacements-codemods",
+			"reason": "Codemod tooling repo, not a production consumer"
+		}
+	]
+}
