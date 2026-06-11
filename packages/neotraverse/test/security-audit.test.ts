@@ -1,5 +1,5 @@
 import { runInNewContext } from 'node:vm';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vite-plus/test';
 import { clone, deepEqual, dereference, diff, map, merge, sanitize, set } from '../src/index';
 
 /**
@@ -32,7 +32,12 @@ describe('A1 — non-string/boxed key cannot bypass the pollution guard', () => 
 
 	test('boxed key cannot reach global Object.prototype even with an own __proto__ slot', () => {
 		const o: any = {};
-		Object.defineProperty(o, '__proto__', { value: Object.prototype, enumerable: true, writable: true, configurable: true });
+		Object.defineProperty(o, '__proto__', {
+			value: Object.prototype,
+			enumerable: true,
+			writable: true,
+			configurable: true,
+		});
 		set(o, [new String('__proto__') as any, 'polluted'], 'yes');
 		expect(({} as any).polluted).toBeUndefined();
 		expect(protoClean()).toBe(true);

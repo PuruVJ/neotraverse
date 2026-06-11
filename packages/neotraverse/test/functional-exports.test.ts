@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import * as t from '../src/index';
 
 /** Every public modern export is callable (tree-shake entry smoke test). */

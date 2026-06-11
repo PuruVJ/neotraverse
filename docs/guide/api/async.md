@@ -9,8 +9,7 @@ Import as `import * as t from 'neotraverse'`.
 
 ## forEachAsync · mapAsync {#forEachAsync}
 
-The callback may be `async` and is awaited at each node. Pass `signal` in [options](/guide/options) to cancel via
-[`AbortController`](https://developer.mozilla.org/docs/Web/API/AbortController).
+The callback may be `async` and is awaited at each node. Pass `signal` in [options](/guide/options) to cancel via [`AbortController`](https://developer.mozilla.org/docs/Web/API/AbortController).
 
 `t.mapAsync` always runs immutably (like `t.map`).
 
@@ -32,14 +31,19 @@ const translated = await t.mapAsync(doc, async (ctx, x) => {
 import * as t from 'neotraverse';
 
 const controller = new AbortController();
-const walking = t.forEachAsync(big, async (ctx) => { /* … */ }, { signal: controller.signal });
+const walking = t.forEachAsync(
+  big,
+  async (ctx) => {
+    /* … */
+  },
+  { signal: controller.signal }
+);
 controller.abort(); // → `walking` rejects with the abort reason
 ```
 
 ## Concurrency
 
-`forEachAsync` / `mapAsync` accept `{ concurrency: n }` (default `1`) to run up to **n** sibling callbacks in
-parallel. Each branch gets an isolated path/parent snapshot, intended for I/O-bound work; pair with `signal` to abort.
+`forEachAsync` / `mapAsync` accept `{ concurrency: n }` (default `1`) to run up to **n** sibling callbacks in parallel. Each branch gets an isolated path/parent snapshot, intended for I/O-bound work; pair with `signal` to abort.
 
 ### Example
 
@@ -53,7 +57,7 @@ await t.forEachAsync(
   async (ctx) => {
     await fetch(`/api/item/${ctx.key}`);
   },
-  { concurrency: 3 },
+  { concurrency: 3 }
 );
 // up to three sibling fetches in flight at once
 ```

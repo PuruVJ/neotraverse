@@ -1,6 +1,26 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import {
-	clone, count, deepEqual, deleteWhere, diff, filterPaths, findPaths, freeze, getPath, getType, hasPath, parseDotPath, parsePath, patch, prune, pruneDeep, select, setPath, size, toJSON } from '../src/index';
+	clone,
+	count,
+	deepEqual,
+	deleteWhere,
+	diff,
+	filterPaths,
+	findPaths,
+	freeze,
+	getPath,
+	getType,
+	hasPath,
+	parseDotPath,
+	parsePath,
+	patch,
+	prune,
+	pruneDeep,
+	select,
+	setPath,
+	size,
+	toJSON,
+} from '../src/index';
 
 describe('backlog: paths & types', () => {
 	test('parsePath dot and pointer', () => {

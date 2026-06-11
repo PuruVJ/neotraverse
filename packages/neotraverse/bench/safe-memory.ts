@@ -46,7 +46,9 @@ function peak(fn: () => unknown): number {
 }
 
 const N = 100000;
-const big = { items: Array.from({ length: N }, (_, i) => ({ id: i, name: 'item' + i, active: i % 2 === 0 })) };
+const big = {
+	items: Array.from({ length: N }, (_, i) => ({ id: i, name: 'item' + i, active: i % 2 === 0 })),
+};
 
 console.log(`Peak transient allocation per op (100k-node tree). Lower = less memory pressure.\n`);
 const rows: any[] = [];
@@ -55,20 +57,31 @@ function compare(pattern: string, detail: string, v1fn: () => unknown, safefn: (
 	const b = peak(safefn);
 	const ratio = b > 0.05 ? +(a / b).toFixed(1) : Infinity;
 	rows.push({ pattern, detail, v1Mb: a, safeMb: b, ratio });
-	console.log(`  ${pattern.padEnd(34)} v1 ${a.toFixed(1).padStart(6)} MB | safe ${b.toFixed(1).padStart(6)} MB | safe ${ratio >= 1 ? ratio + '× less' : (1 / ratio).toFixed(1) + '× more'}`);
+	console.log(
+		`  ${pattern.padEnd(34)} v1 ${a.toFixed(1).padStart(6)} MB | safe ${b.toFixed(1).padStart(6)} MB | safe ${ratio >= 1 ? ratio + '× less' : (1 / ratio).toFixed(1) + '× more'}`,
+	);
 }
 
 compare(
 	'First 5 of a filtered scan',
 	'ALGORITHMIC: v1.filter builds an array of ALL ~100k matches before slice; safe.filter.take(5) stops at 5',
 	() => v1.filter(big, (_c: any, v: any) => typeof v === 'string').slice(0, 5),
-	() => safe.visit(big).filter((n: any) => typeof n.value === 'string').take(5).toArray(),
+	() =>
+		safe
+			.visit(big)
+			.filter((n: any) => typeof n.value === 'string')
+			.take(5)
+			.toArray(),
 );
 compare(
 	'Genuinely need ALL nodes (fair)',
 	'both materialize the full set — roughly parity (safe slightly higher: one Visit per node)',
 	() => v1.nodes(big),
-	() => safe.visit(big).map((n: any) => n.value).toArray(),
+	() =>
+		safe
+			.visit(big)
+			.map((n: any) => n.value)
+			.toArray(),
 );
 
 // Stack safety — the categorical win.
@@ -76,14 +89,35 @@ console.log('\nStack safety: deepest linked tree each can traverse');
 function buildDeep(depth: number) {
 	let node: any = { v: 0 };
 	const root = node;
-	for (let i = 1; i < depth; i++) { node.next = { v: i }; node = node.next; }
+	for (let i = 1; i < depth; i++) {
+		node.next = { v: i };
+		node = node.next;
+	}
 	return root;
 }
-const survives = (fn: (t: any) => void, depth: number) => { try { fn(buildDeep(depth)); return true; } catch { return false; } };
-const v1Walk = (t: any) => { let n = 0; for (const _ of (v1 as any).values(t)) n++; void n; };
-const safeWalk = (t: any) => { let n = 0; for (const _ of safe.visit(t)) n++; void n; };
+const survives = (fn: (t: any) => void, depth: number) => {
+	try {
+		fn(buildDeep(depth));
+		return true;
+	} catch {
+		return false;
+	}
+};
+const v1Walk = (t: any) => {
+	let n = 0;
+	for (const _ of (v1 as any).values(t)) n++;
+	void n;
+};
+const safeWalk = (t: any) => {
+	let n = 0;
+	for (const _ of safe.visit(t)) n++;
+	void n;
+};
 let v1Max = 0;
-for (const d of [1000, 2000, 5000, 10000, 20000, 50000]) { if (survives(v1Walk, d)) v1Max = d; else break; }
+for (const d of [1000, 2000, 5000, 10000, 20000, 50000]) {
+	if (survives(v1Walk, d)) v1Max = d;
+	else break;
+}
 const safeOk = survives(safeWalk, 200000);
 console.log(`  v1 (recursive):   overflows beyond ~${v1Max.toLocaleString()} deep`);
 console.log(`  safe (iterative): 200,000+ deep — ${safeOk ? 'OK' : 'FAILED'}`);

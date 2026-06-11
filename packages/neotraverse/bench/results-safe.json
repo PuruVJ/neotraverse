@@ -1,921 +1,917 @@
 {
-  "generatedAt": "2026-06-11T05:26:43.629Z",
-  "runtime": {
-    "node": "v24.1.0",
-    "v8": "13.6.233.10-node.16"
-  },
-  "note": "v2 idioms (lazy visit, COW transform) doing the same logical work as v1; not API-identical.",
-  "contenders": [
-    "traverse",
-    "neotraverse v1",
-    "neotraverse/safe"
-  ],
-  "summary": {
-    "metric": "geometric-mean v2 throughput ÷ v1 on equivalent ops",
-    "v2VsV1Geomean": 0.82
-  },
-  "suites": [
-    {
-      "operation": "forEach",
-      "dataset": "small",
-      "label": "forEach · small",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 825980,
-          "rme": 0.33,
-          "bytesPerOp": 11312
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 4024103,
-          "rme": 0.92,
-          "bytesPerOp": 1715
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 3295700,
-          "rme": 5.55,
-          "bytesPerOp": 2980
-        }
-      ],
-      "v2VsV1": 0.82
-    },
-    {
-      "operation": "forEach",
-      "dataset": "wide",
-      "label": "forEach · wide",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 78462,
-          "rme": 0.41,
-          "bytesPerOp": 113781
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 589051,
-          "rme": 0.44,
-          "bytesPerOp": 11053
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 467826,
-          "rme": 0.53,
-          "bytesPerOp": 15963
-        }
-      ],
-      "v2VsV1": 0.79
-    },
-    {
-      "operation": "forEach",
-      "dataset": "deep",
-      "label": "forEach · deep",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 52637,
-          "rme": 0.51,
-          "bytesPerOp": 185375
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 332500,
-          "rme": 0.44,
-          "bytesPerOp": 17812
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 238693,
-          "rme": 0.49,
-          "bytesPerOp": 33451
-        }
-      ],
-      "v2VsV1": 0.72
-    },
-    {
-      "operation": "forEach",
-      "dataset": "array",
-      "label": "forEach · array",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2988,
-          "rme": 0.49,
-          "bytesPerOp": 1473460
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 21256,
-          "rme": 0.41,
-          "bytesPerOp": 311078
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 12405,
-          "rme": 0.45,
-          "bytesPerOp": 460796
-        }
-      ],
-      "v2VsV1": 0.58
-    },
-    {
-      "operation": "forEach",
-      "dataset": "json",
-      "label": "forEach · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 56979,
-          "rme": 0.53,
-          "bytesPerOp": 163982
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 380132,
-          "rme": 0.48,
-          "bytesPerOp": 17057
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 251067,
-          "rme": 0.47,
-          "bytesPerOp": 25387
-        }
-      ],
-      "v2VsV1": 0.66
-    },
-    {
-      "operation": "map",
-      "dataset": "small",
-      "label": "map · small",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 383775,
-          "rme": 0.38,
-          "bytesPerOp": 13834
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 2292809,
-          "rme": 0.88,
-          "bytesPerOp": 2014
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 1674712,
-          "rme": 0.52,
-          "bytesPerOp": 5631
-        }
-      ],
-      "v2VsV1": 0.73
-    },
-    {
-      "operation": "map",
-      "dataset": "wide",
-      "label": "map · wide",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 50029,
-          "rme": 0.46,
-          "bytesPerOp": 134974
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 180590,
-          "rme": 0.35,
-          "bytesPerOp": 20040
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 135497,
-          "rme": 0.47,
-          "bytesPerOp": 51184
-        }
-      ],
-      "v2VsV1": 0.75
-    },
-    {
-      "operation": "map",
-      "dataset": "deep",
-      "label": "map · deep",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 18726,
-          "rme": 0.45,
-          "bytesPerOp": 235218
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 135889,
-          "rme": 0.39,
-          "bytesPerOp": 22855
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 93534,
-          "rme": 0.48,
-          "bytesPerOp": 78192
-        }
-      ],
-      "v2VsV1": 0.69
-    },
-    {
-      "operation": "map",
-      "dataset": "array",
-      "label": "map · array",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 1413,
-          "rme": 0.47,
-          "bytesPerOp": 447244
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 8349,
-          "rme": 0.42,
-          "bytesPerOp": 382665
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 5412,
-          "rme": 0.53,
-          "bytesPerOp": 1221773
-        }
-      ],
-      "v2VsV1": 0.65
-    },
-    {
-      "operation": "map",
-      "dataset": "json",
-      "label": "map · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 22812,
-          "rme": 0.45,
-          "bytesPerOp": 204321
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 146963,
-          "rme": 0.37,
-          "bytesPerOp": 21393
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 102222,
-          "rme": 0.46,
-          "bytesPerOp": 66055
-        }
-      ],
-      "v2VsV1": 0.7
-    },
-    {
-      "operation": "clone",
-      "dataset": "small",
-      "label": "clone · small",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 500989,
-          "rme": 0.33,
-          "bytesPerOp": 3532
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 4965676,
-          "rme": 0.5,
-          "bytesPerOp": 608
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 5165847,
-          "rme": 0.35,
-          "bytesPerOp": 608
-        }
-      ],
-      "v2VsV1": 1.04
-    },
-    {
-      "operation": "clone",
-      "dataset": "wide",
-      "label": "clone · wide",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 208211,
-          "rme": 0.35,
-          "bytesPerOp": 12713
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 569945,
-          "rme": 0.42,
-          "bytesPerOp": 6332
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 591998,
-          "rme": 0.41,
-          "bytesPerOp": 6332
-        }
-      ],
-      "v2VsV1": 1.04
-    },
-    {
-      "operation": "clone",
-      "dataset": "deep",
-      "label": "clone · deep",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 27975,
-          "rme": 0.33,
-          "bytesPerOp": 47063
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 260843,
-          "rme": 0.35,
-          "bytesPerOp": 9928
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 275145,
-          "rme": 0.39,
-          "bytesPerOp": 9928
-        }
-      ],
-      "v2VsV1": 1.05
-    },
-    {
-      "operation": "clone",
-      "dataset": "array",
-      "label": "clone · array",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 3165,
-          "rme": 1.05,
-          "bytesPerOp": 548097
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 15607,
-          "rme": 0.33,
-          "bytesPerOp": 110972
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 16215,
-          "rme": 0.32,
-          "bytesPerOp": 110972
-        }
-      ],
-      "v2VsV1": 1.04
-    },
-    {
-      "operation": "clone",
-      "dataset": "json",
-      "label": "clone · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 41650,
-          "rme": 0.32,
-          "bytesPerOp": 37285
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 298141,
-          "rme": 0.3,
-          "bytesPerOp": 6266
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 319697,
-          "rme": 0.34,
-          "bytesPerOp": 6266
-        }
-      ],
-      "v2VsV1": 1.07
-    },
-    {
-      "operation": "reduce",
-      "dataset": "small",
-      "label": "reduce · small",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 794512,
-          "rme": 0.49,
-          "bytesPerOp": 11977
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 3498436,
-          "rme": 0.53,
-          "bytesPerOp": 2014
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 3163679,
-          "rme": 0.68,
-          "bytesPerOp": 2900
-        }
-      ],
-      "v2VsV1": 0.9
-    },
-    {
-      "operation": "reduce",
-      "dataset": "wide",
-      "label": "reduce · wide",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 76058,
-          "rme": 0.43,
-          "bytesPerOp": 121247
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 492122,
-          "rme": 0.39,
-          "bytesPerOp": 12079
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 498690,
-          "rme": 0.47,
-          "bytesPerOp": 15965
-        }
-      ],
-      "v2VsV1": 1.01
-    },
-    {
-      "operation": "reduce",
-      "dataset": "deep",
-      "label": "reduce · deep",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 50881,
-          "rme": 0.55,
-          "bytesPerOp": 185853
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 285761,
-          "rme": 0.44,
-          "bytesPerOp": 19187
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 240505,
-          "rme": 0.47,
-          "bytesPerOp": 33634
-        }
-      ],
-      "v2VsV1": 0.84
-    },
-    {
-      "operation": "reduce",
-      "dataset": "array",
-      "label": "reduce · array",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2881,
-          "rme": 0.58,
-          "bytesPerOp": 1501380
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 17741,
-          "rme": 0.45,
-          "bytesPerOp": 333791
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 12835,
-          "rme": 0.39,
-          "bytesPerOp": 461782
-        }
-      ],
-      "v2VsV1": 0.72
-    },
-    {
-      "operation": "reduce",
-      "dataset": "json",
-      "label": "reduce · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 54569,
-          "rme": 0.53,
-          "bytesPerOp": 164984
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 328056,
-          "rme": 0.45,
-          "bytesPerOp": 17546
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 231492,
-          "rme": 0.45,
-          "bytesPerOp": 25095
-        }
-      ],
-      "v2VsV1": 0.71
-    },
-    {
-      "operation": "paths",
-      "dataset": "small",
-      "label": "paths · small",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 808720,
-          "rme": 0.48,
-          "bytesPerOp": 11809
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 3353816,
-          "rme": 0.53,
-          "bytesPerOp": 2274
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 2797387,
-          "rme": 0.51,
-          "bytesPerOp": 3347
-        }
-      ],
-      "v2VsV1": 0.83
-    },
-    {
-      "operation": "paths",
-      "dataset": "wide",
-      "label": "paths · wide",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 75812,
-          "rme": 0.54,
-          "bytesPerOp": 121128
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 460297,
-          "rme": 0.48,
-          "bytesPerOp": 15554
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 424664,
-          "rme": 0.48,
-          "bytesPerOp": 20604
-        }
-      ],
-      "v2VsV1": 0.92
-    },
-    {
-      "operation": "paths",
-      "dataset": "deep",
-      "label": "paths · deep",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 51016,
-          "rme": 0.68,
-          "bytesPerOp": 186866
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 210454,
-          "rme": 0.45,
-          "bytesPerOp": 38059
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 152517,
-          "rme": 0.79,
-          "bytesPerOp": 53062
-        }
-      ],
-      "v2VsV1": 0.72
-    },
-    {
-      "operation": "paths",
-      "dataset": "array",
-      "label": "paths · array",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2878,
-          "rme": 0.67,
-          "bytesPerOp": 1519768
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 16256,
-          "rme": 0.46,
-          "bytesPerOp": 465976
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 10986,
-          "rme": 0.43,
-          "bytesPerOp": 596495
-        }
-      ],
-      "v2VsV1": 0.68
-    },
-    {
-      "operation": "paths",
-      "dataset": "json",
-      "label": "paths · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 54807,
-          "rme": 0.58,
-          "bytesPerOp": 166088
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 293486,
-          "rme": 0.54,
-          "bytesPerOp": 25280
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 211389,
-          "rme": 0.54,
-          "bytesPerOp": 33476
-        }
-      ],
-      "v2VsV1": 0.72
-    },
-    {
-      "operation": "nodes",
-      "dataset": "small",
-      "label": "nodes · small",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 797210,
-          "rme": 0.53,
-          "bytesPerOp": 11788
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 3427614,
-          "rme": 1.16,
-          "bytesPerOp": 1940
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 3048491,
-          "rme": 0.58,
-          "bytesPerOp": 2900
-        }
-      ],
-      "v2VsV1": 0.89
-    },
-    {
-      "operation": "nodes",
-      "dataset": "wide",
-      "label": "nodes · wide",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 73617,
-          "rme": 0.66,
-          "bytesPerOp": 120886
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 494190,
-          "rme": 0.5,
-          "bytesPerOp": 11919
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 495001,
-          "rme": 0.64,
-          "bytesPerOp": 15984
-        }
-      ],
-      "v2VsV1": 1
-    },
-    {
-      "operation": "nodes",
-      "dataset": "deep",
-      "label": "nodes · deep",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 50247,
-          "rme": 0.64,
-          "bytesPerOp": 187078
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 285119,
-          "rme": 0.48,
-          "bytesPerOp": 20185
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 211550,
-          "rme": 0.49,
-          "bytesPerOp": 33631
-        }
-      ],
-      "v2VsV1": 0.74
-    },
-    {
-      "operation": "nodes",
-      "dataset": "array",
-      "label": "nodes · array",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2873,
-          "rme": 0.54,
-          "bytesPerOp": 1517197
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 17592,
-          "rme": 0.45,
-          "bytesPerOp": 349297
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 13074,
-          "rme": 0.44,
-          "bytesPerOp": 461500
-        }
-      ],
-      "v2VsV1": 0.74
-    },
-    {
-      "operation": "nodes",
-      "dataset": "json",
-      "label": "nodes · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 55401,
-          "rme": 0.49,
-          "bytesPerOp": 166193
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 327445,
-          "rme": 0.42,
-          "bytesPerOp": 18528
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 237211,
-          "rme": 0.5,
-          "bytesPerOp": 25200
-        }
-      ],
-      "v2VsV1": 0.72
-    },
-    {
-      "operation": "get",
-      "dataset": "json",
-      "label": "get · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 18368354,
-          "rme": 0.18,
-          "bytesPerOp": 132
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 20922131,
-          "rme": 1.59,
-          "bytesPerOp": 32
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 19783711,
-          "rme": 0.14,
-          "bytesPerOp": 32
-        }
-      ],
-      "v2VsV1": 0.95
-    },
-    {
-      "operation": "has",
-      "dataset": "json",
-      "label": "has · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 18045673,
-          "rme": 0.25,
-          "bytesPerOp": 133
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 21569563,
-          "rme": 0.13,
-          "bytesPerOp": 32
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 20113096,
-          "rme": 0.14,
-          "bytesPerOp": 32
-        }
-      ],
-      "v2VsV1": 0.93
-    },
-    {
-      "operation": "set",
-      "dataset": "json",
-      "label": "set · json",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 23196058,
-          "rme": 0.3,
-          "bytesPerOp": 98
-        },
-        {
-          "name": "neotraverse v1",
-          "opsPerSec": 18731940,
-          "rme": 0.56,
-          "bytesPerOp": 64
-        },
-        {
-          "name": "neotraverse/safe",
-          "opsPerSec": 22599384,
-          "rme": 0.11,
-          "bytesPerOp": 16
-        }
-      ],
-      "v2VsV1": 1.21
-    }
-  ],
-  "v2only": [
-    {
-      "label": "transform · no-op identity (2000)",
-      "opsPerSec": 1252,
-      "rme": 0.43,
-      "bytesPerOp": 1461022
-    },
-    {
-      "label": "transform · single sparse edit (2000)",
-      "opsPerSec": 1155,
-      "rme": 0.52,
-      "bytesPerOp": 1550307
-    },
-    {
-      "label": "merge · json",
-      "opsPerSec": 2287613,
-      "rme": 0.34,
-      "bytesPerOp": 1072
-    },
-    {
-      "label": "diff · array(2000) one change",
-      "opsPerSec": 622,
-      "rme": 0.42,
-      "bytesPerOp": 579620
-    },
-    {
-      "label": "equal · json",
-      "opsPerSec": 88701,
-      "rme": 0.38,
-      "bytesPerOp": 14675
-    },
-    {
-      "label": "resolveRefs · refs",
-      "opsPerSec": 74527,
-      "rme": 0.48,
-      "bytesPerOp": 51984
-    },
-    {
-      "label": "visit match · posts.*.id",
-      "opsPerSec": 348507,
-      "rme": 0.64,
-      "bytesPerOp": 14353
-    }
-  ]
+	"generatedAt": "2026-06-11T05:26:43.629Z",
+	"runtime": {
+		"node": "v24.1.0",
+		"v8": "13.6.233.10-node.16"
+	},
+	"note": "v2 idioms (lazy visit, COW transform) doing the same logical work as v1; not API-identical.",
+	"contenders": ["traverse", "neotraverse v1", "neotraverse/safe"],
+	"summary": {
+		"metric": "geometric-mean v2 throughput ÷ v1 on equivalent ops",
+		"v2VsV1Geomean": 0.82
+	},
+	"suites": [
+		{
+			"operation": "forEach",
+			"dataset": "small",
+			"label": "forEach · small",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 825980,
+					"rme": 0.33,
+					"bytesPerOp": 11312
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 4024103,
+					"rme": 0.92,
+					"bytesPerOp": 1715
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 3295700,
+					"rme": 5.55,
+					"bytesPerOp": 2980
+				}
+			],
+			"v2VsV1": 0.82
+		},
+		{
+			"operation": "forEach",
+			"dataset": "wide",
+			"label": "forEach · wide",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 78462,
+					"rme": 0.41,
+					"bytesPerOp": 113781
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 589051,
+					"rme": 0.44,
+					"bytesPerOp": 11053
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 467826,
+					"rme": 0.53,
+					"bytesPerOp": 15963
+				}
+			],
+			"v2VsV1": 0.79
+		},
+		{
+			"operation": "forEach",
+			"dataset": "deep",
+			"label": "forEach · deep",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 52637,
+					"rme": 0.51,
+					"bytesPerOp": 185375
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 332500,
+					"rme": 0.44,
+					"bytesPerOp": 17812
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 238693,
+					"rme": 0.49,
+					"bytesPerOp": 33451
+				}
+			],
+			"v2VsV1": 0.72
+		},
+		{
+			"operation": "forEach",
+			"dataset": "array",
+			"label": "forEach · array",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2988,
+					"rme": 0.49,
+					"bytesPerOp": 1473460
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 21256,
+					"rme": 0.41,
+					"bytesPerOp": 311078
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 12405,
+					"rme": 0.45,
+					"bytesPerOp": 460796
+				}
+			],
+			"v2VsV1": 0.58
+		},
+		{
+			"operation": "forEach",
+			"dataset": "json",
+			"label": "forEach · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 56979,
+					"rme": 0.53,
+					"bytesPerOp": 163982
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 380132,
+					"rme": 0.48,
+					"bytesPerOp": 17057
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 251067,
+					"rme": 0.47,
+					"bytesPerOp": 25387
+				}
+			],
+			"v2VsV1": 0.66
+		},
+		{
+			"operation": "map",
+			"dataset": "small",
+			"label": "map · small",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 383775,
+					"rme": 0.38,
+					"bytesPerOp": 13834
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 2292809,
+					"rme": 0.88,
+					"bytesPerOp": 2014
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 1674712,
+					"rme": 0.52,
+					"bytesPerOp": 5631
+				}
+			],
+			"v2VsV1": 0.73
+		},
+		{
+			"operation": "map",
+			"dataset": "wide",
+			"label": "map · wide",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 50029,
+					"rme": 0.46,
+					"bytesPerOp": 134974
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 180590,
+					"rme": 0.35,
+					"bytesPerOp": 20040
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 135497,
+					"rme": 0.47,
+					"bytesPerOp": 51184
+				}
+			],
+			"v2VsV1": 0.75
+		},
+		{
+			"operation": "map",
+			"dataset": "deep",
+			"label": "map · deep",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 18726,
+					"rme": 0.45,
+					"bytesPerOp": 235218
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 135889,
+					"rme": 0.39,
+					"bytesPerOp": 22855
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 93534,
+					"rme": 0.48,
+					"bytesPerOp": 78192
+				}
+			],
+			"v2VsV1": 0.69
+		},
+		{
+			"operation": "map",
+			"dataset": "array",
+			"label": "map · array",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 1413,
+					"rme": 0.47,
+					"bytesPerOp": 447244
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 8349,
+					"rme": 0.42,
+					"bytesPerOp": 382665
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 5412,
+					"rme": 0.53,
+					"bytesPerOp": 1221773
+				}
+			],
+			"v2VsV1": 0.65
+		},
+		{
+			"operation": "map",
+			"dataset": "json",
+			"label": "map · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 22812,
+					"rme": 0.45,
+					"bytesPerOp": 204321
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 146963,
+					"rme": 0.37,
+					"bytesPerOp": 21393
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 102222,
+					"rme": 0.46,
+					"bytesPerOp": 66055
+				}
+			],
+			"v2VsV1": 0.7
+		},
+		{
+			"operation": "clone",
+			"dataset": "small",
+			"label": "clone · small",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 500989,
+					"rme": 0.33,
+					"bytesPerOp": 3532
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 4965676,
+					"rme": 0.5,
+					"bytesPerOp": 608
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 5165847,
+					"rme": 0.35,
+					"bytesPerOp": 608
+				}
+			],
+			"v2VsV1": 1.04
+		},
+		{
+			"operation": "clone",
+			"dataset": "wide",
+			"label": "clone · wide",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 208211,
+					"rme": 0.35,
+					"bytesPerOp": 12713
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 569945,
+					"rme": 0.42,
+					"bytesPerOp": 6332
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 591998,
+					"rme": 0.41,
+					"bytesPerOp": 6332
+				}
+			],
+			"v2VsV1": 1.04
+		},
+		{
+			"operation": "clone",
+			"dataset": "deep",
+			"label": "clone · deep",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 27975,
+					"rme": 0.33,
+					"bytesPerOp": 47063
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 260843,
+					"rme": 0.35,
+					"bytesPerOp": 9928
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 275145,
+					"rme": 0.39,
+					"bytesPerOp": 9928
+				}
+			],
+			"v2VsV1": 1.05
+		},
+		{
+			"operation": "clone",
+			"dataset": "array",
+			"label": "clone · array",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 3165,
+					"rme": 1.05,
+					"bytesPerOp": 548097
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 15607,
+					"rme": 0.33,
+					"bytesPerOp": 110972
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 16215,
+					"rme": 0.32,
+					"bytesPerOp": 110972
+				}
+			],
+			"v2VsV1": 1.04
+		},
+		{
+			"operation": "clone",
+			"dataset": "json",
+			"label": "clone · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 41650,
+					"rme": 0.32,
+					"bytesPerOp": 37285
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 298141,
+					"rme": 0.3,
+					"bytesPerOp": 6266
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 319697,
+					"rme": 0.34,
+					"bytesPerOp": 6266
+				}
+			],
+			"v2VsV1": 1.07
+		},
+		{
+			"operation": "reduce",
+			"dataset": "small",
+			"label": "reduce · small",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 794512,
+					"rme": 0.49,
+					"bytesPerOp": 11977
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 3498436,
+					"rme": 0.53,
+					"bytesPerOp": 2014
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 3163679,
+					"rme": 0.68,
+					"bytesPerOp": 2900
+				}
+			],
+			"v2VsV1": 0.9
+		},
+		{
+			"operation": "reduce",
+			"dataset": "wide",
+			"label": "reduce · wide",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 76058,
+					"rme": 0.43,
+					"bytesPerOp": 121247
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 492122,
+					"rme": 0.39,
+					"bytesPerOp": 12079
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 498690,
+					"rme": 0.47,
+					"bytesPerOp": 15965
+				}
+			],
+			"v2VsV1": 1.01
+		},
+		{
+			"operation": "reduce",
+			"dataset": "deep",
+			"label": "reduce · deep",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 50881,
+					"rme": 0.55,
+					"bytesPerOp": 185853
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 285761,
+					"rme": 0.44,
+					"bytesPerOp": 19187
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 240505,
+					"rme": 0.47,
+					"bytesPerOp": 33634
+				}
+			],
+			"v2VsV1": 0.84
+		},
+		{
+			"operation": "reduce",
+			"dataset": "array",
+			"label": "reduce · array",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2881,
+					"rme": 0.58,
+					"bytesPerOp": 1501380
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 17741,
+					"rme": 0.45,
+					"bytesPerOp": 333791
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 12835,
+					"rme": 0.39,
+					"bytesPerOp": 461782
+				}
+			],
+			"v2VsV1": 0.72
+		},
+		{
+			"operation": "reduce",
+			"dataset": "json",
+			"label": "reduce · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 54569,
+					"rme": 0.53,
+					"bytesPerOp": 164984
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 328056,
+					"rme": 0.45,
+					"bytesPerOp": 17546
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 231492,
+					"rme": 0.45,
+					"bytesPerOp": 25095
+				}
+			],
+			"v2VsV1": 0.71
+		},
+		{
+			"operation": "paths",
+			"dataset": "small",
+			"label": "paths · small",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 808720,
+					"rme": 0.48,
+					"bytesPerOp": 11809
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 3353816,
+					"rme": 0.53,
+					"bytesPerOp": 2274
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 2797387,
+					"rme": 0.51,
+					"bytesPerOp": 3347
+				}
+			],
+			"v2VsV1": 0.83
+		},
+		{
+			"operation": "paths",
+			"dataset": "wide",
+			"label": "paths · wide",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 75812,
+					"rme": 0.54,
+					"bytesPerOp": 121128
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 460297,
+					"rme": 0.48,
+					"bytesPerOp": 15554
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 424664,
+					"rme": 0.48,
+					"bytesPerOp": 20604
+				}
+			],
+			"v2VsV1": 0.92
+		},
+		{
+			"operation": "paths",
+			"dataset": "deep",
+			"label": "paths · deep",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 51016,
+					"rme": 0.68,
+					"bytesPerOp": 186866
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 210454,
+					"rme": 0.45,
+					"bytesPerOp": 38059
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 152517,
+					"rme": 0.79,
+					"bytesPerOp": 53062
+				}
+			],
+			"v2VsV1": 0.72
+		},
+		{
+			"operation": "paths",
+			"dataset": "array",
+			"label": "paths · array",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2878,
+					"rme": 0.67,
+					"bytesPerOp": 1519768
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 16256,
+					"rme": 0.46,
+					"bytesPerOp": 465976
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 10986,
+					"rme": 0.43,
+					"bytesPerOp": 596495
+				}
+			],
+			"v2VsV1": 0.68
+		},
+		{
+			"operation": "paths",
+			"dataset": "json",
+			"label": "paths · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 54807,
+					"rme": 0.58,
+					"bytesPerOp": 166088
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 293486,
+					"rme": 0.54,
+					"bytesPerOp": 25280
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 211389,
+					"rme": 0.54,
+					"bytesPerOp": 33476
+				}
+			],
+			"v2VsV1": 0.72
+		},
+		{
+			"operation": "nodes",
+			"dataset": "small",
+			"label": "nodes · small",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 797210,
+					"rme": 0.53,
+					"bytesPerOp": 11788
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 3427614,
+					"rme": 1.16,
+					"bytesPerOp": 1940
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 3048491,
+					"rme": 0.58,
+					"bytesPerOp": 2900
+				}
+			],
+			"v2VsV1": 0.89
+		},
+		{
+			"operation": "nodes",
+			"dataset": "wide",
+			"label": "nodes · wide",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 73617,
+					"rme": 0.66,
+					"bytesPerOp": 120886
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 494190,
+					"rme": 0.5,
+					"bytesPerOp": 11919
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 495001,
+					"rme": 0.64,
+					"bytesPerOp": 15984
+				}
+			],
+			"v2VsV1": 1
+		},
+		{
+			"operation": "nodes",
+			"dataset": "deep",
+			"label": "nodes · deep",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 50247,
+					"rme": 0.64,
+					"bytesPerOp": 187078
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 285119,
+					"rme": 0.48,
+					"bytesPerOp": 20185
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 211550,
+					"rme": 0.49,
+					"bytesPerOp": 33631
+				}
+			],
+			"v2VsV1": 0.74
+		},
+		{
+			"operation": "nodes",
+			"dataset": "array",
+			"label": "nodes · array",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2873,
+					"rme": 0.54,
+					"bytesPerOp": 1517197
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 17592,
+					"rme": 0.45,
+					"bytesPerOp": 349297
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 13074,
+					"rme": 0.44,
+					"bytesPerOp": 461500
+				}
+			],
+			"v2VsV1": 0.74
+		},
+		{
+			"operation": "nodes",
+			"dataset": "json",
+			"label": "nodes · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 55401,
+					"rme": 0.49,
+					"bytesPerOp": 166193
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 327445,
+					"rme": 0.42,
+					"bytesPerOp": 18528
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 237211,
+					"rme": 0.5,
+					"bytesPerOp": 25200
+				}
+			],
+			"v2VsV1": 0.72
+		},
+		{
+			"operation": "get",
+			"dataset": "json",
+			"label": "get · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 18368354,
+					"rme": 0.18,
+					"bytesPerOp": 132
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 20922131,
+					"rme": 1.59,
+					"bytesPerOp": 32
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 19783711,
+					"rme": 0.14,
+					"bytesPerOp": 32
+				}
+			],
+			"v2VsV1": 0.95
+		},
+		{
+			"operation": "has",
+			"dataset": "json",
+			"label": "has · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 18045673,
+					"rme": 0.25,
+					"bytesPerOp": 133
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 21569563,
+					"rme": 0.13,
+					"bytesPerOp": 32
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 20113096,
+					"rme": 0.14,
+					"bytesPerOp": 32
+				}
+			],
+			"v2VsV1": 0.93
+		},
+		{
+			"operation": "set",
+			"dataset": "json",
+			"label": "set · json",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 23196058,
+					"rme": 0.3,
+					"bytesPerOp": 98
+				},
+				{
+					"name": "neotraverse v1",
+					"opsPerSec": 18731940,
+					"rme": 0.56,
+					"bytesPerOp": 64
+				},
+				{
+					"name": "neotraverse/safe",
+					"opsPerSec": 22599384,
+					"rme": 0.11,
+					"bytesPerOp": 16
+				}
+			],
+			"v2VsV1": 1.21
+		}
+	],
+	"v2only": [
+		{
+			"label": "transform · no-op identity (2000)",
+			"opsPerSec": 1252,
+			"rme": 0.43,
+			"bytesPerOp": 1461022
+		},
+		{
+			"label": "transform · single sparse edit (2000)",
+			"opsPerSec": 1155,
+			"rme": 0.52,
+			"bytesPerOp": 1550307
+		},
+		{
+			"label": "merge · json",
+			"opsPerSec": 2287613,
+			"rme": 0.34,
+			"bytesPerOp": 1072
+		},
+		{
+			"label": "diff · array(2000) one change",
+			"opsPerSec": 622,
+			"rme": 0.42,
+			"bytesPerOp": 579620
+		},
+		{
+			"label": "equal · json",
+			"opsPerSec": 88701,
+			"rme": 0.38,
+			"bytesPerOp": 14675
+		},
+		{
+			"label": "resolveRefs · refs",
+			"opsPerSec": 74527,
+			"rme": 0.48,
+			"bytesPerOp": 51984
+		},
+		{
+			"label": "visit match · posts.*.id",
+			"opsPerSec": 348507,
+			"rme": 0.64,
+			"bytesPerOp": 14353
+		}
+	]
 }

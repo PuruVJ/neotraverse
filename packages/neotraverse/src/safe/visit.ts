@@ -41,7 +41,15 @@ export class Visit<V = unknown> {
 	/** @internal owning session, for {@link skip}. */
 	private readonly s: Session;
 
-	constructor(session: Session, value: V, key: PropertyKey | undefined, parent: Visit | undefined, depth: number, isLeaf: boolean, circular: Visit | undefined) {
+	constructor(
+		session: Session,
+		value: V,
+		key: PropertyKey | undefined,
+		parent: Visit | undefined,
+		depth: number,
+		isLeaf: boolean,
+		circular: Visit | undefined,
+	) {
 		this.s = session;
 		this.value = value;
 		this.key = key;
@@ -84,7 +92,9 @@ export class Visit<V = unknown> {
 	 */
 	skip(): void {
 		if (this.s.post) {
-			throw new TypeError("neotraverse: skip() is not available in order: 'post' (children are already visited)");
+			throw new TypeError(
+				"neotraverse: skip() is not available in order: 'post' (children are already visited)",
+			);
 		}
 		if (this.s.current === this && this.s.cursor) this.s.cursor.skip();
 	}
@@ -120,7 +130,10 @@ class VisitIterator extends IteratorBase {
 	private done = false;
 	// One reused IteratorResult — native helpers read .value/.done before the next
 	// pull, so a single shared box is safe and saves an allocation per node.
-	private readonly result: IteratorResult<Visit, undefined> = { value: undefined as any, done: false };
+	private readonly result: IteratorResult<Visit, undefined> = {
+		value: undefined as any,
+		done: false,
+	};
 
 	constructor(root: any, options: VisitOptions) {
 		super();
@@ -172,7 +185,10 @@ class BreadthIterator extends IteratorBase {
 	private readonly gen: Generator<Frame>;
 	private readonly session: Session;
 	private readonly hasMatcher: boolean;
-	private readonly result: IteratorResult<Visit, undefined> = { value: undefined as any, done: false };
+	private readonly result: IteratorResult<Visit, undefined> = {
+		value: undefined as any,
+		done: false,
+	};
 
 	constructor(root: any, options: VisitOptions) {
 		super();
@@ -216,7 +232,11 @@ export type Visits<V = unknown> = IteratorObject<Visit<V>, undefined, unknown>;
  */
 export function visit<T>(root: T, options?: VisitOptions): Visits;
 export function visit<T>(root: T, pattern: string, options?: Omit<VisitOptions, 'match'>): Visits;
-export function visit(root: any, optionsOrPattern?: VisitOptions | string, maybeOptions?: VisitOptions): Visits {
+export function visit(
+	root: any,
+	optionsOrPattern?: VisitOptions | string,
+	maybeOptions?: VisitOptions,
+): Visits {
 	if (typeof optionsOrPattern === 'function') {
 		throw new TypeError(
 			'neotraverse: visit(root, callback) is not the v1 walk(); use transform(root, visitor) for edits or `for (const v of visit(root))` for reads',
@@ -225,8 +245,11 @@ export function visit(root: any, optionsOrPattern?: VisitOptions | string, maybe
 	const options: VisitOptions =
 		typeof optionsOrPattern === 'string'
 			? { ...maybeOptions, match: optionsOrPattern }
-			: optionsOrPattern ?? {};
-	const it = options.order === 'breadth' ? new BreadthIterator(root, options) : new VisitIterator(root, options);
+			: (optionsOrPattern ?? {});
+	const it =
+		options.order === 'breadth'
+			? new BreadthIterator(root, options)
+			: new VisitIterator(root, options);
 	return it as unknown as Visits;
 }
 
@@ -287,13 +310,18 @@ if (import.meta.vitest) {
 
 	describe('visit: match prunes and filters', () => {
 		it('yields only matched nodes', () => {
-			const vals = visit({ users: [{ email: 'x' }, { email: 'y' }], other: { email: 'z' } }, 'users.*.email')
+			const vals = visit(
+				{ users: [{ email: 'x' }, { email: 'y' }], other: { email: 'z' } },
+				'users.*.email',
+			)
 				.map((v) => v.value)
 				.toArray();
 			expect(vals).toEqual(['x', 'y']);
 		});
 		it('** recursive descent', () => {
-			const vals = visit({ a: { b: { id: 1 } }, c: { id: 2 } }, '**.id').map((v) => v.value).toArray();
+			const vals = visit({ a: { b: { id: 1 } }, c: { id: 2 } }, '**.id')
+				.map((v) => v.value)
+				.toArray();
 			expect(vals.sort()).toEqual([1, 2]);
 		});
 	});

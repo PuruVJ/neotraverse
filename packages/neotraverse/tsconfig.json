@@ -10,7 +10,7 @@
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
-		"types": ["node", "vitest/importMeta"],
+		"types": ["node", "vite-plus/test/importMeta"],
 		// Loose, ported legacy tests + the throwaway bench script use untyped `this`
 		// and callback params; the library source (checked strictly in CI via
 		// tsconfig.build.json) does not rely on these.

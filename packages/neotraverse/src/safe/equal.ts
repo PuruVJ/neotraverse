@@ -19,7 +19,8 @@ const is_enumerable = Object.prototype.propertyIsEnumerable;
 
 function is_boxed(obj: unknown): boolean {
 	const tag = Object.prototype.toString.call(obj);
-	if (tag !== '[object Boolean]' && tag !== '[object Number]' && tag !== '[object String]') return false;
+	if (tag !== '[object Boolean]' && tag !== '[object Number]' && tag !== '[object String]')
+		return false;
 	try {
 		return typeof (obj as { valueOf(): unknown }).valueOf() !== 'object';
 	} catch {
@@ -101,7 +102,8 @@ function equal_pair(
 		case 'map': {
 			if (a.size !== b.size) return false;
 			for (const [k, v] of a) {
-				if (!b.has(k) || !equal_pair(v, b.get(k), compare, symbols, seen, maxDepth, depth + 1)) return false;
+				if (!b.has(k) || !equal_pair(v, b.get(k), compare, symbols, seen, maxDepth, depth + 1))
+					return false;
 			}
 			return true;
 		}
@@ -204,7 +206,8 @@ if (import.meta.vitest) {
 			expect(equal(a, b)).toBe(true);
 		});
 		it('compare hook overrides, undefined falls through', () => {
-			const compare = (x: any, y: any) => (typeof x === 'number' && typeof y === 'number' ? Math.abs(x - y) < 0.01 : undefined);
+			const compare = (x: any, y: any) =>
+				typeof x === 'number' && typeof y === 'number' ? Math.abs(x - y) < 0.01 : undefined;
 			expect(equal({ n: 1.0001 }, { n: 1.0 }, { compare })).toBe(true);
 			expect(equal({ n: 1 }, { n: 2 }, { compare })).toBe(false);
 		});

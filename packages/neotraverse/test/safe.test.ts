@@ -3,7 +3,7 @@
 // exercises only the exported API: the eight common tasks and the normative
 // invariants I1–I8 from SPEC_V2.md.
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
 	clone,
 	diff,
@@ -34,16 +34,24 @@ describe('the 8 common tasks', () => {
 
 	it('2. collect all values of a key (lazy)', () => {
 		const doc = { users: [{ id: 1 }, { id: 2 }], post: { id: 3 } };
-		expect(visit(doc, '**.id').map((v) => v.value).toArray().sort()).toEqual([1, 2, 3]);
+		expect(
+			visit(doc, '**.id')
+				.map((v) => v.value)
+				.toArray()
+				.sort(),
+		).toEqual([1, 2, 3]);
 	});
 
 	it('3. rewrite URLs (only edited spines copied)', () => {
 		const doc = { a: { url: 'http://x' }, b: { url: 'http://y' }, keep: { n: 1 } };
-		const out = transform(doc, (v, { replace }) =>
-			typeof v.value === 'string' && v.value.startsWith('http://')
-				? replace('https://' + v.value.slice(7))
-				: undefined,
-		{ match: '**.url' });
+		const out = transform(
+			doc,
+			(v, { replace }) =>
+				typeof v.value === 'string' && v.value.startsWith('http://')
+					? replace('https://' + v.value.slice(7))
+					: undefined,
+			{ match: '**.url' },
+		);
 		expect(out.a.url).toBe('https://x');
 		expect(out.keep).toBe(doc.keep);
 	});
@@ -51,7 +59,10 @@ describe('the 8 common tasks', () => {
 	it('4. config merge with per-path array policy', () => {
 		const defaults = { plugins: [{ name: 'a', opt: 1 }], tags: ['x'], level: 1 };
 		const user = { plugins: [{ name: 'a', opt: 2 }, { name: 'b' }], tags: ['x', 'y'], level: 3 };
-		const config = merge(defaults, user, { arrays: 'replace', at: { plugins: { by: 'name' }, '**.tags': 'union' } });
+		const config = merge(defaults, user, {
+			arrays: 'replace',
+			at: { plugins: { by: 'name' }, '**.tags': 'union' },
+		});
 		expect(config.plugins).toEqual([{ name: 'a', opt: 2 }, { name: 'b' }]);
 		expect(config.tags).toEqual(['x', 'y']);
 		expect(config.level).toBe(3);
@@ -90,9 +101,11 @@ describe('the 8 common tasks', () => {
 
 	it('9. async rewrite with concurrency', async () => {
 		const doc = { a: { url: '1' }, b: { url: '2' } };
-		const out = await transformAsync(doc, async (v, { replace }) =>
-			typeof v.value === 'string' ? replace(`<${v.value}>`) : undefined,
-		{ match: '**.url', concurrency: 4 });
+		const out = await transformAsync(
+			doc,
+			async (v, { replace }) => (typeof v.value === 'string' ? replace(`<${v.value}>`) : undefined),
+			{ match: '**.url', concurrency: 4 },
+		);
 		expect(out.a.url).toBe('<1>');
 		expect(out.b.url).toBe('<2>');
 	});
@@ -103,7 +116,12 @@ describe('invariants I1–I8', () => {
 		const t = { a: { b: 1 }, c: 2 };
 		expect([...visit(t)].map((v) => v.key)).toEqual([undefined, 'a', 'b', 'c']);
 		expect([...visit(t, { order: 'post' })].map((v) => v.key)).toEqual(['b', 'a', 'c', undefined]);
-		expect([...visit(t, { order: 'breadth' })].map((v) => v.key)).toEqual([undefined, 'a', 'c', 'b']);
+		expect([...visit(t, { order: 'breadth' })].map((v) => v.key)).toEqual([
+			undefined,
+			'a',
+			'c',
+			'b',
+		]);
 	});
 
 	it('I2 single visit; back-edge flagged, not descended', () => {
@@ -163,7 +181,11 @@ describe('invariants I1–I8', () => {
 		// self still references the (original) ring, not the new root — cycles are not rewired
 		expect(out.self).toBe(ring);
 		// documented recipe: edit a clone in place to preserve cycles correctly
-		const fixed = transform(clone(ring), (v, { replace }) => (v.key === 'n' ? replace(2) : undefined), { mutate: true });
+		const fixed = transform(
+			clone(ring),
+			(v, { replace }) => (v.key === 'n' ? replace(2) : undefined),
+			{ mutate: true },
+		);
 		expect(fixed.self).toBe(fixed);
 		expect(fixed.n).toBe(2);
 	});
@@ -197,7 +219,9 @@ describe('cross-cutting semantics', () => {
 
 	it('mapSet descends recursively at every level', () => {
 		const tree = { m: new Map([['k', new Set([1, 2])]]) };
-		const vals = visit(tree, { mapSet: true }).map((v) => v.value).toArray();
+		const vals = visit(tree, { mapSet: true })
+			.map((v) => v.value)
+			.toArray();
 		expect(vals).toContain(1);
 		expect(vals).toContain(2);
 	});
@@ -205,8 +229,16 @@ describe('cross-cutting semantics', () => {
 	it('symbols are opt-in', () => {
 		const s = Symbol('s');
 		const o = { a: 1, [s]: 2 };
-		expect(visit(o).filter((v) => typeof v.value === 'number').toArray().length).toBe(1);
-		expect(visit(o, { symbols: true }).filter((v) => typeof v.value === 'number').toArray().length).toBe(2);
+		expect(
+			visit(o)
+				.filter((v) => typeof v.value === 'number')
+				.toArray().length,
+		).toBe(1);
+		expect(
+			visit(o, { symbols: true })
+				.filter((v) => typeof v.value === 'number')
+				.toArray().length,
+		).toBe(2);
 	});
 
 	it('visit(root, callback) throws the migration hint', () => {

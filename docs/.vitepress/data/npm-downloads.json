@@ -1,9 +1,9 @@
 {
   "package": "neotraverse",
-  "total": 156520048,
+  "total": 157465065,
   "start": "2024-12-11",
   "end": "2026-06-11",
   "days": 548,
-  "measuredAt": "2026-06-11T05:52:52.329Z",
+  "measuredAt": "2026-06-11T11:17:18.646Z",
   "source": "https://api.npmjs.org/downloads/range/2015-01-01:2026-06-11/neotraverse"
 }

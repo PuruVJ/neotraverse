@@ -44,7 +44,9 @@ export async function fetchNpmDownloads(opts = {}) {
 	writeFileSync(outFile, JSON.stringify(report, null, 2) + '\n');
 
 	if (!opts.quiet) {
-		console.log(`npm downloads: ${total.toLocaleString('en-US')} (${data.start} → ${data.end}) → ${outFile}`);
+		console.log(
+			`npm downloads: ${total.toLocaleString('en-US')} (${data.start} → ${data.end}) → ${outFile}`,
+		);
 	}
 
 	return report;

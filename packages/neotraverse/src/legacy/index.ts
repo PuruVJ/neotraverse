@@ -41,7 +41,6 @@ export interface TraverseOptions {
 	 * @see https://neotraverse.puruvj.dev/guide/security.html
 	 */
 	maxDepth?: number;
-
 }
 
 /**
@@ -213,7 +212,6 @@ export interface TraverseContext {
 	 * @see https://neotraverse.puruvj.dev/guide/context.html
 	 */
 	block(): void;
-
 }
 
 const to_string = (obj: unknown) => Object.prototype.toString.call(obj);
@@ -245,7 +243,12 @@ const is_unsafe_key = (key: PropertyKey): boolean =>
 // silently dropped — and the clone keeps its real prototype.
 function safe_set(dst: any, key: PropertyKey, value: any): void {
 	if (key === '__proto__') {
-		Object.defineProperty(dst, key, { value, writable: true, enumerable: true, configurable: true });
+		Object.defineProperty(dst, key, {
+			value,
+			writable: true,
+			enumerable: true,
+			configurable: true,
+		});
 	} else {
 		dst[key] = value;
 	}
@@ -461,7 +464,11 @@ function walk(
 				}
 
 				const child = walker(state.node[key]);
-				if (immutable && has_own_property.call(state.node, key) && !is_non_writable(state.node, key)) {
+				if (
+					immutable &&
+					has_own_property.call(state.node, key) &&
+					!is_non_writable(state.node, key)
+				) {
 					safe_set(state.node, key, child.node);
 				}
 
@@ -755,8 +762,8 @@ traverse.forEach = (
  * For each node in the object, perform a [left-fold](http://en.wikipedia.org/wiki/Fold_(higher-order_function)) with the return value of `fn(acc, node)`.
  *
  * If `init` isn't specified, `init` is set to the root object for the first step and the root element is skipped.
-	 *
-	 * @see https://neotraverse.puruvj.dev/guide/api/core.html#reduce
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core.html#reduce
  */
 traverse.reduce = (
 	obj: any,
@@ -770,8 +777,8 @@ traverse.reduce = (
 /**
  * Return an `Array` of every possible non-cyclic path in the object.
  * Paths are `Array`s of string keys.
-	 *
-	 * @see https://neotraverse.puruvj.dev/guide/api/core.html#paths
+ *
+ * @see https://neotraverse.puruvj.dev/guide/api/core.html#paths
  */
 traverse.paths = (obj: any, options?: TraverseOptions): PropertyKey[][] => {
 	return new Traverse(obj, options).paths();

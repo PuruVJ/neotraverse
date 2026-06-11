@@ -34,7 +34,13 @@ export {
 	values,
 	walk,
 } from './context.js';
-export type { DeepEqualOptions, DereferenceOptions, MergeOptions, PatchOp, ToJSONOptions } from './ops.js';
+export type {
+	DeepEqualOptions,
+	DereferenceOptions,
+	MergeOptions,
+	PatchOp,
+	ToJSONOptions,
+} from './ops.js';
 export { deepEqual, dereference, diff, merge, patch, toJSON } from './ops.js';
 export type { PathNode } from './path.js';
 export {

@@ -111,7 +111,10 @@ function merge_pair(
 			if (has_own_property.call(source, k)) {
 				// safe_set neutralizes __proto__ (no prototype pollution) while keeping the
 				// data as an inert own key — parity with clone(), not a silent drop (C-14).
-				if (mergeable_object_type(getType(target[k])) && mergeable_object_type(getType(source[k]))) {
+				if (
+					mergeable_object_type(getType(target[k])) &&
+					mergeable_object_type(getType(source[k]))
+				) {
 					safe_set(out, k, merge_pair(target[k], source[k], options, cloneOpts, depth + 1, seen));
 				} else {
 					safe_set(out, k, clone(source[k], cloneOpts));
@@ -357,7 +360,8 @@ function deepEqualPair(
 		case 'map': {
 			if (a.size !== b.size) return false;
 			for (const [k, v] of a) {
-				if (!b.has(k) || !deepEqualPair(v, b.get(k), compareFn, seen, maxDepth, depth + 1)) return false;
+				if (!b.has(k) || !deepEqualPair(v, b.get(k), compareFn, seen, maxDepth, depth + 1))
+					return false;
 			}
 			return true;
 		}

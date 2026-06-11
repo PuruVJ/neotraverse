@@ -9,8 +9,7 @@ Import as `import * as t from 'neotraverse'`.
 
 ## find · filter · some · every {#find}
 
-`t.find`, `t.filter`, `t.some`, and `t.every` search over every node (root included). `find`/`some` stop at the
-first match; `every` stops at the first failure.
+`t.find`, `t.filter`, `t.some`, and `t.every` search over every node (root included). `find`/`some` stop at the first match; `every` stops at the first failure.
 
 ### Example
 
@@ -36,8 +35,7 @@ const leaves = t.filter({ a: [1, 2, 3], b: 4, d: { e: [7, 8], f: 9 } }, (ctx) =>
 
 ## reduce {#reduce}
 
-`t.reduce(obj, fn, init?, options?)` folds over every node. See [Core → reduce](/guide/api/core#reduce) for
-seedless behaviour.
+`t.reduce(obj, fn, init?, options?)` folds over every node. See [Core → reduce](/guide/api/core#reduce) for seedless behaviour.
 
 ### Example: sum numbers
 

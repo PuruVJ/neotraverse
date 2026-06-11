@@ -82,7 +82,9 @@ onUnmounted(() => observer?.disconnect());
 
 <template>
 	<p v-if="variant === 'band'" ref="root" class="nt-downloads--band">
-		<span class="nt-downloads__count nt-downloads__count--full" aria-live="polite">{{ countDisplay }}</span>
+		<span class="nt-downloads__count nt-downloads__count--full" aria-live="polite">{{
+			countDisplay
+		}}</span>
 		<span class="nt-downloads__label">total npm downloads</span>
 	</p>
 

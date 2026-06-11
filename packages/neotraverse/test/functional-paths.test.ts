@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vite-plus/test';
 import { filterPaths, findPaths, get, has, paths, select, set } from '../src/index';
 
 /**

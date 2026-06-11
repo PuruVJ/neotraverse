@@ -16,7 +16,6 @@ import {
 	safe_set,
 } from './utils.js';
 
-
 // Lazy, read-only depth-first walk yielding `[path, node]`. Pull-based, so it
 // never materializes the full paths()/nodes() arrays. Circular-safe via an
 // ancestry Set (a node that points back to an ancestor is yielded but not
@@ -515,7 +514,11 @@ async function descend_children_async(
 					node.delete(childVal);
 					node.add(child.node);
 				}
-			} else if (node[key] !== child.node && has_own_property.call(node, key) && !is_non_writable(node, key)) {
+			} else if (
+				node[key] !== child.node &&
+				has_own_property.call(node, key) &&
+				!is_non_writable(node, key)
+			) {
 				safe_set(node, key, child.node);
 			}
 		}
@@ -581,7 +584,9 @@ function walk_bfs(
 	const w = make_walk_state(options);
 	const immutable = w.immutable;
 	const iter = w.iter;
-	const queue: BfsQueueItem[] = [{ node_: root, parents: [], parent: undefined, key: undefined, level: 0 }];
+	const queue: BfsQueueItem[] = [
+		{ node_: root, parents: [], parent: undefined, key: undefined, level: 0 },
+	];
 	let head = 0;
 	let rootOut = root;
 	while (head < queue.length && w.alive) {
@@ -669,14 +674,26 @@ function walk_bfs(
 			const vals = [...node];
 			for (let index = 0; index <= last; index++) {
 				if (pre !== undefined) pre(ctx, vals[index], index);
-				queue.push({ node_: vals[index], parents: childParents, parent: ctx, key: index, level: childLevel });
+				queue.push({
+					node_: vals[index],
+					parents: childParents,
+					parent: ctx,
+					key: index,
+					level: childLevel,
+				});
 			}
 		} else {
 			for (let index = 0; index <= last; index++) {
 				const k = keys[index];
 				const childVal = node[k];
 				if (pre !== undefined) pre(ctx, childVal, k);
-				queue.push({ node_: childVal, parents: childParents, parent: ctx, key: k, level: childLevel });
+				queue.push({
+					node_: childVal,
+					parents: childParents,
+					parent: ctx,
+					key: k,
+					level: childLevel,
+				});
 			}
 		}
 

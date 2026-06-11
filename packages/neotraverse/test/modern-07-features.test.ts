@@ -1,24 +1,33 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import {
-	breadthFirst, dereference, forEach, forEachAsync, groupBy, mapBfs, merge, paths, skipWhere, walk } from '../src/index';
+	breadthFirst,
+	dereference,
+	forEach,
+	forEachAsync,
+	groupBy,
+	mapBfs,
+	merge,
+	paths,
+	skipWhere,
+	walk,
+} from '../src/index';
 
 test('skipWhere blocks subtrees', () => {
 	const obj = { a: { b: 1 }, c: 2 };
 	const seen: PropertyKey[][] = [];
-	forEach(
-		obj,
-		(ctx, v) => {
-			skipWhere((c) => c.key === 'a')(ctx, v);
-			seen.push(ctx.path.slice());
-		},
-	);
+	forEach(obj, (ctx, v) => {
+		skipWhere((c) => c.key === 'a')(ctx, v);
+		seen.push(ctx.path.slice());
+	});
 	expect(seen.some((p) => p[0] === 'a' && p.length === 1)).toBe(true);
 	expect(seen.some((p) => p[0] === 'a' && p[1] === 'b')).toBe(false);
 });
 
 test('groupBy buckets values', () => {
 	const obj = { a: 1, b: 2, c: 3 };
-	const m = groupBy(obj, (ctx, v) => (ctx.isLeaf && typeof v === 'number' ? (v % 2 === 0 ? 'even' : 'odd') : 'skip'));
+	const m = groupBy(obj, (ctx, v) =>
+		ctx.isLeaf && typeof v === 'number' ? (v % 2 === 0 ? 'even' : 'odd') : 'skip',
+	);
 	expect(m.get('odd')?.sort()).toEqual([1, 3]);
 	expect(m.get('even')).toEqual([2]);
 });

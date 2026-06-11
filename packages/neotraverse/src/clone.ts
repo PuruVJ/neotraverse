@@ -107,7 +107,11 @@ function make_shell(src: any): any {
 	shell_keyed = false;
 	if (src instanceof ArrayBuffer) return src.slice(0);
 	if (src instanceof DataView) {
-		return new DataView(src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength), 0, src.byteLength);
+		return new DataView(
+			src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength),
+			0,
+			src.byteLength,
+		);
 	}
 	if (is_typed_array(src)) return src.slice();
 	// Boxed primitives have read-only index slots; the wrapper already carries the value.
@@ -168,7 +172,11 @@ function make_shell(src: any): any {
 	if (tag === '[object DataView]') {
 		shell_keyed = false;
 		const dv = src as DataView;
-		return new DataView(dv.buffer.slice(dv.byteOffset, dv.byteOffset + dv.byteLength), 0, dv.byteLength);
+		return new DataView(
+			dv.buffer.slice(dv.byteOffset, dv.byteOffset + dv.byteLength),
+			0,
+			dv.byteLength,
+		);
 	}
 
 	// `{}` is faster than `Object.create(Object.prototype)` for the common case.

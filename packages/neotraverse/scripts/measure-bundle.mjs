@@ -6,9 +6,7 @@ import { createRequire } from 'node:module';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
-const esbuild = require(
-	join(root, '../../node_modules/.pnpm/esbuild@0.28.0/node_modules/esbuild'),
-);
+const esbuild = require(join(root, '../../node_modules/.pnpm/esbuild@0.28.0/node_modules/esbuild'));
 
 const modern = join(root, 'src/modern.ts');
 const brotliOpts = { params: { [zlibConstants.BROTLI_PARAM_QUALITY]: 11 } };
@@ -63,9 +61,13 @@ results._fullMinDist = {
 const summary = {
 	brotliKb: {
 		walkTerminalMin: Math.round((results.forEach.brotli / 1024) * 10) / 10,
-		walkTerminalMax: Math.round((Math.max(results.forEach.brotli, results.map.brotli, results.size.brotli) / 1024) * 10) / 10,
+		walkTerminalMax:
+			Math.round(
+				(Math.max(results.forEach.brotli, results.map.brotli, results.size.brotli) / 1024) * 10,
+			) / 10,
 		allFunctionsMax: Math.round((results.allFns.brotli / 1024) * 10) / 10,
-		pathOnlyMin: Math.round((Math.min(results.get_has_set.brotli, results.getPath.brotli) / 1024) * 10) / 10,
+		pathOnlyMin:
+			Math.round((Math.min(results.get_has_set.brotli, results.getPath.brotli) / 1024) * 10) / 10,
 	},
 	rangeLabel: '~2–6 KB brotli (tree-shaken)',
 };
@@ -83,7 +85,10 @@ const report = {
 		size: results.size,
 		clone: { ...results.clone, note: 'clone_node only — no walk callback' },
 		allFunctionsExceptTraverse: results.allFns,
-		fullMinDistFile: { ...results._fullMinDist, note: 'entire dist/modern/min without consumer tree-shake' },
+		fullMinDistFile: {
+			...results._fullMinDist,
+			note: 'entire dist/modern/min without consumer tree-shake',
+		},
 	},
 	summary,
 };

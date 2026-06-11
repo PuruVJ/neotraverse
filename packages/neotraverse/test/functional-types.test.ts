@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { clone, entries, map, values } from '../src/index';
 import { Traverse } from '../src/modern';
 

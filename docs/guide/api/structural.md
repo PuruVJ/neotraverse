@@ -9,8 +9,7 @@ Import as `import * as t from 'neotraverse'`.
 
 ## deleteWhere · prune {#prune}
 
-`t.deleteWhere` returns a new tree with matching nodes removed (`map` + `ctx.remove()`). `t.prune` keeps nodes where
-the predicate is true (inverse). Map/Set stay whole leaves unless [descendIntoMapSet](/guide/options) is set.
+`t.deleteWhere` returns a new tree with matching nodes removed (`map` + `ctx.remove()`). `t.prune` keeps nodes where the predicate is true (inverse). Map/Set stay whole leaves unless [descendIntoMapSet](/guide/options) is set.
 
 ### Example: redact secrets
 
@@ -20,19 +19,19 @@ import * as t from 'neotraverse';
 const apiPayload = {
   user: 'alice',
   token: 'secret',
-  profile: { email: 'a@example.com', password: 'hunter2' },
+  profile: { email: 'a@example.com', password: 'hunter2' }
 };
 
-const safe = t.deleteWhere(structuredClone(apiPayload), (_, x) =>
-  x === 'secret' || x === 'hunter2',
+const safe = t.deleteWhere(
+  structuredClone(apiPayload),
+  (_, x) => x === 'secret' || x === 'hunter2'
 );
 // drops matching nodes; original apiPayload unchanged if you cloned first
 ```
 
 ## pruneDeep {#pruneDeep}
 
-Replace nodes deeper than `maxDepth` with a sentinel (default `null`). Unlike the `maxDepth` **option**, this does
-not throw.
+Replace nodes deeper than `maxDepth` with a sentinel (default `null`). Unlike the `maxDepth` **option**, this does not throw.
 
 ### Example
 
@@ -46,8 +45,7 @@ t.pruneDeep(deep, 2);
 
 ## deepEqual {#deepEqual}
 
-Structural compare with an explicit per-type contract (Dates by time, RegExp by source+flags, etc.). Optional
-`compareFn` can override pairs. Not guaranteed to match `t.clone()` byte-for-byte (e.g. `Error` fields).
+Structural compare with an explicit per-type contract (Dates by time, RegExp by source+flags, etc.). Optional `compareFn` can override pairs. Not guaranteed to match `t.clone()` byte-for-byte (e.g. `Error` fields).
 
 ## toJSON {#toJSON}
 
@@ -79,8 +77,7 @@ const snapshot = t.freeze(t.clone(liveConfig));
 
 ## diff · patch {#diff}
 
-RFC 6902 subset (`add` / `remove` / `replace`). `t.diff(a, b)` returns ops; `t.patch(clone(a), ops)` applies them.
-Acyclic trees only.
+RFC 6902 subset (`add` / `remove` / `replace`). `t.diff(a, b)` returns ops; `t.patch(clone(a), ops)` applies them. Acyclic trees only.
 
 ### Example
 

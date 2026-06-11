@@ -5,8 +5,7 @@ outline: [2, 3]
 
 # Options {#options}
 
-Pass options as the **last** argument (for example `t.forEach(obj, cb, { maxDepth: 100 })`). `t.map` and
-`t.mapAsync` always run immutably; other ops default to in-place mutation unless you set `immutable: true`.
+Pass options as the **last** argument (for example `t.forEach(obj, cb, { maxDepth: 100 })`). `t.map` and `t.mapAsync` always run immutably; other ops default to in-place mutation unless you set `immutable: true`.
 
 ```ts
 {
@@ -26,11 +25,15 @@ See also [Security](/guide/security) (`maxDepth` DoS guard) and [Types & travers
 ```ts
 import * as t from 'neotraverse';
 
-t.forEach(untrusted, (ctx, x) => {
-  /* … */
-}, {
-  maxDepth: 500,
-  includeSymbols: false,
-  immutable: true,
-});
+t.forEach(
+  untrusted,
+  (ctx, x) => {
+    /* … */
+  },
+  {
+    maxDepth: 500,
+    includeSymbols: false,
+    immutable: true
+  }
+);
 ```

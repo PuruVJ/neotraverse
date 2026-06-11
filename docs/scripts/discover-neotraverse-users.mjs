@@ -65,7 +65,8 @@ const SKIP_REPO = new Set([
 	'lqhuang/awesome',
 ]);
 
-const SKIP_PATH = /(?:^|\/)(node_modules|vendor|dist|build)(\/|$)|node_modules copy|nod_modules|modules\.backup/i;
+const SKIP_PATH =
+	/(?:^|\/)(node_modules|vendor|dist|build)(\/|$)|node_modules copy|nod_modules|modules\.backup/i;
 const LOCK_ONLY = /^(package-lock\.json|pnpm-lock\.yaml|bun\.lockb?|yarn\.lock)$/;
 
 function classifyHit(item) {
@@ -209,10 +210,7 @@ async function main() {
 		lockfileOnly: lockfileOnly.slice(0, 150),
 	};
 
-	const homepagePool = [
-		...featured,
-		...confirmed.filter((r) => HOMEPAGE_EXTRA.includes(r.repo)),
-	];
+	const homepagePool = [...featured, ...confirmed.filter((r) => HOMEPAGE_EXTRA.includes(r.repo))];
 	const seen = new Set();
 	const homepage = homepagePool
 		.filter((r) => {

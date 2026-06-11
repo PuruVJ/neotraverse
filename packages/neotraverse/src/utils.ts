@@ -273,7 +273,8 @@ export const is_array = Array.isArray;
 // guarded in case an attacker wrapper throws.
 export const is_boxed_primitive = (obj: unknown): boolean => {
 	const tag = to_string(obj);
-	if (tag !== '[object Boolean]' && tag !== '[object Number]' && tag !== '[object String]') return false;
+	if (tag !== '[object Boolean]' && tag !== '[object Number]' && tag !== '[object String]')
+		return false;
 	try {
 		return typeof (obj as { valueOf(): unknown }).valueOf() !== 'object';
 	} catch {

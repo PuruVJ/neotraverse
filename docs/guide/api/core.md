@@ -9,8 +9,7 @@ Import as `import * as t from 'neotraverse'`. Each callback receives the [contex
 
 ## map {#map}
 
-`t.map(obj, fn, options?)` runs `fn` for each node and returns a **new** object. Update nodes in the result with
-`ctx.update(value)`.
+`t.map(obj, fn, options?)` runs `fn` for each node and returns a **new** object. Update nodes in the result with `ctx.update(value)`.
 
 ### Example
 
@@ -41,8 +40,7 @@ const scrubbed = t.map(obj, (ctx) => {
 
 ## forEach {#forEach}
 
-`t.forEach(obj, fn, options?)` is like `t.map`, but `ctx.update()` mutates `obj` **in place** (returns the same
-reference).
+`t.forEach(obj, fn, options?)` is like `t.map`, but `ctx.update()` mutates `obj` **in place** (returns the same reference).
 
 ### Example
 
@@ -59,8 +57,7 @@ t.forEach(obj, (ctx, x) => {
 
 ## reduce {#reduce}
 
-`t.reduce(obj, fn, init?, options?)` is a [left-fold](https://en.wikipedia.org/wiki/Fold_(higher-order_function))
-over every node. Omit `init` to start from the root and skip the root node in the fold.
+`t.reduce(obj, fn, init?, options?)` is a [left-fold](<https://en.wikipedia.org/wiki/Fold_(higher-order_function)>) over every node. Omit `init` to start from the root and skip the root node in the fold.
 
 See [Query → reduce](/guide/api/query#reduce) for a seeded example.
 
@@ -72,8 +69,7 @@ For lazy alternatives, see [Iteration](/guide/api/iteration).
 
 ## clone {#clone}
 
-`t.clone(obj, options?)` deep-clones. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and
-`Map`/`Set` (entries deep-cloned), and is prototype-pollution-safe. See [Types & traversal](/guide/types).
+`t.clone(obj, options?)` deep-clones. Handles circular references, `Date`/`RegExp`/`Error`/typed arrays, and `Map`/`Set` (entries deep-cloned), and is prototype-pollution-safe. See [Types & traversal](/guide/types).
 
 ### Example
 
@@ -88,8 +84,7 @@ live.count; // 0, unchanged
 
 ## get · set · has {#get}
 
-`t.get(obj, path, options?)`, `t.set(obj, path, value, options?)`, and `t.has(obj, path, options?)` read / write /
-test at an array `path`. `get`/`has` only follow own properties; `set` refuses prototype-polluting keys.
+`t.get(obj, path, options?)`, `t.set(obj, path, value, options?)`, and `t.has(obj, path, options?)` read / write / test at an array `path`. `get`/`has` only follow own properties; `set` refuses prototype-polluting keys.
 
 For string paths, see [Paths & metrics → getPath](/guide/api/paths#getPath).
 
@@ -99,7 +94,7 @@ For string paths, see [Paths & metrics → getPath](/guide/api/paths#getPath).
 import * as t from 'neotraverse';
 
 const obj = { a: { b: 1 } };
-t.get(obj, ['a', 'b']);           // 1
+t.get(obj, ['a', 'b']); // 1
 t.set(obj, ['a', 'b'], 2);
-t.has(obj, ['a', 'c']);           // false
+t.has(obj, ['a', 'c']); // false
 ```

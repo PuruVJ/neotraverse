@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { clone, diff, patch } from '../src/index';
 
 /**
@@ -77,6 +77,8 @@ describe('diff — depth bounding for untrusted input (S-1)', () => {
 	}
 
 	test('diff honors maxDepth instead of overflowing the native stack', () => {
-		expect(() => diff(deep(5000), deep(5000), { maxDepth: 50 } as any)).toThrow(/maximum traversal depth/);
+		expect(() => diff(deep(5000), deep(5000), { maxDepth: 50 } as any)).toThrow(
+			/maximum traversal depth/,
+		);
 	});
 });

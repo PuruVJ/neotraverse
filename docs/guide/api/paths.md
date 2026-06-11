@@ -9,8 +9,7 @@ Import as `import * as t from 'neotraverse'`.
 
 ## findPaths · filterPaths {#findPaths}
 
-Return **where** a match occurred, not only the value. `t.findPaths` stops at the first hit; `t.filterPaths` returns
-`{ path, node }[]`.
+Return **where** a match occurred, not only the value. `t.findPaths` stops at the first hit; `t.filterPaths` returns `{ path, node }[]`.
 
 ### Example
 
@@ -26,8 +25,7 @@ t.filterPaths(tree, (ctx) => ctx.isLeaf && typeof ctx.node === 'number');
 
 ## getPath · setPath · hasPath {#getPath}
 
-String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Pointer (`/a/b/0`). Unsafe segments
-(`__proto__`, etc.) throw at parse time.
+String paths over array `get` / `set` / `has`. Dot notation (`a.b.0`) or JSON Pointer (`/a/b/0`). Unsafe segments (`__proto__`, etc.) throw at parse time.
 
 ### Example
 
@@ -54,14 +52,13 @@ t.getPath(config, '/server/host'); // 'localhost' after set
 import * as t from 'neotraverse';
 
 const tree = { a: 1, b: { c: 2 } };
-t.size(tree);                        // 4 (root + a + b + c)
-t.count(tree, (_, x) => x === 2);    // 1
+t.size(tree); // 4 (root + a + b + c)
+t.count(tree, (_, x) => x === 2); // 1
 ```
 
 ## getType {#getType}
 
-`t.getType(value)` returns a stable tag for branching inside callbacks. See
-[Types and traversal](/guide/types#types-and-traversal) for the full matrix.
+`t.getType(value)` returns a stable tag for branching inside callbacks. See [Types and traversal](/guide/types#types-and-traversal) for the full matrix.
 
 ## select {#select}
 

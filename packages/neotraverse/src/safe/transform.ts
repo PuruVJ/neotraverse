@@ -9,13 +9,7 @@
 // Record of pattern→rule fused into one descent-pruned pass.
 
 import { Cursor, ENTER } from './kernel/cursor.js';
-import {
-	is_array,
-	type KeyOptions,
-	safe_set,
-	shallow_shell,
-	type_tag,
-} from './kernel/keys.js';
+import { is_array, type KeyOptions, safe_set, shallow_shell, type_tag } from './kernel/keys.js';
 import { compile_pattern, type Matcher, type MatchStates } from './kernel/pattern.js';
 import { makeVisit, type Visit } from './visit.js';
 
@@ -52,7 +46,8 @@ export interface Edits {
 }
 
 const edit: Edits = {
-	replace: (value, opts) => ({ [COMMAND]: 'replace', value, descend: !!(opts && opts.descend) } as ReplaceCommand),
+	replace: (value, opts) =>
+		({ [COMMAND]: 'replace', value, descend: !!(opts && opts.descend) }) as ReplaceCommand,
 	remove: () => REMOVE,
 	skip: () => SKIP,
 	stop: () => STOP,
@@ -73,7 +68,9 @@ export interface TransformOptions extends KeyOptions {
 function as_command(ret: unknown): Command | undefined {
 	if (ret == null) return undefined;
 	if (typeof ret === 'object' && (COMMAND as any) in (ret as object)) return ret as Command;
-	throw new TypeError('neotraverse: visitor returned a non-command value; did you mean edit.replace(...)?');
+	throw new TypeError(
+		'neotraverse: visitor returned a non-command value; did you mean edit.replace(...)?',
+	);
 }
 
 // --- per-frame fold state (stashed on frame.tx) ------------------------------
@@ -111,7 +108,12 @@ interface Session {
 
 // Apply a frame's collected child edits to its base, producing the folded node.
 // Shares untouched children by reference; in mutate mode edits the base in place.
-function apply_edits(base: any, edits: Map<PropertyKey, any>, mutate: boolean, symbols: boolean): any {
+function apply_edits(
+	base: any,
+	edits: Map<PropertyKey, any>,
+	mutate: boolean,
+	symbols: boolean,
+): any {
 	const tag = type_tag(base);
 	if (tag === 'array') {
 		const out: any[] = [];
@@ -239,7 +241,12 @@ function dispatch(
 	return undefined;
 }
 
-function run(root: any, fns: Visitor[] | null, rules: CompiledRule[] | null, options: TransformOptions): any {
+function run(
+	root: any,
+	fns: Visitor[] | null,
+	rules: CompiledRule[] | null,
+	options: TransformOptions,
+): any {
 	const symbols = !!options.symbols;
 	const mapSet = !!options.mapSet;
 	const mutate = !!options.mutate;
@@ -260,7 +267,15 @@ function run(root: any, fns: Visitor[] | null, rules: CompiledRule[] | null, opt
 		const f = cursor.frame;
 
 		if (cursor.phase === ENTER) {
-			const tx: TState = { edits: null, dirty: false, removed: false, final: false, base: f.node, result: f.node, states: null };
+			const tx: TState = {
+				edits: null,
+				dirty: false,
+				removed: false,
+				final: false,
+				base: f.node,
+				result: f.node,
+				states: null,
+			};
 			f.tx = tx;
 
 			if (rules !== null) {
@@ -374,14 +389,26 @@ function normalize(visitor: Visitor | readonly Visitor[] | Rules): {
  * transform(doc, { '**.url': (v, { replace }) => replace(secure(v.value)) });
  * ```
  */
-export function transform<T>(root: T, visitor: Visitor | readonly Visitor[] | Rules, options?: TransformOptions): T;
-export function transform(root: any, visitor: Visitor | readonly Visitor[] | Rules, options: TransformOptions = {}): any {
+export function transform<T>(
+	root: T,
+	visitor: Visitor | readonly Visitor[] | Rules,
+	options?: TransformOptions,
+): T;
+export function transform(
+	root: any,
+	visitor: Visitor | readonly Visitor[] | Rules,
+	options: TransformOptions = {},
+): any {
 	const { fns, rules } = normalize(visitor);
 	if (rules !== null && options.match !== undefined) {
-		throw new TypeError('neotraverse: the Rules form carries its own patterns; do not also pass options.match');
+		throw new TypeError(
+			'neotraverse: the Rules form carries its own patterns; do not also pass options.match',
+		);
 	}
 	if (options.order === ('breadth' as any)) {
-		throw new TypeError("neotraverse: transform supports order 'pre' | 'post' only (no breadth rewrites)");
+		throw new TypeError(
+			"neotraverse: transform supports order 'pre' | 'post' only (no breadth rewrites)",
+		);
 	}
 	return run(root, fns, rules, options);
 }
@@ -431,7 +458,9 @@ if (import.meta.vitest) {
 			expect(sawWrapped).toBe(false);
 		});
 		it('replace(undefined) sets undefined (closes the v1 ambiguity)', () => {
-			const out = transform({ a: 1 }, (v, { replace }) => (v.key === 'a' ? replace(undefined) : undefined));
+			const out = transform({ a: 1 }, (v, { replace }) =>
+				v.key === 'a' ? replace(undefined) : undefined,
+			);
 			expect('a' in out).toBe(true);
 			expect(out.a).toBe(undefined);
 		});
@@ -529,7 +558,9 @@ if (import.meta.vitest) {
 			const xs: any = [1, 2];
 			xs.tag = 'a';
 			xs.note = 'b';
-			transform({ xs }, (v, { remove }) => (v.key === 'tag' ? remove() : undefined), { mutate: true });
+			transform({ xs }, (v, { remove }) => (v.key === 'tag' ? remove() : undefined), {
+				mutate: true,
+			});
 			expect(xs.tag).toBeUndefined();
 			expect(xs.note).toBe('b');
 		});
@@ -538,10 +569,14 @@ if (import.meta.vitest) {
 	describe('transform: mutate mode', () => {
 		it('edits in place and returns the root', () => {
 			const x = { a: 1, xs: [1, 2, 3] };
-			const out = transform(x, (v, { replace, remove }) => {
-				if (v.key === 'a') return replace(9);
-				if (v.value === 2) return remove();
-			}, { mutate: true });
+			const out = transform(
+				x,
+				(v, { replace, remove }) => {
+					if (v.key === 'a') return replace(9);
+					if (v.value === 2) return remove();
+				},
+				{ mutate: true },
+			);
 			expect(out).toBe(x);
 			expect(x.a).toBe(9);
 			expect(x.xs).toEqual([1, 3]);

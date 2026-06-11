@@ -1,1379 +1,1375 @@
 {
-  "generatedAt": "2026-06-08T10:51:26.926Z",
-  "runtime": {
-    "node": "v24.1.0",
-    "v8": "13.6.233.10-node.16"
-  },
-  "versions": {
-    "neotraverse": "1.0.0",
-    "traverse": "0.6.11"
-  },
-  "contenders": [
-    "traverse",
-    "neotraverse legacy",
-    "neotraverse modern"
-  ],
-  "summary": {
-    "metric": "geometric-mean speedup vs traverse",
-    "neotraverse legacy": 2.97,
-    "neotraverse modern": 4.91,
-    "memory": {
-      "metric": "geometric-mean allocation reduction vs traverse (traverse B/op ÷ neotraverse B/op)",
-      "traversal": {
-        "neotraverse legacy": 1.97,
-        "neotraverse modern": 6.22
-      },
-      "all": {
-        "neotraverse legacy": 1.91,
-        "neotraverse modern": 5.68
-      }
-    }
-  },
-  "suites": [
-    {
-      "operation": "forEach",
-      "dataset": "small",
-      "label": "forEach · small",
-      "description": "{ a, b, c:[…] } — the canonical example",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 841043,
-          "meanMs": 0.001223241854434247,
-          "rme": 0.27,
-          "samples": 204375,
-          "bytesPerOp": 11319
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 2414704,
-          "meanMs": 0.0004399124557914959,
-          "rme": 1.34,
-          "samples": 568330,
-          "bytesPerOp": 7390
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 4016013,
-          "meanMs": 0.00025621687833585774,
-          "rme": 0.45,
-          "samples": 975736,
-          "bytesPerOp": 1718
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.87,
-        "neotraverse modern": 4.78
-      }
-    },
-    {
-      "operation": "forEach",
-      "dataset": "wide",
-      "label": "forEach · wide",
-      "description": "flat object with 64 keys",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 79308,
-          "meanMs": 0.01275935919158857,
-          "rme": 0.33,
-          "samples": 19594,
-          "bytesPerOp": 118188
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 284208,
-          "meanMs": 0.003585987893739882,
-          "rme": 0.38,
-          "samples": 69716,
-          "bytesPerOp": 78990
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 594241,
-          "meanMs": 0.0017079054714129122,
-          "rme": 0.38,
-          "samples": 146379,
-          "bytesPerOp": 11031
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.58,
-        "neotraverse modern": 7.49
-      }
-    },
-    {
-      "operation": "forEach",
-      "dataset": "deep",
-      "label": "forEach · deep",
-      "description": "32-level deeply nested object",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 53214,
-          "meanMs": 0.019030809697798183,
-          "rme": 0.44,
-          "samples": 13137,
-          "bytesPerOp": 185375
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 160316,
-          "meanMs": 0.006368865873542163,
-          "rme": 0.49,
-          "samples": 39254,
-          "bytesPerOp": 117913
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 330800,
-          "meanMs": 0.0030909319255197324,
-          "rme": 0.4,
-          "samples": 80882,
-          "bytesPerOp": 17808
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.01,
-        "neotraverse modern": 6.22
-      }
-    },
-    {
-      "operation": "forEach",
-      "dataset": "array",
-      "label": "forEach · array",
-      "description": "array of 256 small objects",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 3019,
-          "meanMs": 0.33218798539176286,
-          "rme": 0.42,
-          "samples": 753,
-          "bytesPerOp": 1473431
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 10186,
-          "meanMs": 0.09892804034810444,
-          "rme": 0.41,
-          "samples": 2528,
-          "bytesPerOp": 240962
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 21242,
-          "meanMs": 0.04734991003787972,
-          "rme": 0.3,
-          "samples": 5280,
-          "bytesPerOp": 318621
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.37,
-        "neotraverse modern": 7.04
-      }
-    },
-    {
-      "operation": "forEach",
-      "dataset": "json",
-      "label": "forEach · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 57421,
-          "meanMs": 0.01761096653986992,
-          "rme": 0.37,
-          "samples": 14196,
-          "bytesPerOp": 163977
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 186579,
-          "meanMs": 0.0054654108825410025,
-          "rme": 0.46,
-          "samples": 45743,
-          "bytesPerOp": 100989
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 382143,
-          "meanMs": 0.0026463116267245843,
-          "rme": 0.32,
-          "samples": 94472,
-          "bytesPerOp": 17065
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.25,
-        "neotraverse modern": 6.66
-      }
-    },
-    {
-      "operation": "map",
-      "dataset": "small",
-      "label": "map · small",
-      "description": "{ a, b, c:[…] } — the canonical example",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 393442,
-          "meanMs": 0.0025744139429517776,
-          "rme": 0.31,
-          "samples": 97110,
-          "bytesPerOp": 13857
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 1268242,
-          "meanMs": 0.0008041264405894578,
-          "rme": 0.32,
-          "samples": 310897,
-          "bytesPerOp": 8449
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 2267588,
-          "meanMs": 0.0004497011413408326,
-          "rme": 0.45,
-          "samples": 555925,
-          "bytesPerOp": 2019
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.22,
-        "neotraverse modern": 5.76
-      }
-    },
-    {
-      "operation": "map",
-      "dataset": "wide",
-      "label": "map · wide",
-      "description": "flat object with 64 keys",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 50468,
-          "meanMs": 0.01998828941477429,
-          "rme": 0.31,
-          "samples": 12508,
-          "bytesPerOp": 134914
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 106498,
-          "meanMs": 0.009487916166983421,
-          "rme": 0.3,
-          "samples": 26350,
-          "bytesPerOp": 92268
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 183870,
-          "meanMs": 0.005486023435961012,
-          "rme": 0.26,
-          "samples": 45571,
-          "bytesPerOp": 18023
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.11,
-        "neotraverse modern": 3.64
-      }
-    },
-    {
-      "operation": "map",
-      "dataset": "deep",
-      "label": "map · deep",
-      "description": "32-level deeply nested object",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 18833,
-          "meanMs": 0.05353448811816386,
-          "rme": 0.42,
-          "samples": 4671,
-          "bytesPerOp": 235251
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 87198,
-          "meanMs": 0.011648492056099129,
-          "rme": 0.47,
-          "samples": 21463,
-          "bytesPerOp": 133304
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 136623,
-          "meanMs": 0.007398294477983308,
-          "rme": 0.35,
-          "samples": 33792,
-          "bytesPerOp": 22856
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 4.63,
-        "neotraverse modern": 7.25
-      }
-    },
-    {
-      "operation": "map",
-      "dataset": "array",
-      "label": "map · array",
-      "description": "array of 256 small objects",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 1421,
-          "meanMs": 0.7047281464788601,
-          "rme": 0.38,
-          "samples": 355,
-          "bytesPerOp": 447119
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 4376,
-          "meanMs": 0.22940873027519965,
-          "rme": 0.43,
-          "samples": 1090,
-          "bytesPerOp": 560861
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 8619,
-          "meanMs": 0.11648839683280579,
-          "rme": 0.32,
-          "samples": 2147,
-          "bytesPerOp": 382686
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.08,
-        "neotraverse modern": 6.07
-      }
-    },
-    {
-      "operation": "map",
-      "dataset": "json",
-      "label": "map · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 23178,
-          "meanMs": 0.04347664545296716,
-          "rme": 0.37,
-          "samples": 5751,
-          "bytesPerOp": 204281
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 83958,
-          "meanMs": 0.012050125463932655,
-          "rme": 0.36,
-          "samples": 20747,
-          "bytesPerOp": 116275
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 151069,
-          "meanMs": 0.006672727673092525,
-          "rme": 0.28,
-          "samples": 37466,
-          "bytesPerOp": 21395
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.62,
-        "neotraverse modern": 6.52
-      }
-    },
-    {
-      "operation": "clone",
-      "dataset": "small",
-      "label": "clone · small",
-      "description": "{ a, b, c:[…] } — the canonical example",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 494252,
-          "meanMs": 0.002040822334693657,
-          "rme": 0.21,
-          "samples": 122500,
-          "bytesPerOp": 3532
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 3356979,
-          "meanMs": 0.00030391439956954316,
-          "rme": 1.06,
-          "samples": 822601,
-          "bytesPerOp": 1472
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 4884062,
-          "meanMs": 0.00021355521253891421,
-          "rme": 4.01,
-          "samples": 1170658,
-          "bytesPerOp": 608
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 6.79,
-        "neotraverse modern": 9.88
-      }
-    },
-    {
-      "operation": "clone",
-      "dataset": "wide",
-      "label": "clone · wide",
-      "description": "flat object with 64 keys",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 209591,
-          "meanMs": 0.004824976724437225,
-          "rme": 0.32,
-          "samples": 51814,
-          "bytesPerOp": 12712
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 309111,
-          "meanMs": 0.003269300840859033,
-          "rme": 0.33,
-          "samples": 76469,
-          "bytesPerOp": 9684
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 574325,
-          "meanMs": 0.001765088105510222,
-          "rme": 0.38,
-          "samples": 141637,
-          "bytesPerOp": 6332
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 1.47,
-        "neotraverse modern": 2.74
-      }
-    },
-    {
-      "operation": "clone",
-      "dataset": "deep",
-      "label": "clone · deep",
-      "description": "32-level deeply nested object",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 27853,
-          "meanMs": 0.03610138310470689,
-          "rme": 0.25,
-          "samples": 6925,
-          "bytesPerOp": 47063
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 170807,
-          "meanMs": 0.005899691853877987,
-          "rme": 0.27,
-          "samples": 42376,
-          "bytesPerOp": 13412
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 260473,
-          "meanMs": 0.003876798626082805,
-          "rme": 0.33,
-          "samples": 64487,
-          "bytesPerOp": 9928
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 6.13,
-        "neotraverse modern": 9.35
-      }
-    },
-    {
-      "operation": "clone",
-      "dataset": "array",
-      "label": "clone · array",
-      "description": "array of 256 small objects",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 3250,
-          "meanMs": 0.3084834401972946,
-          "rme": 0.41,
-          "samples": 811,
-          "bytesPerOp": 548097
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 11408,
-          "meanMs": 0.08798144968331718,
-          "rme": 0.29,
-          "samples": 2842,
-          "bytesPerOp": 206903
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 15411,
-          "meanMs": 0.06515037649819275,
-          "rme": 0.28,
-          "samples": 3838,
-          "bytesPerOp": 110972
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.51,
-        "neotraverse modern": 4.74
-      }
-    },
-    {
-      "operation": "clone",
-      "dataset": "json",
-      "label": "clone · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 42207,
-          "meanMs": 0.02382317600533259,
-          "rme": 0.24,
-          "samples": 10494,
-          "bytesPerOp": 37285
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 205740,
-          "meanMs": 0.004904377224133678,
-          "rme": 0.3,
-          "samples": 50975,
-          "bytesPerOp": 14074
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 303054,
-          "meanMs": 0.0033242325479291577,
-          "rme": 0.24,
-          "samples": 75206,
-          "bytesPerOp": 6266
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 4.87,
-        "neotraverse modern": 7.18
-      }
-    },
-    {
-      "operation": "reduce",
-      "dataset": "small",
-      "label": "reduce · small",
-      "description": "{ a, b, c:[…] } — the canonical example",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 796994,
-          "meanMs": 0.001275510665762947,
-          "rme": 0.36,
-          "samples": 196001,
-          "bytesPerOp": 11954
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 2201209,
-          "meanMs": 0.0004635604853648812,
-          "rme": 0.28,
-          "samples": 539304,
-          "bytesPerOp": 7764
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 3536758,
-          "meanMs": 0.0002907170289226811,
-          "rme": 0.6,
-          "samples": 859943,
-          "bytesPerOp": 2013
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.76,
-        "neotraverse modern": 4.44
-      }
-    },
-    {
-      "operation": "reduce",
-      "dataset": "wide",
-      "label": "reduce · wide",
-      "description": "flat object with 64 keys",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 75627,
-          "meanMs": 0.013396782338457076,
-          "rme": 0.42,
-          "samples": 18662,
-          "bytesPerOp": 121382
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 260493,
-          "meanMs": 0.003921989222522491,
-          "rme": 0.47,
-          "samples": 63744,
-          "bytesPerOp": 77013
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 489665,
-          "meanMs": 0.002066173202638141,
-          "rme": 0.34,
-          "samples": 120997,
-          "bytesPerOp": 12082
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.44,
-        "neotraverse modern": 6.47
-      }
-    },
-    {
-      "operation": "reduce",
-      "dataset": "deep",
-      "label": "reduce · deep",
-      "description": "32-level deeply nested object",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 50668,
-          "meanMs": 0.01997696292447837,
-          "rme": 0.45,
-          "samples": 12515,
-          "bytesPerOp": 185843
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 145498,
-          "meanMs": 0.0069998898501974355,
-          "rme": 0.48,
-          "samples": 35715,
-          "bytesPerOp": 118052
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 288933,
-          "meanMs": 0.0035011430552120853,
-          "rme": 0.36,
-          "samples": 71406,
-          "bytesPerOp": 19195
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.87,
-        "neotraverse modern": 5.7
-      }
-    },
-    {
-      "operation": "reduce",
-      "dataset": "array",
-      "label": "reduce · array",
-      "description": "array of 256 small objects",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2909,
-          "meanMs": 0.34483948275871357,
-          "rme": 0.45,
-          "samples": 725,
-          "bytesPerOp": 1501233
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 9229,
-          "meanMs": 0.10910774563703919,
-          "rme": 0.43,
-          "samples": 2292,
-          "bytesPerOp": 264388
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 17781,
-          "meanMs": 0.05650013265535879,
-          "rme": 0.31,
-          "samples": 4425,
-          "bytesPerOp": 333801
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.17,
-        "neotraverse modern": 6.11
-      }
-    },
-    {
-      "operation": "reduce",
-      "dataset": "json",
-      "label": "reduce · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 55255,
-          "meanMs": 0.018276193932754925,
-          "rme": 0.39,
-          "samples": 13680,
-          "bytesPerOp": 164992
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 173837,
-          "meanMs": 0.0058569044629187385,
-          "rme": 0.45,
-          "samples": 42685,
-          "bytesPerOp": 100024
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 328782,
-          "meanMs": 0.00307685615123032,
-          "rme": 0.35,
-          "samples": 81252,
-          "bytesPerOp": 17543
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.15,
-        "neotraverse modern": 5.95
-      }
-    },
-    {
-      "operation": "paths",
-      "dataset": "small",
-      "label": "paths · small",
-      "description": "{ a, b, c:[…] } — the canonical example",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 811923,
-          "meanMs": 0.0012559945992402937,
-          "rme": 0.44,
-          "samples": 199046,
-          "bytesPerOp": 11782
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 2279936,
-          "meanMs": 0.0004536993590105759,
-          "rme": 0.52,
-          "samples": 551026,
-          "bytesPerOp": 7584
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 3402905,
-          "meanMs": 0.000301388007897593,
-          "rme": 0.58,
-          "samples": 829496,
-          "bytesPerOp": 2275
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.81,
-        "neotraverse modern": 4.19
-      }
-    },
-    {
-      "operation": "paths",
-      "dataset": "wide",
-      "label": "paths · wide",
-      "description": "flat object with 64 keys",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 77412,
-          "meanMs": 0.013049441538794069,
-          "rme": 0.34,
-          "samples": 19158,
-          "bytesPerOp": 121015
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 268188,
-          "meanMs": 0.003814782940410212,
-          "rme": 0.49,
-          "samples": 65535,
-          "bytesPerOp": 76085
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 475490,
-          "meanMs": 0.0021336668942635163,
-          "rme": 0.39,
-          "samples": 117170,
-          "bytesPerOp": 16943
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.46,
-        "neotraverse modern": 6.14
-      }
-    },
-    {
-      "operation": "paths",
-      "dataset": "deep",
-      "label": "paths · deep",
-      "description": "32-level deeply nested object",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 50955,
-          "meanMs": 0.020233314341223017,
-          "rme": 3.46,
-          "samples": 12356,
-          "bytesPerOp": 187059
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 151982,
-          "meanMs": 0.006710404498598753,
-          "rme": 0.51,
-          "samples": 37256,
-          "bytesPerOp": 119055
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 212666,
-          "meanMs": 0.004768161008543101,
-          "rme": 0.4,
-          "samples": 52432,
-          "bytesPerOp": 38042
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.98,
-        "neotraverse modern": 4.17
-      }
-    },
-    {
-      "operation": "paths",
-      "dataset": "array",
-      "label": "paths · array",
-      "description": "array of 256 small objects",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2976,
-          "meanMs": 0.33704464285706737,
-          "rme": 0.44,
-          "samples": 742,
-          "bytesPerOp": 1519488
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 9566,
-          "meanMs": 0.10573373742071147,
-          "rme": 0.58,
-          "samples": 2365,
-          "bytesPerOp": 280958
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 16368,
-          "meanMs": 0.061515993602341515,
-          "rme": 0.39,
-          "samples": 4064,
-          "bytesPerOp": 465998
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.21,
-        "neotraverse modern": 5.5
-      }
-    },
-    {
-      "operation": "paths",
-      "dataset": "json",
-      "label": "paths · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 56251,
-          "meanMs": 0.01796493209742395,
-          "rme": 0.4,
-          "samples": 13917,
-          "bytesPerOp": 166066
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 177158,
-          "meanMs": 0.005756598471065864,
-          "rme": 0.47,
-          "samples": 43429,
-          "bytesPerOp": 101022
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 294870,
-          "meanMs": 0.0034493913931383973,
-          "rme": 0.46,
-          "samples": 72477,
-          "bytesPerOp": 25301
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.15,
-        "neotraverse modern": 5.24
-      }
-    },
-    {
-      "operation": "nodes",
-      "dataset": "small",
-      "label": "nodes · small",
-      "description": "{ a, b, c:[…] } — the canonical example",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 800765,
-          "meanMs": 0.0012721784503863444,
-          "rme": 0.41,
-          "samples": 196514,
-          "bytesPerOp": 11784
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 2258624,
-          "meanMs": 0.0004565647097718994,
-          "rme": 0.47,
-          "samples": 547568,
-          "bytesPerOp": 7566
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 3490623,
-          "meanMs": 0.0002932980034628939,
-          "rme": 0.64,
-          "samples": 852376,
-          "bytesPerOp": 1941
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.82,
-        "neotraverse modern": 4.36
-      }
-    },
-    {
-      "operation": "nodes",
-      "dataset": "wide",
-      "label": "nodes · wide",
-      "description": "flat object with 64 keys",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 76618,
-          "meanMs": 0.013183699309174434,
-          "rme": 0.35,
-          "samples": 18963,
-          "bytesPerOp": 120191
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 265446,
-          "meanMs": 0.003842687637370874,
-          "rme": 0.46,
-          "samples": 65059,
-          "bytesPerOp": 76215
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 506638,
-          "meanMs": 0.001998777217235207,
-          "rme": 0.36,
-          "samples": 125077,
-          "bytesPerOp": 11919
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.46,
-        "neotraverse modern": 6.61
-      }
-    },
-    {
-      "operation": "nodes",
-      "dataset": "deep",
-      "label": "nodes · deep",
-      "description": "32-level deeply nested object",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 51151,
-          "meanMs": 0.01977881479431081,
-          "rme": 0.45,
-          "samples": 12640,
-          "bytesPerOp": 187072
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 149846,
-          "meanMs": 0.006798049760706388,
-          "rme": 0.5,
-          "samples": 36776,
-          "bytesPerOp": 119056
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 288099,
-          "meanMs": 0.0035034783626187965,
-          "rme": 0.32,
-          "samples": 71358,
-          "bytesPerOp": 20193
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 2.93,
-        "neotraverse modern": 5.63
-      }
-    },
-    {
-      "operation": "nodes",
-      "dataset": "array",
-      "label": "nodes · array",
-      "description": "array of 256 small objects",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 2943,
-          "meanMs": 0.34054238775501605,
-          "rme": 0.38,
-          "samples": 735,
-          "bytesPerOp": 1517197
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 9442,
-          "meanMs": 0.1066462669509624,
-          "rme": 0.43,
-          "samples": 2345,
-          "bytesPerOp": 280035
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 17715,
-          "meanMs": 0.05673765207527602,
-          "rme": 0.32,
-          "samples": 4409,
-          "bytesPerOp": 349319
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.21,
-        "neotraverse modern": 6.02
-      }
-    },
-    {
-      "operation": "nodes",
-      "dataset": "json",
-      "label": "nodes · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 55541,
-          "meanMs": 0.0182279119276492,
-          "rme": 0.47,
-          "samples": 13716,
-          "bytesPerOp": 166175
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 176656,
-          "meanMs": 0.005778705706960808,
-          "rme": 0.5,
-          "samples": 43263,
-          "bytesPerOp": 101022
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 328321,
-          "meanMs": 0.0030763556020338935,
-          "rme": 0.29,
-          "samples": 81265,
-          "bytesPerOp": 18528
-        }
-      ],
-      "fastest": "neotraverse modern",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 3.18,
-        "neotraverse modern": 5.91
-      }
-    },
-    {
-      "operation": "get",
-      "dataset": "json",
-      "label": "get · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 18069492,
-          "meanMs": 0.00006317743888249503,
-          "rme": 1.4,
-          "samples": 3957109,
-          "bytesPerOp": 142
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 22168643,
-          "meanMs": 0.0000488717915187649,
-          "rme": 2.03,
-          "samples": 5115426,
-          "bytesPerOp": 72
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 21280988,
-          "meanMs": 0.000051276185356942145,
-          "rme": 0.07,
-          "samples": 4875559,
-          "bytesPerOp": 32
-        }
-      ],
-      "fastest": "neotraverse legacy",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 1.23,
-        "neotraverse modern": 1.18
-      }
-    },
-    {
-      "operation": "has",
-      "dataset": "json",
-      "label": "has · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 18943414,
-          "meanMs": 0.00005975536609023894,
-          "rme": 0.17,
-          "samples": 4183725,
-          "bytesPerOp": 72
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 22254349,
-          "meanMs": 0.00005354744999586981,
-          "rme": 19.49,
-          "samples": 4668757,
-          "bytesPerOp": 72
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 22156236,
-          "meanMs": 0.00004823458287878485,
-          "rme": 0.07,
-          "samples": 5183004,
-          "bytesPerOp": 32
-        }
-      ],
-      "fastest": "neotraverse legacy",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 1.17,
-        "neotraverse modern": 1.17
-      }
-    },
-    {
-      "operation": "set",
-      "dataset": "json",
-      "label": "set · json",
-      "description": "realistic nested API response",
-      "results": [
-        {
-          "name": "traverse",
-          "opsPerSec": 23632276,
-          "meanMs": 0.0000402299137694179,
-          "rme": 0.18,
-          "samples": 6214282,
-          "bytesPerOp": 75
-        },
-        {
-          "name": "neotraverse legacy",
-          "opsPerSec": 23862298,
-          "meanMs": 0.00003940091804197658,
-          "rme": 0.3,
-          "samples": 6345030,
-          "bytesPerOp": 56
-        },
-        {
-          "name": "neotraverse modern",
-          "opsPerSec": 19365527,
-          "meanMs": 0.00006834818721392042,
-          "rme": 29.27,
-          "samples": 3657742,
-          "bytesPerOp": 64
-        }
-      ],
-      "fastest": "neotraverse legacy",
-      "baseline": "traverse",
-      "speedupVsTraverse": {
-        "traverse": 1,
-        "neotraverse legacy": 1.01,
-        "neotraverse modern": 0.82
-      }
-    }
-  ],
-  "modernSuites": [
-    {
-      "label": "clone · circular",
-      "opsPerSec": 298203,
-      "meanMs": 0.0033785857749032274,
-      "rme": 0.36,
-      "samples": 73996,
-      "bytesPerOp": 6273
-    },
-    {
-      "label": "clone · map+set",
-      "opsPerSec": 223811,
-      "meanMs": 0.004500095310947534,
-      "rme": 0.29,
-      "samples": 55555,
-      "bytesPerOp": 12062
-    },
-    {
-      "label": "deepEqual · json",
-      "opsPerSec": 92355,
-      "meanMs": 0.010896180047079321,
-      "rme": 0.29,
-      "samples": 22944,
-      "bytesPerOp": 15697
-    },
-    {
-      "label": "diff · array(256)",
-      "opsPerSec": 4248,
-      "meanMs": 0.23597075471689266,
-      "rme": 0.35,
-      "samples": 1060,
-      "bytesPerOp": 395938
-    },
-    {
-      "label": "merge · json",
-      "opsPerSec": 226274,
-      "meanMs": 0.0044525783108964,
-      "rme": 0.26,
-      "samples": 56148,
-      "bytesPerOp": 5393
-    },
-    {
-      "label": "select · json",
-      "opsPerSec": 246108,
-      "meanMs": 0.00411075584130057,
-      "rme": 0.36,
-      "samples": 60817,
-      "bytesPerOp": 24355
-    },
-    {
-      "label": "dereference · refs",
-      "opsPerSec": 120804,
-      "meanMs": 0.008346188388871932,
-      "rme": 0.33,
-      "samples": 29954,
-      "bytesPerOp": 31287
-    }
-  ]
+	"generatedAt": "2026-06-08T10:51:26.926Z",
+	"runtime": {
+		"node": "v24.1.0",
+		"v8": "13.6.233.10-node.16"
+	},
+	"versions": {
+		"neotraverse": "1.0.0",
+		"traverse": "0.6.11"
+	},
+	"contenders": ["traverse", "neotraverse legacy", "neotraverse modern"],
+	"summary": {
+		"metric": "geometric-mean speedup vs traverse",
+		"neotraverse legacy": 2.97,
+		"neotraverse modern": 4.91,
+		"memory": {
+			"metric": "geometric-mean allocation reduction vs traverse (traverse B/op ÷ neotraverse B/op)",
+			"traversal": {
+				"neotraverse legacy": 1.97,
+				"neotraverse modern": 6.22
+			},
+			"all": {
+				"neotraverse legacy": 1.91,
+				"neotraverse modern": 5.68
+			}
+		}
+	},
+	"suites": [
+		{
+			"operation": "forEach",
+			"dataset": "small",
+			"label": "forEach · small",
+			"description": "{ a, b, c:[…] } — the canonical example",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 841043,
+					"meanMs": 0.001223241854434247,
+					"rme": 0.27,
+					"samples": 204375,
+					"bytesPerOp": 11319
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 2414704,
+					"meanMs": 0.0004399124557914959,
+					"rme": 1.34,
+					"samples": 568330,
+					"bytesPerOp": 7390
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 4016013,
+					"meanMs": 0.00025621687833585774,
+					"rme": 0.45,
+					"samples": 975736,
+					"bytesPerOp": 1718
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.87,
+				"neotraverse modern": 4.78
+			}
+		},
+		{
+			"operation": "forEach",
+			"dataset": "wide",
+			"label": "forEach · wide",
+			"description": "flat object with 64 keys",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 79308,
+					"meanMs": 0.01275935919158857,
+					"rme": 0.33,
+					"samples": 19594,
+					"bytesPerOp": 118188
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 284208,
+					"meanMs": 0.003585987893739882,
+					"rme": 0.38,
+					"samples": 69716,
+					"bytesPerOp": 78990
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 594241,
+					"meanMs": 0.0017079054714129122,
+					"rme": 0.38,
+					"samples": 146379,
+					"bytesPerOp": 11031
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.58,
+				"neotraverse modern": 7.49
+			}
+		},
+		{
+			"operation": "forEach",
+			"dataset": "deep",
+			"label": "forEach · deep",
+			"description": "32-level deeply nested object",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 53214,
+					"meanMs": 0.019030809697798183,
+					"rme": 0.44,
+					"samples": 13137,
+					"bytesPerOp": 185375
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 160316,
+					"meanMs": 0.006368865873542163,
+					"rme": 0.49,
+					"samples": 39254,
+					"bytesPerOp": 117913
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 330800,
+					"meanMs": 0.0030909319255197324,
+					"rme": 0.4,
+					"samples": 80882,
+					"bytesPerOp": 17808
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.01,
+				"neotraverse modern": 6.22
+			}
+		},
+		{
+			"operation": "forEach",
+			"dataset": "array",
+			"label": "forEach · array",
+			"description": "array of 256 small objects",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 3019,
+					"meanMs": 0.33218798539176286,
+					"rme": 0.42,
+					"samples": 753,
+					"bytesPerOp": 1473431
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 10186,
+					"meanMs": 0.09892804034810444,
+					"rme": 0.41,
+					"samples": 2528,
+					"bytesPerOp": 240962
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 21242,
+					"meanMs": 0.04734991003787972,
+					"rme": 0.3,
+					"samples": 5280,
+					"bytesPerOp": 318621
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.37,
+				"neotraverse modern": 7.04
+			}
+		},
+		{
+			"operation": "forEach",
+			"dataset": "json",
+			"label": "forEach · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 57421,
+					"meanMs": 0.01761096653986992,
+					"rme": 0.37,
+					"samples": 14196,
+					"bytesPerOp": 163977
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 186579,
+					"meanMs": 0.0054654108825410025,
+					"rme": 0.46,
+					"samples": 45743,
+					"bytesPerOp": 100989
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 382143,
+					"meanMs": 0.0026463116267245843,
+					"rme": 0.32,
+					"samples": 94472,
+					"bytesPerOp": 17065
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.25,
+				"neotraverse modern": 6.66
+			}
+		},
+		{
+			"operation": "map",
+			"dataset": "small",
+			"label": "map · small",
+			"description": "{ a, b, c:[…] } — the canonical example",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 393442,
+					"meanMs": 0.0025744139429517776,
+					"rme": 0.31,
+					"samples": 97110,
+					"bytesPerOp": 13857
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 1268242,
+					"meanMs": 0.0008041264405894578,
+					"rme": 0.32,
+					"samples": 310897,
+					"bytesPerOp": 8449
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 2267588,
+					"meanMs": 0.0004497011413408326,
+					"rme": 0.45,
+					"samples": 555925,
+					"bytesPerOp": 2019
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.22,
+				"neotraverse modern": 5.76
+			}
+		},
+		{
+			"operation": "map",
+			"dataset": "wide",
+			"label": "map · wide",
+			"description": "flat object with 64 keys",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 50468,
+					"meanMs": 0.01998828941477429,
+					"rme": 0.31,
+					"samples": 12508,
+					"bytesPerOp": 134914
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 106498,
+					"meanMs": 0.009487916166983421,
+					"rme": 0.3,
+					"samples": 26350,
+					"bytesPerOp": 92268
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 183870,
+					"meanMs": 0.005486023435961012,
+					"rme": 0.26,
+					"samples": 45571,
+					"bytesPerOp": 18023
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.11,
+				"neotraverse modern": 3.64
+			}
+		},
+		{
+			"operation": "map",
+			"dataset": "deep",
+			"label": "map · deep",
+			"description": "32-level deeply nested object",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 18833,
+					"meanMs": 0.05353448811816386,
+					"rme": 0.42,
+					"samples": 4671,
+					"bytesPerOp": 235251
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 87198,
+					"meanMs": 0.011648492056099129,
+					"rme": 0.47,
+					"samples": 21463,
+					"bytesPerOp": 133304
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 136623,
+					"meanMs": 0.007398294477983308,
+					"rme": 0.35,
+					"samples": 33792,
+					"bytesPerOp": 22856
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 4.63,
+				"neotraverse modern": 7.25
+			}
+		},
+		{
+			"operation": "map",
+			"dataset": "array",
+			"label": "map · array",
+			"description": "array of 256 small objects",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 1421,
+					"meanMs": 0.7047281464788601,
+					"rme": 0.38,
+					"samples": 355,
+					"bytesPerOp": 447119
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 4376,
+					"meanMs": 0.22940873027519965,
+					"rme": 0.43,
+					"samples": 1090,
+					"bytesPerOp": 560861
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 8619,
+					"meanMs": 0.11648839683280579,
+					"rme": 0.32,
+					"samples": 2147,
+					"bytesPerOp": 382686
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.08,
+				"neotraverse modern": 6.07
+			}
+		},
+		{
+			"operation": "map",
+			"dataset": "json",
+			"label": "map · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 23178,
+					"meanMs": 0.04347664545296716,
+					"rme": 0.37,
+					"samples": 5751,
+					"bytesPerOp": 204281
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 83958,
+					"meanMs": 0.012050125463932655,
+					"rme": 0.36,
+					"samples": 20747,
+					"bytesPerOp": 116275
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 151069,
+					"meanMs": 0.006672727673092525,
+					"rme": 0.28,
+					"samples": 37466,
+					"bytesPerOp": 21395
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.62,
+				"neotraverse modern": 6.52
+			}
+		},
+		{
+			"operation": "clone",
+			"dataset": "small",
+			"label": "clone · small",
+			"description": "{ a, b, c:[…] } — the canonical example",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 494252,
+					"meanMs": 0.002040822334693657,
+					"rme": 0.21,
+					"samples": 122500,
+					"bytesPerOp": 3532
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 3356979,
+					"meanMs": 0.00030391439956954316,
+					"rme": 1.06,
+					"samples": 822601,
+					"bytesPerOp": 1472
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 4884062,
+					"meanMs": 0.00021355521253891421,
+					"rme": 4.01,
+					"samples": 1170658,
+					"bytesPerOp": 608
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 6.79,
+				"neotraverse modern": 9.88
+			}
+		},
+		{
+			"operation": "clone",
+			"dataset": "wide",
+			"label": "clone · wide",
+			"description": "flat object with 64 keys",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 209591,
+					"meanMs": 0.004824976724437225,
+					"rme": 0.32,
+					"samples": 51814,
+					"bytesPerOp": 12712
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 309111,
+					"meanMs": 0.003269300840859033,
+					"rme": 0.33,
+					"samples": 76469,
+					"bytesPerOp": 9684
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 574325,
+					"meanMs": 0.001765088105510222,
+					"rme": 0.38,
+					"samples": 141637,
+					"bytesPerOp": 6332
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 1.47,
+				"neotraverse modern": 2.74
+			}
+		},
+		{
+			"operation": "clone",
+			"dataset": "deep",
+			"label": "clone · deep",
+			"description": "32-level deeply nested object",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 27853,
+					"meanMs": 0.03610138310470689,
+					"rme": 0.25,
+					"samples": 6925,
+					"bytesPerOp": 47063
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 170807,
+					"meanMs": 0.005899691853877987,
+					"rme": 0.27,
+					"samples": 42376,
+					"bytesPerOp": 13412
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 260473,
+					"meanMs": 0.003876798626082805,
+					"rme": 0.33,
+					"samples": 64487,
+					"bytesPerOp": 9928
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 6.13,
+				"neotraverse modern": 9.35
+			}
+		},
+		{
+			"operation": "clone",
+			"dataset": "array",
+			"label": "clone · array",
+			"description": "array of 256 small objects",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 3250,
+					"meanMs": 0.3084834401972946,
+					"rme": 0.41,
+					"samples": 811,
+					"bytesPerOp": 548097
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 11408,
+					"meanMs": 0.08798144968331718,
+					"rme": 0.29,
+					"samples": 2842,
+					"bytesPerOp": 206903
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 15411,
+					"meanMs": 0.06515037649819275,
+					"rme": 0.28,
+					"samples": 3838,
+					"bytesPerOp": 110972
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.51,
+				"neotraverse modern": 4.74
+			}
+		},
+		{
+			"operation": "clone",
+			"dataset": "json",
+			"label": "clone · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 42207,
+					"meanMs": 0.02382317600533259,
+					"rme": 0.24,
+					"samples": 10494,
+					"bytesPerOp": 37285
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 205740,
+					"meanMs": 0.004904377224133678,
+					"rme": 0.3,
+					"samples": 50975,
+					"bytesPerOp": 14074
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 303054,
+					"meanMs": 0.0033242325479291577,
+					"rme": 0.24,
+					"samples": 75206,
+					"bytesPerOp": 6266
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 4.87,
+				"neotraverse modern": 7.18
+			}
+		},
+		{
+			"operation": "reduce",
+			"dataset": "small",
+			"label": "reduce · small",
+			"description": "{ a, b, c:[…] } — the canonical example",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 796994,
+					"meanMs": 0.001275510665762947,
+					"rme": 0.36,
+					"samples": 196001,
+					"bytesPerOp": 11954
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 2201209,
+					"meanMs": 0.0004635604853648812,
+					"rme": 0.28,
+					"samples": 539304,
+					"bytesPerOp": 7764
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 3536758,
+					"meanMs": 0.0002907170289226811,
+					"rme": 0.6,
+					"samples": 859943,
+					"bytesPerOp": 2013
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.76,
+				"neotraverse modern": 4.44
+			}
+		},
+		{
+			"operation": "reduce",
+			"dataset": "wide",
+			"label": "reduce · wide",
+			"description": "flat object with 64 keys",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 75627,
+					"meanMs": 0.013396782338457076,
+					"rme": 0.42,
+					"samples": 18662,
+					"bytesPerOp": 121382
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 260493,
+					"meanMs": 0.003921989222522491,
+					"rme": 0.47,
+					"samples": 63744,
+					"bytesPerOp": 77013
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 489665,
+					"meanMs": 0.002066173202638141,
+					"rme": 0.34,
+					"samples": 120997,
+					"bytesPerOp": 12082
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.44,
+				"neotraverse modern": 6.47
+			}
+		},
+		{
+			"operation": "reduce",
+			"dataset": "deep",
+			"label": "reduce · deep",
+			"description": "32-level deeply nested object",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 50668,
+					"meanMs": 0.01997696292447837,
+					"rme": 0.45,
+					"samples": 12515,
+					"bytesPerOp": 185843
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 145498,
+					"meanMs": 0.0069998898501974355,
+					"rme": 0.48,
+					"samples": 35715,
+					"bytesPerOp": 118052
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 288933,
+					"meanMs": 0.0035011430552120853,
+					"rme": 0.36,
+					"samples": 71406,
+					"bytesPerOp": 19195
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.87,
+				"neotraverse modern": 5.7
+			}
+		},
+		{
+			"operation": "reduce",
+			"dataset": "array",
+			"label": "reduce · array",
+			"description": "array of 256 small objects",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2909,
+					"meanMs": 0.34483948275871357,
+					"rme": 0.45,
+					"samples": 725,
+					"bytesPerOp": 1501233
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 9229,
+					"meanMs": 0.10910774563703919,
+					"rme": 0.43,
+					"samples": 2292,
+					"bytesPerOp": 264388
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 17781,
+					"meanMs": 0.05650013265535879,
+					"rme": 0.31,
+					"samples": 4425,
+					"bytesPerOp": 333801
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.17,
+				"neotraverse modern": 6.11
+			}
+		},
+		{
+			"operation": "reduce",
+			"dataset": "json",
+			"label": "reduce · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 55255,
+					"meanMs": 0.018276193932754925,
+					"rme": 0.39,
+					"samples": 13680,
+					"bytesPerOp": 164992
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 173837,
+					"meanMs": 0.0058569044629187385,
+					"rme": 0.45,
+					"samples": 42685,
+					"bytesPerOp": 100024
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 328782,
+					"meanMs": 0.00307685615123032,
+					"rme": 0.35,
+					"samples": 81252,
+					"bytesPerOp": 17543
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.15,
+				"neotraverse modern": 5.95
+			}
+		},
+		{
+			"operation": "paths",
+			"dataset": "small",
+			"label": "paths · small",
+			"description": "{ a, b, c:[…] } — the canonical example",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 811923,
+					"meanMs": 0.0012559945992402937,
+					"rme": 0.44,
+					"samples": 199046,
+					"bytesPerOp": 11782
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 2279936,
+					"meanMs": 0.0004536993590105759,
+					"rme": 0.52,
+					"samples": 551026,
+					"bytesPerOp": 7584
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 3402905,
+					"meanMs": 0.000301388007897593,
+					"rme": 0.58,
+					"samples": 829496,
+					"bytesPerOp": 2275
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.81,
+				"neotraverse modern": 4.19
+			}
+		},
+		{
+			"operation": "paths",
+			"dataset": "wide",
+			"label": "paths · wide",
+			"description": "flat object with 64 keys",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 77412,
+					"meanMs": 0.013049441538794069,
+					"rme": 0.34,
+					"samples": 19158,
+					"bytesPerOp": 121015
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 268188,
+					"meanMs": 0.003814782940410212,
+					"rme": 0.49,
+					"samples": 65535,
+					"bytesPerOp": 76085
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 475490,
+					"meanMs": 0.0021336668942635163,
+					"rme": 0.39,
+					"samples": 117170,
+					"bytesPerOp": 16943
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.46,
+				"neotraverse modern": 6.14
+			}
+		},
+		{
+			"operation": "paths",
+			"dataset": "deep",
+			"label": "paths · deep",
+			"description": "32-level deeply nested object",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 50955,
+					"meanMs": 0.020233314341223017,
+					"rme": 3.46,
+					"samples": 12356,
+					"bytesPerOp": 187059
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 151982,
+					"meanMs": 0.006710404498598753,
+					"rme": 0.51,
+					"samples": 37256,
+					"bytesPerOp": 119055
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 212666,
+					"meanMs": 0.004768161008543101,
+					"rme": 0.4,
+					"samples": 52432,
+					"bytesPerOp": 38042
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.98,
+				"neotraverse modern": 4.17
+			}
+		},
+		{
+			"operation": "paths",
+			"dataset": "array",
+			"label": "paths · array",
+			"description": "array of 256 small objects",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2976,
+					"meanMs": 0.33704464285706737,
+					"rme": 0.44,
+					"samples": 742,
+					"bytesPerOp": 1519488
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 9566,
+					"meanMs": 0.10573373742071147,
+					"rme": 0.58,
+					"samples": 2365,
+					"bytesPerOp": 280958
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 16368,
+					"meanMs": 0.061515993602341515,
+					"rme": 0.39,
+					"samples": 4064,
+					"bytesPerOp": 465998
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.21,
+				"neotraverse modern": 5.5
+			}
+		},
+		{
+			"operation": "paths",
+			"dataset": "json",
+			"label": "paths · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 56251,
+					"meanMs": 0.01796493209742395,
+					"rme": 0.4,
+					"samples": 13917,
+					"bytesPerOp": 166066
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 177158,
+					"meanMs": 0.005756598471065864,
+					"rme": 0.47,
+					"samples": 43429,
+					"bytesPerOp": 101022
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 294870,
+					"meanMs": 0.0034493913931383973,
+					"rme": 0.46,
+					"samples": 72477,
+					"bytesPerOp": 25301
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.15,
+				"neotraverse modern": 5.24
+			}
+		},
+		{
+			"operation": "nodes",
+			"dataset": "small",
+			"label": "nodes · small",
+			"description": "{ a, b, c:[…] } — the canonical example",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 800765,
+					"meanMs": 0.0012721784503863444,
+					"rme": 0.41,
+					"samples": 196514,
+					"bytesPerOp": 11784
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 2258624,
+					"meanMs": 0.0004565647097718994,
+					"rme": 0.47,
+					"samples": 547568,
+					"bytesPerOp": 7566
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 3490623,
+					"meanMs": 0.0002932980034628939,
+					"rme": 0.64,
+					"samples": 852376,
+					"bytesPerOp": 1941
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.82,
+				"neotraverse modern": 4.36
+			}
+		},
+		{
+			"operation": "nodes",
+			"dataset": "wide",
+			"label": "nodes · wide",
+			"description": "flat object with 64 keys",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 76618,
+					"meanMs": 0.013183699309174434,
+					"rme": 0.35,
+					"samples": 18963,
+					"bytesPerOp": 120191
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 265446,
+					"meanMs": 0.003842687637370874,
+					"rme": 0.46,
+					"samples": 65059,
+					"bytesPerOp": 76215
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 506638,
+					"meanMs": 0.001998777217235207,
+					"rme": 0.36,
+					"samples": 125077,
+					"bytesPerOp": 11919
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.46,
+				"neotraverse modern": 6.61
+			}
+		},
+		{
+			"operation": "nodes",
+			"dataset": "deep",
+			"label": "nodes · deep",
+			"description": "32-level deeply nested object",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 51151,
+					"meanMs": 0.01977881479431081,
+					"rme": 0.45,
+					"samples": 12640,
+					"bytesPerOp": 187072
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 149846,
+					"meanMs": 0.006798049760706388,
+					"rme": 0.5,
+					"samples": 36776,
+					"bytesPerOp": 119056
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 288099,
+					"meanMs": 0.0035034783626187965,
+					"rme": 0.32,
+					"samples": 71358,
+					"bytesPerOp": 20193
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 2.93,
+				"neotraverse modern": 5.63
+			}
+		},
+		{
+			"operation": "nodes",
+			"dataset": "array",
+			"label": "nodes · array",
+			"description": "array of 256 small objects",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 2943,
+					"meanMs": 0.34054238775501605,
+					"rme": 0.38,
+					"samples": 735,
+					"bytesPerOp": 1517197
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 9442,
+					"meanMs": 0.1066462669509624,
+					"rme": 0.43,
+					"samples": 2345,
+					"bytesPerOp": 280035
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 17715,
+					"meanMs": 0.05673765207527602,
+					"rme": 0.32,
+					"samples": 4409,
+					"bytesPerOp": 349319
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.21,
+				"neotraverse modern": 6.02
+			}
+		},
+		{
+			"operation": "nodes",
+			"dataset": "json",
+			"label": "nodes · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 55541,
+					"meanMs": 0.0182279119276492,
+					"rme": 0.47,
+					"samples": 13716,
+					"bytesPerOp": 166175
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 176656,
+					"meanMs": 0.005778705706960808,
+					"rme": 0.5,
+					"samples": 43263,
+					"bytesPerOp": 101022
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 328321,
+					"meanMs": 0.0030763556020338935,
+					"rme": 0.29,
+					"samples": 81265,
+					"bytesPerOp": 18528
+				}
+			],
+			"fastest": "neotraverse modern",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 3.18,
+				"neotraverse modern": 5.91
+			}
+		},
+		{
+			"operation": "get",
+			"dataset": "json",
+			"label": "get · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 18069492,
+					"meanMs": 0.00006317743888249503,
+					"rme": 1.4,
+					"samples": 3957109,
+					"bytesPerOp": 142
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 22168643,
+					"meanMs": 0.0000488717915187649,
+					"rme": 2.03,
+					"samples": 5115426,
+					"bytesPerOp": 72
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 21280988,
+					"meanMs": 0.000051276185356942145,
+					"rme": 0.07,
+					"samples": 4875559,
+					"bytesPerOp": 32
+				}
+			],
+			"fastest": "neotraverse legacy",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 1.23,
+				"neotraverse modern": 1.18
+			}
+		},
+		{
+			"operation": "has",
+			"dataset": "json",
+			"label": "has · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 18943414,
+					"meanMs": 0.00005975536609023894,
+					"rme": 0.17,
+					"samples": 4183725,
+					"bytesPerOp": 72
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 22254349,
+					"meanMs": 0.00005354744999586981,
+					"rme": 19.49,
+					"samples": 4668757,
+					"bytesPerOp": 72
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 22156236,
+					"meanMs": 0.00004823458287878485,
+					"rme": 0.07,
+					"samples": 5183004,
+					"bytesPerOp": 32
+				}
+			],
+			"fastest": "neotraverse legacy",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 1.17,
+				"neotraverse modern": 1.17
+			}
+		},
+		{
+			"operation": "set",
+			"dataset": "json",
+			"label": "set · json",
+			"description": "realistic nested API response",
+			"results": [
+				{
+					"name": "traverse",
+					"opsPerSec": 23632276,
+					"meanMs": 0.0000402299137694179,
+					"rme": 0.18,
+					"samples": 6214282,
+					"bytesPerOp": 75
+				},
+				{
+					"name": "neotraverse legacy",
+					"opsPerSec": 23862298,
+					"meanMs": 0.00003940091804197658,
+					"rme": 0.3,
+					"samples": 6345030,
+					"bytesPerOp": 56
+				},
+				{
+					"name": "neotraverse modern",
+					"opsPerSec": 19365527,
+					"meanMs": 0.00006834818721392042,
+					"rme": 29.27,
+					"samples": 3657742,
+					"bytesPerOp": 64
+				}
+			],
+			"fastest": "neotraverse legacy",
+			"baseline": "traverse",
+			"speedupVsTraverse": {
+				"traverse": 1,
+				"neotraverse legacy": 1.01,
+				"neotraverse modern": 0.82
+			}
+		}
+	],
+	"modernSuites": [
+		{
+			"label": "clone · circular",
+			"opsPerSec": 298203,
+			"meanMs": 0.0033785857749032274,
+			"rme": 0.36,
+			"samples": 73996,
+			"bytesPerOp": 6273
+		},
+		{
+			"label": "clone · map+set",
+			"opsPerSec": 223811,
+			"meanMs": 0.004500095310947534,
+			"rme": 0.29,
+			"samples": 55555,
+			"bytesPerOp": 12062
+		},
+		{
+			"label": "deepEqual · json",
+			"opsPerSec": 92355,
+			"meanMs": 0.010896180047079321,
+			"rme": 0.29,
+			"samples": 22944,
+			"bytesPerOp": 15697
+		},
+		{
+			"label": "diff · array(256)",
+			"opsPerSec": 4248,
+			"meanMs": 0.23597075471689266,
+			"rme": 0.35,
+			"samples": 1060,
+			"bytesPerOp": 395938
+		},
+		{
+			"label": "merge · json",
+			"opsPerSec": 226274,
+			"meanMs": 0.0044525783108964,
+			"rme": 0.26,
+			"samples": 56148,
+			"bytesPerOp": 5393
+		},
+		{
+			"label": "select · json",
+			"opsPerSec": 246108,
+			"meanMs": 0.00411075584130057,
+			"rme": 0.36,
+			"samples": 60817,
+			"bytesPerOp": 24355
+		},
+		{
+			"label": "dereference · refs",
+			"opsPerSec": 120804,
+			"meanMs": 0.008346188388871932,
+			"rme": 0.33,
+			"samples": 29954,
+			"bytesPerOp": 31287
+		}
+	]
 }

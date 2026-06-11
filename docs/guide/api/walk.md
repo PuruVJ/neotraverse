@@ -9,14 +9,11 @@ Import as `import * as t from 'neotraverse'`.
 
 ## walk {#walk}
 
-`t.walk(obj, cb, options?)` is the low-level depth-first walker behind `forEach` and `map`. It returns the (possibly
-mutated) root. Prefer `t.forEach` / `t.map` unless you need the same callback shape with a different return contract.
+`t.walk(obj, cb, options?)` is the low-level depth-first walker behind `forEach` and `map`. It returns the (possibly mutated) root. Prefer `t.forEach` / `t.map` unless you need the same callback shape with a different return contract.
 
 ## breadthFirst · mapBfs {#breadthFirst}
 
-`t.breadthFirst` and `t.mapBfs` traverse level-order. `breadthFirst` mutates in place like `forEach`; `mapBfs`
-clones first like `map`. Visit order differs from DFS, do not assume `isFirst` / `isLast` match sibling order in
-the queue.
+`t.breadthFirst` and `t.mapBfs` traverse level-order. `breadthFirst` mutates in place like `forEach`; `mapBfs` clones first like `map`. Visit order differs from DFS, do not assume `isFirst` / `isLast` match sibling order in the queue.
 
 ### Example
 
@@ -34,8 +31,7 @@ t.breadthFirst(obj, (ctx) => {
 
 ## skipWhere {#skipWhere}
 
-Predicate helper that calls `ctx.block()`, equivalent to `if (pred(ctx, v)) ctx.block()` inside your callback.
-Compose with other logic in a single pass. See also [Context → block](/guide/context#context-block).
+Predicate helper that calls `ctx.block()`, equivalent to `if (pred(ctx, v)) ctx.block()` inside your callback. Compose with other logic in a single pass. See also [Context → block](/guide/context#context-block).
 
 ### Example
 
@@ -50,8 +46,7 @@ t.forEach(tree, (ctx, v) => {
 
 ## groupBy {#groupBy}
 
-One walk; buckets every visited value: `Map<PropertyKey, any[]>`. Usually combine with `ctx.isLeaf` or `typeof` so
-the root object does not land in a bucket.
+One walk; buckets every visited value: `Map<PropertyKey, any[]>`. Usually combine with `ctx.isLeaf` or `typeof` so the root object does not land in a bucket.
 
 ### Example
 
@@ -60,7 +55,7 @@ import * as t from 'neotraverse';
 
 const obj = { a: 1, b: 2, c: 3 };
 const buckets = t.groupBy(obj, (ctx, v) =>
-  ctx.isLeaf && typeof v === 'number' ? (v % 2 === 0 ? 'even' : 'odd') : 'skip',
+  ctx.isLeaf && typeof v === 'number' ? (v % 2 === 0 ? 'even' : 'odd') : 'skip'
 );
 buckets.get('odd'); // [1, 3]
 buckets.get('even'); // [2]
@@ -68,9 +63,7 @@ buckets.get('even'); // [2]
 
 ## merge {#merge}
 
-`t.merge(target, source, options?)` returns a **new** tree (does not mutate `target`). Plain objects and `Map`
-entries merge recursively; arrays take indices from `source` (length follows `source`, default **`array: 'replace'`**).
-Use `{ array: 'concat' }` to append.
+`t.merge(target, source, options?)` returns a **new** tree (does not mutate `target`). Plain objects and `Map` entries merge recursively; arrays take indices from `source` (length follows `source`, default **`array: 'replace'`**). Use `{ array: 'concat' }` to append.
 
 ### Example
 
@@ -87,8 +80,7 @@ t.merge(target, source);
 
 ## dereference {#dereference}
 
-Resolve local JSON Pointer `$ref` objects (`{ "$ref": "#/definitions/Foo" }`) on a clone. External URL refs are left
-unchanged (`localOnly` defaults to `true`).
+Resolve local JSON Pointer `$ref` objects (`{ "$ref": "#/definitions/Foo" }`) on a clone. External URL refs are left unchanged (`localOnly` defaults to `true`).
 
 ### Example
 
@@ -97,7 +89,7 @@ import * as t from 'neotraverse';
 
 const doc = {
   defs: { Foo: { type: 'string' } },
-  node: { $ref: '#/defs/Foo' },
+  node: { $ref: '#/defs/Foo' }
 };
 
 const out = t.dereference(doc);
@@ -106,8 +98,7 @@ out.node; // { type: 'string' }
 
 ## getType {#getType}
 
-Use `t.getType(ctx.node)` inside `t.map` / `t.forEach`. Full matrix:
-[Types & traversal](/guide/types#types-and-traversal).
+Use `t.getType(ctx.node)` inside `t.map` / `t.forEach`. Full matrix: [Types & traversal](/guide/types#types-and-traversal).
 
 ### Example
 

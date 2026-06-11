@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import {
 	clone,
 	entries,
@@ -151,7 +151,9 @@ describe('async traversal', () => {
 	test('an already-aborted signal rejects the walk', async () => {
 		const controller = new AbortController();
 		controller.abort();
-		await expect(forEachAsync({ a: 1 }, async () => {}, { signal: controller.signal })).rejects.toThrow();
+		await expect(
+			forEachAsync({ a: 1 }, async () => {}, { signal: controller.signal }),
+		).rejects.toThrow();
 	});
 
 	test('aborting mid-walk stops the walk', async () => {

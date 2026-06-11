@@ -2,15 +2,15 @@
 	"name": "pre-ts-4.5",
 	"version": "1.0.0",
 	"private": true,
-	"main": "index.js",
+	"description": "",
+	"keywords": [],
+	"license": "ISC",
+	"author": "",
 	"type": "module",
+	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"description": "",
 	"dependencies": {
 		"neotraverse": "^0.6.12"
 	},

@@ -39,7 +39,8 @@ function own_keys(obj: object, symbols: boolean): PropertyKey[] {
 
 function is_boxed_primitive(obj: unknown): boolean {
 	const tag = to_string(obj);
-	if (tag !== '[object Boolean]' && tag !== '[object Number]' && tag !== '[object String]') return false;
+	if (tag !== '[object Boolean]' && tag !== '[object Number]' && tag !== '[object String]')
+		return false;
 	try {
 		return typeof (obj as { valueOf(): unknown }).valueOf() !== 'object';
 	} catch {
@@ -59,7 +60,11 @@ function make_shell(src: any): any {
 	shell_keyed = false;
 	if (src instanceof ArrayBuffer) return src.slice(0);
 	if (src instanceof DataView) {
-		return new DataView(src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength), 0, src.byteLength);
+		return new DataView(
+			src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength),
+			0,
+			src.byteLength,
+		);
 	}
 	if (is_typed_array(src)) return (src as any).slice();
 	if (is_boxed_primitive(src)) return Object(src);
@@ -102,7 +107,13 @@ function make_shell(src: any): any {
 	return proto === object_proto ? {} : Object.create(proto);
 }
 
-function clone_node(src: any, seen: Map<object, any>, symbols: boolean, maxDepth: number | undefined, depth: number): any {
+function clone_node(
+	src: any,
+	seen: Map<object, any>,
+	symbols: boolean,
+	maxDepth: number | undefined,
+	depth: number,
+): any {
 	if (typeof src !== 'object' || src === null) return src;
 	assert_depth(depth, maxDepth);
 	const existing = seen.get(src);
@@ -112,7 +123,10 @@ function clone_node(src: any, seen: Map<object, any>, symbols: boolean, maxDepth
 		const dst = new Map();
 		seen.set(src, dst);
 		for (const [k, v] of src) {
-			dst.set(clone_node(k, seen, symbols, maxDepth, depth + 1), clone_node(v, seen, symbols, maxDepth, depth + 1));
+			dst.set(
+				clone_node(k, seen, symbols, maxDepth, depth + 1),
+				clone_node(v, seen, symbols, maxDepth, depth + 1),
+			);
 		}
 		seen.delete(src);
 		return dst;

@@ -9,7 +9,7 @@ Releases run from [`.github/workflows/release.yml`](./workflows/release.yml) on 
    - **Repository:** `PuruVJ/neotraverse`
    - **Workflow filename:** `release.yml` (exact name, including `.yml`)
    - **Environment:** leave empty unless you add a GitHub Environment later
-3. After a successful OIDC publish, consider **Publishing access** → *Require two-factor authentication and disallow tokens* so only trusted publishing (and manual 2FA publishes) can release.
+3. After a successful OIDC publish, consider **Publishing access** → _Require two-factor authentication and disallow tokens_ so only trusted publishing (and manual 2FA publishes) can release.
 
 `packages/neotraverse/package.json` already sets `"publishConfig": { "provenance": true }`. Provenance attestations are generated automatically when publishing via trusted publishing from this public repo.
 

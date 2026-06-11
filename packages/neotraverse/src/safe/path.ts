@@ -54,7 +54,9 @@ function step_read(node: any, key: PropertyKey): { found: boolean; value: any } 
 	if (node === null || node === undefined) return { found: false, value: undefined };
 	if (is_unsafe_key(key)) return { found: false, value: undefined }; // unsafe segment read as absent
 	if (node instanceof Map) {
-		return node.has(key) ? { found: true, value: node.get(key) } : { found: false, value: undefined };
+		return node.has(key)
+			? { found: true, value: node.get(key) }
+			: { found: false, value: undefined };
 	}
 	if (node instanceof Set) {
 		if (typeof key === 'number' && key >= 0 && key < node.size) {
@@ -156,7 +158,12 @@ function set_in_place(obj: any, keys: readonly PropertyKey[], value: any): void 
 	write_child(node, keys[keys.length - 1], value);
 }
 
-export function set<T, const P extends Path>(obj: T, path: P, value: SetValue<T, P>, options?: WriteOptions): T;
+export function set<T, const P extends Path>(
+	obj: T,
+	path: P,
+	value: SetValue<T, P>,
+	options?: WriteOptions,
+): T;
 export function set(obj: any, path: Path, value: any, options?: WriteOptions): any {
 	const keys = to_keys(path);
 	if (keys.length === 0) return value;
@@ -179,12 +186,16 @@ export function set(obj: any, path: Path, value: any, options?: WriteOptions): a
 
 type ParseKey<S extends string> = S extends `${infer N extends number}` ? N : S;
 
-type ReplaceAll<S extends string, From extends string, To extends string> = S extends `${infer A}${From}${infer B}`
-	? `${A}${To}${ReplaceAll<B, From, To>}`
-	: S;
+type ReplaceAll<
+	S extends string,
+	From extends string,
+	To extends string,
+> = S extends `${infer A}${From}${infer B}` ? `${A}${To}${ReplaceAll<B, From, To>}` : S;
 type PtrUnescape<S extends string> = ReplaceAll<ReplaceAll<S, '~1', '/'>, '~0', '~'>;
 
-type SplitDot<P extends string> = P extends `${infer H}.${infer R}` ? [ParseKey<H>, ...SplitDot<R>] : [ParseKey<P>];
+type SplitDot<P extends string> = P extends `${infer H}.${infer R}`
+	? [ParseKey<H>, ...SplitDot<R>]
+	: [ParseKey<P>];
 type SplitPtr<P extends string> = P extends `${infer H}/${infer R}`
 	? [ParseKey<PtrUnescape<H>>, ...SplitPtr<R>]
 	: [ParseKey<PtrUnescape<P>>];
@@ -221,17 +232,21 @@ type Step<T, K> = T extends null | undefined
 						: undefined
 					: undefined;
 
-type GetIn<T, K extends readonly unknown[]> = K extends readonly [infer H, ...infer R extends readonly unknown[]]
+type GetIn<T, K extends readonly unknown[]> = K extends readonly [
+	infer H,
+	...infer R extends readonly unknown[],
+]
 	? GetIn<Step<T, H>, R>
 	: T;
 
 export type Get<T, P extends Path> = PropertyKey[] extends Keys<P> ? unknown : GetIn<T, Keys<P>>;
 
-export type SetValue<T, P extends Path> = unknown extends Get<T, P>
-	? unknown // dynamic path: anything goes
-	: [Get<T, P>] extends [undefined]
-		? unknown // path absent in T (autovivify): anything goes
-		: Get<T, P>; // statically known slot: value must fit
+export type SetValue<T, P extends Path> =
+	unknown extends Get<T, P>
+		? unknown // dynamic path: anything goes
+		: [Get<T, P>] extends [undefined]
+			? unknown // path absent in T (autovivify): anything goes
+			: Get<T, P>; // statically known slot: value must fit
 
 // ---------------------------------------------------------------------------
 // In-source unit tests for the parse + COW internals. Public get/set/has

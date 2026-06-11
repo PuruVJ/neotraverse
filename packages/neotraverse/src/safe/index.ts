@@ -17,7 +17,12 @@ export {
 	type TransformOptions,
 	type Visitor,
 } from './transform.js';
-export { transformAsync, type AsyncRules, type AsyncVisitor, type TransformAsyncOptions } from './transform-async.js';
+export {
+	transformAsync,
+	type AsyncRules,
+	type AsyncVisitor,
+	type TransformAsyncOptions,
+} from './transform-async.js';
 
 // PATH
 export { get, set, has, type Get, type Path, type SetValue, type WriteOptions } from './path.js';
@@ -25,7 +30,13 @@ export { get, set, has, type Get, type Path, type SetValue, type WriteOptions } 
 // STRUCTURAL
 export { clone, type CloneOptions } from './clone.js';
 export { equal, type EqualOptions } from './equal.js';
-export { merge, type ArrayStrategy, type DeepPartial, type Merge, type MergeOptions } from './merge.js';
+export {
+	merge,
+	type ArrayStrategy,
+	type DeepPartial,
+	type Merge,
+	type MergeOptions,
+} from './merge.js';
 export { diff, patch, type DiffOptions, type PatchOp } from './diff.js';
 
 // $REF

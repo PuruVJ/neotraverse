@@ -5,15 +5,13 @@ outline: [2, 3]
 
 # Lazy iteration
 
-Pull nodes without materializing `t.paths` / `t.nodes`. Circular references are visited once and not descended
-into.
+Pull nodes without materializing `t.paths` / `t.nodes`. Circular references are visited once and not descended into.
 
 Import as `import * as t from 'neotraverse'`.
 
 ## values {#values}
 
-`for (const node of t.values(tree))` and `[...t.values(tree)]` yield every node depth-first (like `t.nodes()`, but
-lazy).
+`for (const node of t.values(tree))` and `[...t.values(tree)]` yield every node depth-first (like `t.nodes()`, but lazy).
 
 ## entries {#entries}
 
@@ -37,11 +35,9 @@ for (const [path, node] of t.entries(tree)) {
 
 ## Map and Set
 
-By default, `t.forEach`, `t.map`, `t.paths`, `t.nodes`, and lazy iteration treat `Map`/`Set` as **leaf nodes**. Only
-`t.clone` (and the shallow `t.map` copy) descend into their entries.
+By default, `t.forEach`, `t.map`, `t.paths`, `t.nodes`, and lazy iteration treat `Map`/`Set` as **leaf nodes**. Only `t.clone` (and the shallow `t.map` copy) descend into their entries.
 
-Pass **`descendIntoMapSet: true`** ([Options](/guide/options)) to visit Map values at their keys and Set elements
-at numeric indices during walks.
+Pass **`descendIntoMapSet: true`** ([Options](/guide/options)) to visit Map values at their keys and Set elements at numeric indices during walks.
 
 ### Example: descend into Map entries
 

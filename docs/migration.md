@@ -5,14 +5,9 @@ outline: deep
 
 # Migrating from `traverse`
 
-neotraverse is a **drop-in replacement** for [`traverse`](https://github.com/ljharb/js-traverse). You can adopt
-it in two steps and stop there, or take one more step to the faster, ergonomic **functional API** (the default
-`neotraverse` export).
+neotraverse is a **drop-in replacement** for [`traverse`](https://github.com/ljharb/js-traverse). You can adopt it in two steps and stop there, or take one more step to the faster, ergonomic **functional API** (the default `neotraverse` export).
 
-::: info Overview first?
-For a scannable comparison (same vs different, functional-only helpers, which entry to pick), read
-[**Differences from traverse**](/guide/vs-traverse) in Getting started.
-:::
+::: info Overview first? For a scannable comparison (same vs different, functional-only helpers, which entry to pick), read [**Differences from traverse**](/guide/vs-traverse) in Getting started. :::
 
 ## Step 1: install
 
@@ -34,14 +29,11 @@ The legacy build keeps the exact `traverse` API (`this`-bound callbacks):
  });
 ```
 
-That's it. Same behaviour and zero-dependency. Full reference for this classic `this`-bound API:
-[**Legacy / Classic API**](/legacy).
+That's it. Same behaviour and zero-dependency. Full reference for this classic `this`-bound API: [**Legacy / Classic API**](/legacy).
 
 ## Step 3 (optional): go functional
 
-The functional API (the default `neotraverse` export) replaces the `this`-bound context with explicit
-helpers and arguments, nicer with arrow functions and TypeScript, tree-shakeable, and the fastest entry
-for path operations.
+The functional API (the default `neotraverse` export) replaces the `this`-bound context with explicit helpers and arguments, nicer with arrow functions and TypeScript, tree-shakeable, and the fastest entry for path operations.
 
 ### The same task, three ways
 
@@ -85,14 +77,9 @@ The only change between the drop-in and functional styles is **how you reach the
 | Is a leaf?    | `this.isLeaf`                     | `ctx.isLeaf`               |
 | Path          | `this.path`                       | `ctx.path`                 |
 
-Every context member is identical; only the way you reach it changes. See the
-[context reference](/guide/context).
+Every context member is identical; only the way you reach it changes. See the [context reference](/guide/context).
 
-::: warning Deprecated `Traverse` class
-The `Traverse` class at `neotraverse/modern` is **deprecated and will be removed in v2**. It now exposes
-only the legacy method set (`get`/`has`/`set`/`map`/`forEach`/`reduce`/`paths`/`nodes`/`clone`). Reach for
-the functional API (the default `neotraverse` export) instead.
-:::
+::: warning Deprecated `Traverse` class The `Traverse` class at `neotraverse/modern` is **deprecated and will be removed in v2**. It now exposes only the legacy method set (`get`/`has`/`set`/`map`/`forEach`/`reduce`/`paths`/`nodes`/`clone`). Reach for the functional API (the default `neotraverse` export) instead. :::
 
 ## Old browsers / runtimes: `neotraverse/legacy`
 
@@ -110,16 +97,14 @@ Point `traverse` at `neotraverse/legacy` in your bundler and leave imports untou
 // vite.config.js
 export default {
   resolve: {
-    alias: { traverse: 'neotraverse/legacy' },
-  },
+    alias: { traverse: 'neotraverse/legacy' }
+  }
 };
 ```
 
 ## New helpers (functional API)
 
-These ship from the default `neotraverse` export, e.g. `import * as t from 'neotraverse'`, no `traverse`
-equivalent. See the [example index](/guide#example-index) and
-[types & traversal](/guide/types#types-and-traversal).
+These ship from the default `neotraverse` export, e.g. `import * as t from 'neotraverse'`, no `traverse` equivalent. See the [example index](/guide#example-index) and [types & traversal](/guide/types#types-and-traversal).
 
 ## What you gain
 

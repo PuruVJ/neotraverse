@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { forEachAsync, mapAsync, paths } from '../src/index';
 import { Traverse } from '../src/modern';
 
@@ -43,15 +43,21 @@ describe('functional async', () => {
 	test('signal abort before and during walk', async () => {
 		const early = new AbortController();
 		early.abort();
-		await expect(forEachAsync({ a: 1 }, async () => {}, { signal: early.signal })).rejects.toThrow();
+		await expect(
+			forEachAsync({ a: 1 }, async () => {}, { signal: early.signal }),
+		).rejects.toThrow();
 
 		const mid = new AbortController();
 		let count = 0;
 		await expect(
-			forEachAsync({ a: 1, b: 2, c: 3, d: 4 }, async () => {
-				count++;
-				if (count === 2) mid.abort();
-			}, { signal: mid.signal }),
+			forEachAsync(
+				{ a: 1, b: 2, c: 3, d: 4 },
+				async () => {
+					count++;
+					if (count === 2) mid.abort();
+				},
+				{ signal: mid.signal },
+			),
 		).rejects.toThrow();
 		expect(count).toBeLessThan(5);
 	});

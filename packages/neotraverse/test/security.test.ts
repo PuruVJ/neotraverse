@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vite-plus/test';
 import traverse from '../src/legacy';
 import { Traverse } from '../src/modern';
 
@@ -70,44 +70,47 @@ describe.each(apis)('[$name] global prototype-pollution prevention via set()', (
 	});
 });
 
-describe.each(apis)('[$name] prototype-injection prevention (clone/map/forEach of untrusted JSON)', ({ make }) => {
-	const payload = () => JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
+describe.each(apis)(
+	'[$name] prototype-injection prevention (clone/map/forEach of untrusted JSON)',
+	({ make }) => {
+		const payload = () => JSON.parse('{"user":"bob","__proto__":{"isAdmin":true}}');
 
-	test('clone() neutralizes injected __proto__ but preserves data', () => {
-		const c = make(payload()).clone();
-		// no global pollution
-		expect(({} as any).isAdmin).toBeUndefined();
-		// the clone does NOT inherit attacker data
-		expect((c as any).isAdmin).toBeUndefined();
-		expect(Object.getPrototypeOf(c)).toBe(Object.prototype);
-		// legit data preserved
-		expect(c.user).toBe('bob');
-		// the injected value is kept as an inert OWN data key, not as the prototype
-		expect(Object.prototype.hasOwnProperty.call(c, '__proto__')).toBe(true);
-		expect(protoIsClean()).toBe(true);
-	});
+		test('clone() neutralizes injected __proto__ but preserves data', () => {
+			const c = make(payload()).clone();
+			// no global pollution
+			expect(({} as any).isAdmin).toBeUndefined();
+			// the clone does NOT inherit attacker data
+			expect((c as any).isAdmin).toBeUndefined();
+			expect(Object.getPrototypeOf(c)).toBe(Object.prototype);
+			// legit data preserved
+			expect(c.user).toBe('bob');
+			// the injected value is kept as an inert OWN data key, not as the prototype
+			expect(Object.prototype.hasOwnProperty.call(c, '__proto__')).toBe(true);
+			expect(protoIsClean()).toBe(true);
+		});
 
-	test('map() neutralizes injected __proto__', () => {
-		const m = make(payload()).map(() => {});
-		expect(({} as any).isAdmin).toBeUndefined();
-		expect((m as any).isAdmin).toBeUndefined();
-		expect(Object.getPrototypeOf(m)).toBe(Object.prototype);
-		expect(m.user).toBe('bob');
-		expect(protoIsClean()).toBe(true);
-	});
+		test('map() neutralizes injected __proto__', () => {
+			const m = make(payload()).map(() => {});
+			expect(({} as any).isAdmin).toBeUndefined();
+			expect((m as any).isAdmin).toBeUndefined();
+			expect(Object.getPrototypeOf(m)).toBe(Object.prototype);
+			expect(m.user).toBe('bob');
+			expect(protoIsClean()).toBe(true);
+		});
 
-	test('forEach() traversal of injected JSON does not pollute', () => {
-		make(payload()).forEach(() => {});
-		expect(({} as any).isAdmin).toBeUndefined();
-		expect(protoIsClean()).toBe(true);
-	});
+		test('forEach() traversal of injected JSON does not pollute', () => {
+			make(payload()).forEach(() => {});
+			expect(({} as any).isAdmin).toBeUndefined();
+			expect(protoIsClean()).toBe(true);
+		});
 
-	test('nested injected __proto__ stays localized', () => {
-		make(JSON.parse('{"a":{"__proto__":{"polluted":"yes"}}}')).clone();
-		expect(({} as any).polluted).toBeUndefined();
-		expect(protoIsClean()).toBe(true);
-	});
-});
+		test('nested injected __proto__ stays localized', () => {
+			make(JSON.parse('{"a":{"__proto__":{"polluted":"yes"}}}')).clone();
+			expect(({} as any).polluted).toBeUndefined();
+			expect(protoIsClean()).toBe(true);
+		});
+	},
+);
 
 // The update() write-sink uses safe_set; assert it cannot hijack a prototype.
 describe('update() write-sink does not pollute (per-build)', () => {
@@ -128,24 +131,27 @@ describe('update() write-sink does not pollute (per-build)', () => {
 	});
 });
 
-describe.each(apis)('[$name] prototype PRESERVATION is intact (fix did not over-reach)', ({ make }) => {
-	class Foo {
-		greet() {
-			return 'hi';
+describe.each(apis)(
+	'[$name] prototype PRESERVATION is intact (fix did not over-reach)',
+	({ make }) => {
+		class Foo {
+			greet() {
+				return 'hi';
+			}
 		}
-	}
 
-	test('clone() keeps the real prototype / instanceof', () => {
-		const c = make(new Foo()).clone();
-		expect(c instanceof Foo).toBe(true);
-		expect(c.greet()).toBe('hi');
-	});
+		test('clone() keeps the real prototype / instanceof', () => {
+			const c = make(new Foo()).clone();
+			expect(c instanceof Foo).toBe(true);
+			expect(c.greet()).toBe('hi');
+		});
 
-	test('map() keeps the real prototype / instanceof', () => {
-		const m = make(new Foo()).map(() => {});
-		expect(m instanceof Foo).toBe(true);
-	});
-});
+		test('map() keeps the real prototype / instanceof', () => {
+			const m = make(new Foo()).map(() => {});
+			expect(m instanceof Foo).toBe(true);
+		});
+	},
+);
 
 describe.each(apis)('[$name] get()/has() never walk the prototype chain', ({ make }) => {
 	test('get() does not read inherited properties', () => {
@@ -180,11 +186,15 @@ describe.each(apis)('[$name] DoS bounding via maxDepth', ({ make }) => {
 	});
 
 	test('forEach() throws past maxDepth', () => {
-		expect(() => make(deep(500), { maxDepth: 50 }).forEach(() => {})).toThrow(/maximum traversal depth/);
+		expect(() => make(deep(500), { maxDepth: 50 }).forEach(() => {})).toThrow(
+			/maximum traversal depth/,
+		);
 	});
 
 	test('map() throws past maxDepth', () => {
-		expect(() => make(deep(500), { maxDepth: 50 }).map(() => {})).toThrow(/maximum traversal depth/);
+		expect(() => make(deep(500), { maxDepth: 50 }).map(() => {})).toThrow(
+			/maximum traversal depth/,
+		);
 	});
 
 	test('within the limit there is no throw', () => {

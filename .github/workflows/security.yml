@@ -28,10 +28,10 @@ jobs:
       # regression suites. Any PR that reintroduces an audited vulnerability fails here.
       - name: Run security regression suites
         run: >-
-          pnpm --filter neotraverse exec vitest run
-          test/security.test.ts
-          test/functional-security.test.ts
-          test/security-audit.test.ts
+          pnpm exec vp test
+          packages/neotraverse/test/security.test.ts
+          packages/neotraverse/test/functional-security.test.ts
+          packages/neotraverse/test/security-audit.test.ts
 
   audit:
     name: Dependency audit

@@ -1,7 +1,6 @@
 # neotraverse: monorepo
 
-Traverse and transform objects by visiting every node on a recursive walk. A
-zero-dependency, TypeScript-first, drop-in replacement for [`traverse`](https://github.com/ljharb/js-traverse).
+Traverse and transform objects by visiting every node on a recursive walk. A zero-dependency, TypeScript-first, drop-in replacement for [`traverse`](https://github.com/ljharb/js-traverse).
 
 > 📖 **Docs & benchmarks:** [neotraverse.puruvj.dev](https://neotraverse.puruvj.dev)
 

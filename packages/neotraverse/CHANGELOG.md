@@ -22,7 +22,6 @@
   ## 🔒 Security — prototype pollution & injection
 
   When neotraverse runs on attacker-controlled objects or paths, three mutation sinks could be abused. All are now neutralized **silently** (no throw, data is preserved):
-
   - **`set(path, value)` — prototype pollution.** A path containing `__proto__` / `constructor` / `prototype` could, via the `constructor.prototype` gadget, write onto `Object.prototype` globally (for example when an intermediate node exposed an own, function-valued `constructor`). `set()` now refuses to navigate or write through these keys.
   - **`clone()` / `map()` / `copy()` — prototype injection.** Cloning or mapping an object parsed from untrusted JSON such as `{"__proto__":{"isAdmin":true}}` (where `__proto__` is an _own enumerable_ key) caused the produced object's prototype to carry attacker data, so `result.isAdmin` read `true`. Keys are now assigned without invoking the `__proto__` setter — the value is kept as an inert own data property — so the clone keeps its real prototype.
   - **`update()` write-sink** is likewise routed through the safe assignment.
@@ -42,7 +41,6 @@
   Unlimited when omitted, so default behavior is unchanged.
 
   ## 🧱 Robustness
-
   - Cloning / mapping inputs that contain **boxed primitives** (`new String()`, …) no longer throws on their read-only index slots.
   - A `Symbol.toStringTag`-spoofed object (e.g. `{ [Symbol.toStringTag]: 'Date' }`) no longer collapses to an `Invalid Date`; it falls through to a faithful copy.
 
@@ -65,15 +63,22 @@
   ```ts
   import * as t from 'neotraverse/modern';
 
-  t.forEach(obj, (ctx, x) => { /* … */ });
-  t.map(obj, (ctx, x) => { /* … */ }, { maxDepth: 100 });
+  t.forEach(obj, (ctx, x) => {
+    /* … */
+  });
+  t.map(
+    obj,
+    (ctx, x) => {
+      /* … */
+    },
+    { maxDepth: 100 }
+  );
   ```
 
   - **`sideEffects: false`** — unused exports drop from bundles.
   - **`Traverse` class deprecated** (JSDoc only); **removed in 0.8**. Options move to the last argument.
 
   ### Query, iteration, async, Map/Set
-
   - **Query** — `find`, `filter`, `some`, `every` (class or `t.find(obj, fn)`).
   - **Paths** — `findPaths`, `filterPaths`; string paths via `getPath` / `setPath` / `hasPath` (dot or JSON Pointer).
   - **Lazy iteration** — `entries`, `values` (and deprecated `for…of` on `Traverse`).
@@ -85,7 +90,6 @@
   `count`, `size`, `getType`, `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch`, `select`.
 
   ### Walk variants & merge
-
   - **`walk`**, **`breadthFirst`**, **`mapBfs`** — DFS vs level-order; `mapBfs` clones like `map`.
   - **`skipWhere`**, **`groupBy`**, **`merge`**, **`dereference`** (local `#/…` JSON Pointer `$ref` only).
   - **`descendIntoMapSet`** — opt-in descent into `Map` / `Set` entries during walks.
@@ -96,13 +100,11 @@
   `getType()` reports `function`, `arraybuffer`, `dataview`, `weakmap`, `weakset`, and the usual built-ins. `clone` / `copy` handle `ArrayBuffer`, `DataView`, and weak collections explicitly. See [Types & traversal](https://neotraverse.puruvj.dev/guide/types#types-and-traversal) for JSON-like trees vs binary data vs Map walk/clone behaviour.
 
   ### CI
-
   - npm publish uses **trusted publishing** (OIDC); see `.github/PUBLISHING.md`.
 
   Additive for default/legacy `traverse` importers — only `neotraverse/modern` gains the new surface.
 
   ## 📖 Documentation
-
   - Split the monolithic guide into grouped pages: getting started (options, security, [**differences from traverse**](https://neotraverse.puruvj.dev/guide/vs-traverse)), concepts (types, context), and API reference (core, paths, structural, walk, query, iteration, async) with **examples colocated** on each API page.
   - Introduction hub at `/guide` — documentation map, example index, bundle-size range, migration pointers.
   - VitePress sidebar groups + [`llms.txt`](https://neotraverse.puruvj.dev/llms.txt) built from the full guide tree.
@@ -111,12 +113,10 @@
   ## 📦 Bundle size (tree-shaken brotli)
 
   Documented **~2–6 KB brotli** range (guide, README, homepage, benchmarks): floor ≈ one walk terminal (`forEach`, `map`, …), ceiling ≈ all modern functions except deprecated `Traverse`. Path-only imports (`get` / `has` / `set`) are smaller (~0.3 KB) because they do not run a full-tree walk.
-
   - `pnpm bundle-size` — esbuild minify + brotli q11; writes `bench/bundle-sizes.json`.
   - Utility-first positioning: `sideEffects: false`, named imports from `neotraverse/modern`.
 
   ## 🔧 Tooling / build
-
   - Build migrated from **tsup → tsdown** (rolldown / oxc).
   - The **legacy** build now targets **ES2015** (rolldown's floor) instead of ES5. It is still CJS + ESM and a drop-in `traverse` replacement; only environments that required literal ES5 output are affected.
   - Dev dependencies updated to latest (Vitest 4, Vite 8, TypeScript 6); the unused `@swc/core` and `terser` were removed.

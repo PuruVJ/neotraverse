@@ -189,7 +189,9 @@ export async function discoverNpmDependents(opts = {}) {
 		verified.push({
 			name,
 			url: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
-			github: repoEntry ? `https://github.com/${repoEntry[0]}` : meta.repository?.url?.replace(/^git\+/, '').replace(/\.git$/, '') ?? null,
+			github: repoEntry
+				? `https://github.com/${repoEntry[0]}`
+				: (meta.repository?.url?.replace(/^git\+/, '').replace(/\.git$/, '') ?? null),
 			weeklyDownloads: downloads,
 			latestVersion: meta['dist-tags']?.latest ?? null,
 		});
@@ -229,7 +231,8 @@ export async function discoverNpmDependents(opts = {}) {
 	if (!opts.quiet) {
 		console.log(JSON.stringify(report.summary, null, 2));
 		for (const p of verified.slice(0, 20)) {
-			const dl = p.weeklyDownloads != null ? `${p.weeklyDownloads.toLocaleString('en-US')}/wk` : '?';
+			const dl =
+				p.weeklyDownloads != null ? `${p.weeklyDownloads.toLocaleString('en-US')}/wk` : '?';
 			console.log(`  ${dl.padStart(12)} ${p.name}`);
 		}
 	}

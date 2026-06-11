@@ -5,19 +5,16 @@ outline: [2, 3]
 
 # Differences from `traverse`
 
-[`traverse`](https://github.com/ljharb/js-traverse) is the classic `this`-bound walker. **neotraverse** keeps that API as a
-drop-in (now at `neotraverse/legacy`), ships a **utility-first functional** API as the default `neotraverse` export, and hardens the engine for real-world JSON and config trees.
+[`traverse`](https://github.com/ljharb/js-traverse) is the classic `this`-bound walker. **neotraverse** keeps that API as a drop-in (now at `neotraverse/legacy`), ships a **utility-first functional** API as the default `neotraverse` export, and hardens the engine for real-world JSON and config trees.
 
-::: tip Pick your path
-**Stay on `traverse` syntax?** `import traverse from 'neotraverse/legacy'`, one-line swap.  
+::: tip Pick your path **Stay on `traverse` syntax?** `import traverse from 'neotraverse/legacy'`, one-line swap.  
 **Starting fresh or want tree-shaking?** `import { forEach } from 'neotraverse'`.  
-**Step-by-step upgrade?** See [Migrating from traverse](/migration).
-:::
+**Step-by-step upgrade?** See [Migrating from traverse](/migration). :::
 
 ## At a glance
 
-| | `traverse` | **neotraverse** |
-|---|-------------|-----------------|
+|  | `traverse` | **neotraverse** |
+| --- | --- | --- |
 | **Dependencies** | Ships with runtime deps | **Zero**, no polyfills |
 | **Types** | `@types/traverse` | **Built in** |
 | **Untrusted JSON** | Classic behaviour | **Hardened**, pollution & injection safe ([Security](/guide/security)) |
@@ -48,7 +45,7 @@ traverse({ a: 1, b: 2 }).forEach(function (x) {
 You get these wins **without** rewriting callbacks:
 
 | Change | Why it matters |
-|--------|----------------|
+| --- | --- |
 | **No `@types/traverse`** | Types ship with the package |
 | **Prototype-pollution safety** | `clone` / `map` / `set` refuse hostile `__proto__` keys ([details](/guide/security)) |
 | **Faster, leaner walks** | Same call shape, higher ops/sec and ~2× less heap per op ([benchmarks](/benchmarks)) |
@@ -56,15 +53,15 @@ You get these wins **without** rewriting callbacks:
 
 ## The functional API (default `neotraverse` export)
 
-This is the biggest *optional* difference, not required to migrate, but what most new projects should use. It is the recommended entry point.
+This is the biggest _optional_ difference, not required to migrate, but what most new projects should use. It is the recommended entry point.
 
 ### Callback shape: `this` → `ctx`
 
-| | `traverse` / `neotraverse/legacy` | `neotraverse` (functional) |
-|---|-----------------------------------|----------------------|
-| Style | `function (x) { this.update(…) }` | `(ctx, x) => { ctx.update(…) }` |
-| Context | `this` | First argument `ctx` |
-| Imports | Default export, chained methods | **Named** functions, tree-shakeable |
+|         | `traverse` / `neotraverse/legacy` | `neotraverse` (functional)          |
+| ------- | --------------------------------- | ----------------------------------- |
+| Style   | `function (x) { this.update(…) }` | `(ctx, x) => { ctx.update(…) }`     |
+| Context | `this`                            | First argument `ctx`                |
+| Imports | Default export, chained methods   | **Named** functions, tree-shakeable |
 
 ```ts
 import { forEach } from 'neotraverse';
@@ -96,7 +93,7 @@ map(obj, fn, { immutable: true });
 These are **additive**, your old code keeps working; you opt in when you need them.
 
 | Area | Examples |
-|------|----------|
+| --- | --- |
 | **String paths** | `getPath`, `setPath`, `hasPath`, `parseDotPath`, `parseJsonPointer` |
 | **Path search** | `findPaths`, `filterPaths`, `select` (glob), `count`, `size` |
 | **Structural** | `deleteWhere`, `prune`, `pruneDeep`, `deepEqual`, `toJSON`, `freeze`, `diff`, `patch` |
@@ -125,7 +122,7 @@ npm uninstall traverse @types/traverse
 ```js [3. Or alias in the bundler: zero source edits]
 // vite.config.js
 export default {
-  resolve: { alias: { traverse: 'neotraverse/legacy' } },
+  resolve: { alias: { traverse: 'neotraverse/legacy' } }
 };
 ```
 
@@ -136,7 +133,7 @@ Then optionally move hot paths to the **functional `neotraverse`** API for tree-
 ## Which build should I use?
 
 | Build | Import | Use when |
-|-------|--------|----------|
+| --- | --- | --- |
 | **Default (functional)** | `neotraverse` | New apps, TypeScript, tree-shaking, extra helpers, fastest `get`/`set`; the recommended entry |
 | **Deprecated class** | `neotraverse/modern` | Only for existing `Traverse` class users; deprecated, removed in v2 |
 | **Legacy** | `neotraverse/legacy` | Drop-in replacement; `this`-bound API; older bundlers / CommonJS; still `traverse`-compatible (ES2015) |

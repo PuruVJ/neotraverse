@@ -40,7 +40,8 @@ function logoSrc(c: Company) {
 
 function cardLabel(c: Company) {
 	const parts = [c.company, c.product, c.subtitle, c.npm];
-	if (c.weeklyDownloads) parts.push(`${c.weeklyDownloads.toLocaleString('en-US')} downloads/wk on npm`);
+	if (c.weeklyDownloads)
+		parts.push(`${c.weeklyDownloads.toLocaleString('en-US')} downloads/wk on npm`);
 	return parts.filter(Boolean).join(' · ');
 }
 

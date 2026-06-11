@@ -39,7 +39,13 @@ export interface Frame {
 }
 
 // Reset a frame (fresh or recycled) to a clean, monomorphic shape.
-function reset_frame(f: Frame, node: any, key: PropertyKey | undefined, parent: Frame | undefined, depth: number): Frame {
+function reset_frame(
+	f: Frame,
+	node: any,
+	key: PropertyKey | undefined,
+	parent: Frame | undefined,
+	depth: number,
+): Frame {
 	f.node = node;
 	f.keys = null;
 	f.index = -1;
@@ -66,7 +72,12 @@ function ancestor_of(node: object, from: Frame | undefined): Frame | undefined {
 	return undefined;
 }
 
-function make_frame(node: any, key: PropertyKey | undefined, parent: Frame | undefined, depth: number): Frame {
+function make_frame(
+	node: any,
+	key: PropertyKey | undefined,
+	parent: Frame | undefined,
+	depth: number,
+): Frame {
 	// One literal shape so every frame shares a hidden class (monomorphic).
 	return {
 		node,
@@ -139,9 +150,16 @@ export class Cursor {
 		this.frame = f;
 	}
 
-	private acquire(node: any, key: PropertyKey | undefined, parent: Frame | undefined, depth: number): Frame {
+	private acquire(
+		node: any,
+		key: PropertyKey | undefined,
+		parent: Frame | undefined,
+		depth: number,
+	): Frame {
 		const pooled = this.pool.pop();
-		return pooled !== undefined ? reset_frame(pooled, node, key, parent, depth) : make_frame(node, key, parent, depth);
+		return pooled !== undefined
+			? reset_frame(pooled, node, key, parent, depth)
+			: make_frame(node, key, parent, depth);
 	}
 
 	/** Advance to the next ENTER/EXIT event. Returns false when traversal is done. */
@@ -433,7 +451,8 @@ if (import.meta.vitest) {
 		it('yields shallower nodes before deeper ones', () => {
 			const depths = [...breadthFrames({ a: 1, b: { c: { d: 2 } } })].map((f) => f.depth);
 			// non-decreasing
-			for (let i = 1; i < depths.length; i++) expect(depths[i]).toBeGreaterThanOrEqual(depths[i - 1]);
+			for (let i = 1; i < depths.length; i++)
+				expect(depths[i]).toBeGreaterThanOrEqual(depths[i - 1]);
 		});
 	});
 }

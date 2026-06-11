@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { clone, forEach, map, nodes, paths, reduce } from '../src/index';
 import { Traverse } from '../src/modern';
 
@@ -32,11 +32,7 @@ describe('functional parity vs Traverse class', () => {
 	});
 
 	test('reduce seeded and seedless', () => {
-		const sum = reduce(
-			obj,
-			(_, acc, x) => (typeof x === 'number' ? acc + x : acc),
-			0,
-		);
+		const sum = reduce(obj, (_, acc, x) => (typeof x === 'number' ? acc + x : acc), 0);
 		expect(sum).toEqual(
 			new Traverse(obj).reduce((_, acc, x) => (typeof x === 'number' ? acc + x : acc), 0),
 		);

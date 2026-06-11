@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vite-plus/test';
 import { clone, deepEqual, diff, get, has, merge, set } from '../src/index';
 
 const PROBE_KEYS = ['polluted', 'isAdmin', 'pp'] as const;
@@ -62,10 +62,14 @@ describe('functional DoS bounding (S-1)', () => {
 	}
 
 	test('deepEqual bounds depth instead of overflowing the native stack', () => {
-		expect(() => deepEqual(deep(8000), deep(8000), { maxDepth: 100 } as any)).toThrow(/maximum traversal depth/);
+		expect(() => deepEqual(deep(8000), deep(8000), { maxDepth: 100 } as any)).toThrow(
+			/maximum traversal depth/,
+		);
 	});
 
 	test('diff bounds depth instead of overflowing the native stack', () => {
-		expect(() => diff(deep(8000), deep(8000), { maxDepth: 100 } as any)).toThrow(/maximum traversal depth/);
+		expect(() => diff(deep(8000), deep(8000), { maxDepth: 100 } as any)).toThrow(
+			/maximum traversal depth/,
+		);
 	});
 });

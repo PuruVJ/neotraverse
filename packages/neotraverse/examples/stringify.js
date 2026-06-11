@@ -9,21 +9,33 @@ var obj = ['five', 6, -3, [7, 8, -2, 1], { f: 10, g: -13 }];
 var s = '';
 traverse(obj).forEach(function toS(node) {
 	if (Array.isArray(node)) {
-		this.before(function () { s += '['; });
-		this.post(function (child) {
-			if (!child.isLast) { s += ','; }
+		this.before(function () {
+			s += '[';
 		});
-		this.after(function () { s += ']'; });
+		this.post(function (child) {
+			if (!child.isLast) {
+				s += ',';
+			}
+		});
+		this.after(function () {
+			s += ']';
+		});
 	} else if (typeof node === 'object') {
-		this.before(function () { s += '{'; });
+		this.before(function () {
+			s += '{';
+		});
 		this.pre(function (x, key) {
 			toS(key);
 			s += ':';
 		});
 		this.post(function (child) {
-			if (!child.isLast) { s += ','; }
+			if (!child.isLast) {
+				s += ',';
+			}
 		});
-		this.after(function () { s += '}'; });
+		this.after(function () {
+			s += '}';
+		});
 	} else if (typeof node === 'string') {
 		s += '"' + node.toString().replace(/"/g, '\\"') + '"';
 	} else if (typeof node === 'function') {

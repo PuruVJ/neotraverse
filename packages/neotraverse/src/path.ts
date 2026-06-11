@@ -175,7 +175,9 @@ export function parseJsonPointer(pointer: string): PropertyKey[] {
 	if (pointer === '') return [];
 	if (!pointer.startsWith('/')) throw new Error('neotraverse: JSON Pointer must start with "/"');
 	const raw = pointer.slice(1).split('/');
-	const keys = raw.map((seg) => coerceKey(seg.replace(PTR_UNESCAPE_SLASH_RE, '/').replace(PTR_UNESCAPE_TILDE_RE, '~')));
+	const keys = raw.map((seg) =>
+		coerceKey(seg.replace(PTR_UNESCAPE_SLASH_RE, '/').replace(PTR_UNESCAPE_TILDE_RE, '~')),
+	);
 	assertSafePath(keys);
 	return keys;
 }
@@ -195,7 +197,8 @@ export function pointerPath(path: PropertyKey[]): string {
 		let s = String(path[i]);
 		// Skip the two regex passes unless the segment actually contains a reserved
 		// char — the overwhelmingly common case (and pointerPath runs per diff op).
-		if (s.indexOf('~') !== -1 || s.indexOf('/') !== -1) s = s.replace(TILDE_RE, '~0').replace(SLASH_RE, '~1');
+		if (s.indexOf('~') !== -1 || s.indexOf('/') !== -1)
+			s = s.replace(TILDE_RE, '~0').replace(SLASH_RE, '~1');
 		out += '/' + s;
 	}
 	return out;

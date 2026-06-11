@@ -87,7 +87,12 @@ export const is_unsafe_key = (key: PropertyKey): boolean => {
 export function safe_set(dst: any, key: PropertyKey, value: any): void {
 	if (typeof key === 'object' && key !== null) key = String(key);
 	if (key === '__proto__') {
-		Object.defineProperty(dst, key, { value, writable: true, enumerable: true, configurable: true });
+		Object.defineProperty(dst, key, {
+			value,
+			writable: true,
+			enumerable: true,
+			configurable: true,
+		});
 	} else {
 		dst[key] = value;
 	}

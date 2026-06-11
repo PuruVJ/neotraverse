@@ -82,7 +82,14 @@ function resolve_strategy(ctx: MergeCtx, states: MatchStates[]): ArrayStrategy {
 	return ctx.defaultArrays;
 }
 
-function merge_arrays(base: any[], overlay: any[], strat: ArrayStrategy, path: PropertyKey[], ctx: MergeCtx, states: MatchStates[]): any[] {
+function merge_arrays(
+	base: any[],
+	overlay: any[],
+	strat: ArrayStrategy,
+	path: PropertyKey[],
+	ctx: MergeCtx,
+	states: MatchStates[],
+): any[] {
 	if (typeof strat === 'function') return strat(base, overlay, path);
 	if (strat === 'replace') return overlay;
 	if (strat === 'concat') return base.concat(overlay);
@@ -122,11 +129,18 @@ function merge_arrays(base: any[], overlay: any[], strat: ArrayStrategy, path: P
 function child_states(ctx: MergeCtx, states: MatchStates[], key: PropertyKey): MatchStates[] {
 	if (ctx.atEntries.length === 0) return states;
 	const next: MatchStates[] = new Array(ctx.atEntries.length);
-	for (let i = 0; i < ctx.atEntries.length; i++) next[i] = ctx.atEntries[i].matcher.step(states[i], key);
+	for (let i = 0; i < ctx.atEntries.length; i++)
+		next[i] = ctx.atEntries[i].matcher.step(states[i], key);
 	return next;
 }
 
-function merge_pair(base: any, overlay: any, path: PropertyKey[], ctx: MergeCtx, states: MatchStates[]): any {
+function merge_pair(
+	base: any,
+	overlay: any,
+	path: PropertyKey[],
+	ctx: MergeCtx,
+	states: MatchStates[],
+): any {
 	if (overlay === undefined) return base; // overlay absent — keep base (shared)
 	const ot = type_tag(overlay);
 	const bt = type_tag(base);
@@ -192,7 +206,10 @@ export function merge<A, B>(
 export function merge(base: unknown, overlay: unknown, options?: MergeOptions): unknown;
 export function merge(base: any, overlay: any, options: MergeOptions = {}): any {
 	const atEntries = options.at
-		? Object.keys(options.at).map((pat) => ({ matcher: compile_pattern(pat), strategy: options.at![pat] }))
+		? Object.keys(options.at).map((pat) => ({
+				matcher: compile_pattern(pat),
+				strategy: options.at![pat],
+			}))
 		: [];
 	const ctx: MergeCtx = {
 		defaultArrays: options.arrays ?? 'replace',

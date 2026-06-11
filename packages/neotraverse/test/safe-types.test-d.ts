@@ -2,7 +2,7 @@
 // These assert the hardest signatures behave: template-literal Get<T,P>,
 // SetValue<T,P> with the autovivify fallback, and the layered Merge overloads.
 
-import { assertType, describe, expectTypeOf, it } from 'vitest';
+import { assertType, describe, expectTypeOf, it } from 'vite-plus/test';
 import { get, type Get, merge, type Merge, type SetValue, set, visit } from '../src/safe/index.js';
 
 interface Config {

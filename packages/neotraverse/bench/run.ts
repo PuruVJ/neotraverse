@@ -71,7 +71,10 @@ const realistic = {
 };
 
 const datasets: Record<string, { description: string; value: any }> = {
-	small: { description: '{ a, b, c:[…] } — the canonical example', value: { a: 1, b: 2, c: [3, 4] } },
+	small: {
+		description: '{ a, b, c:[…] } — the canonical example',
+		value: { a: 1, b: 2, c: [3, 4] },
+	},
 	wide: { description: 'flat object with 64 keys', value: build_wide(64) },
 	deep: { description: '32-level deeply nested object', value: build_deep(32) },
 	array: { description: 'array of 256 small objects', value: build_array(256) },
@@ -89,43 +92,92 @@ type Factory = (d: any) => () => void;
 // just a thin re-export of these same functions, so it isn't benchmarked separately.
 const operations: Record<string, Record<Contender, Factory>> = {
 	forEach: {
-		traverse: (d) => () => traverseOrig(d).forEach(function (this: any, n: any) { if (typeof n === 'number') sink += n; }),
-		'neotraverse legacy': (d) => () => traverseLegacy(d).forEach(function (this: any, n: any) { if (typeof n === 'number') sink += n; }),
-		'neotraverse modern': (d) => () => modern.forEach(d, (_c: any, n: any) => { if (typeof n === 'number') sink += n; }),
+		traverse: (d) => () =>
+			traverseOrig(d).forEach(function (this: any, n: any) {
+				if (typeof n === 'number') sink += n;
+			}),
+		'neotraverse legacy': (d) => () =>
+			traverseLegacy(d).forEach(function (this: any, n: any) {
+				if (typeof n === 'number') sink += n;
+			}),
+		'neotraverse modern': (d) => () =>
+			modern.forEach(d, (_c: any, n: any) => {
+				if (typeof n === 'number') sink += n;
+			}),
 	},
 	map: {
-		traverse: (d) => () => traverseOrig(d).map(function (this: any, n: any) {
-			if (typeof n === 'number') this.update(n + 1);
-			else if (typeof n === 'string') this.update(n.toUpperCase());
-		}),
-		'neotraverse legacy': (d) => () => traverseLegacy(d).map(function (this: any, n: any) {
-			if (typeof n === 'number') this.update(n + 1);
-			else if (typeof n === 'string') this.update(n.toUpperCase());
-		}),
-		'neotraverse modern': (d) => () => modern.map(d, (c: any, n: any) => {
-			if (typeof n === 'number') c.update(n + 1);
-			else if (typeof n === 'string') c.update(n.toUpperCase());
-		}),
+		traverse: (d) => () =>
+			traverseOrig(d).map(function (this: any, n: any) {
+				if (typeof n === 'number') this.update(n + 1);
+				else if (typeof n === 'string') this.update(n.toUpperCase());
+			}),
+		'neotraverse legacy': (d) => () =>
+			traverseLegacy(d).map(function (this: any, n: any) {
+				if (typeof n === 'number') this.update(n + 1);
+				else if (typeof n === 'string') this.update(n.toUpperCase());
+			}),
+		'neotraverse modern': (d) => () =>
+			modern.map(d, (c: any, n: any) => {
+				if (typeof n === 'number') c.update(n + 1);
+				else if (typeof n === 'string') c.update(n.toUpperCase());
+			}),
 	},
 	clone: {
-		traverse: (d) => () => { sink += traverseOrig(d).clone() ? 1 : 0; },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).clone() ? 1 : 0; },
-		'neotraverse modern': (d) => () => { sink += modern.clone(d) ? 1 : 0; },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).clone() ? 1 : 0;
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).clone() ? 1 : 0;
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.clone(d) ? 1 : 0;
+		},
 	},
 	reduce: {
-		traverse: (d) => () => { sink += traverseOrig(d).reduce(function (this: any, acc: any[], n: any) { if (this.isLeaf) acc.push(n); return acc; }, []).length; },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).reduce(function (this: any, acc: any[], n: any) { if (this.isLeaf) acc.push(n); return acc; }, []).length; },
-		'neotraverse modern': (d) => () => { sink += modern.reduce(d, (c: any, acc: any[], n: any) => { if (c.isLeaf) acc.push(n); return acc; }, []).length; },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).reduce(function (this: any, acc: any[], n: any) {
+				if (this.isLeaf) acc.push(n);
+				return acc;
+			}, []).length;
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).reduce(function (this: any, acc: any[], n: any) {
+				if (this.isLeaf) acc.push(n);
+				return acc;
+			}, []).length;
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.reduce(
+				d,
+				(c: any, acc: any[], n: any) => {
+					if (c.isLeaf) acc.push(n);
+					return acc;
+				},
+				[],
+			).length;
+		},
 	},
 	paths: {
-		traverse: (d) => () => { sink += traverseOrig(d).paths().length; },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).paths().length; },
-		'neotraverse modern': (d) => () => { sink += modern.paths(d).length; },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).paths().length;
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).paths().length;
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.paths(d).length;
+		},
 	},
 	nodes: {
-		traverse: (d) => () => { sink += traverseOrig(d).nodes().length; },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).nodes().length; },
-		'neotraverse modern': (d) => () => { sink += modern.nodes(d).length; },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).nodes().length;
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).nodes().length;
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.nodes(d).length;
+		},
 	},
 };
 
@@ -133,19 +185,37 @@ const operations: Record<string, Record<Contender, Factory>> = {
 const DEEP_PATH = ['profile', 'address', 'geo', 'lat'];
 const path_operations: Record<string, Record<Contender, Factory>> = {
 	get: {
-		traverse: (d) => () => { sink += traverseOrig(d).get(DEEP_PATH); },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).get(DEEP_PATH); },
-		'neotraverse modern': (d) => () => { sink += modern.get(d, DEEP_PATH); },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).get(DEEP_PATH);
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).get(DEEP_PATH);
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.get(d, DEEP_PATH);
+		},
 	},
 	has: {
-		traverse: (d) => () => { sink += traverseOrig(d).has(DEEP_PATH) ? 1 : 0; },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).has(DEEP_PATH) ? 1 : 0; },
-		'neotraverse modern': (d) => () => { sink += modern.has(d, DEEP_PATH) ? 1 : 0; },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).has(DEEP_PATH) ? 1 : 0;
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).has(DEEP_PATH) ? 1 : 0;
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.has(d, DEEP_PATH) ? 1 : 0;
+		},
 	},
 	set: {
-		traverse: (d) => () => { sink += traverseOrig(d).set(DEEP_PATH, 1); },
-		'neotraverse legacy': (d) => () => { sink += traverseLegacy(d).set(DEEP_PATH, 1); },
-		'neotraverse modern': (d) => () => { sink += modern.set(d, DEEP_PATH, 1); },
+		traverse: (d) => () => {
+			sink += traverseOrig(d).set(DEEP_PATH, 1);
+		},
+		'neotraverse legacy': (d) => () => {
+			sink += traverseLegacy(d).set(DEEP_PATH, 1);
+		},
+		'neotraverse modern': (d) => () => {
+			sink += modern.set(d, DEEP_PATH, 1);
+		},
 	},
 };
 
@@ -177,7 +247,11 @@ function measure_memory(fn: () => void): number | null {
 	return Math.max(0, Math.round(samples[2]));
 }
 
-async function run_suite(operation: string, dataset: string, factories: Record<Contender, Factory>) {
+async function run_suite(
+	operation: string,
+	dataset: string,
+	factories: Record<Contender, Factory>,
+) {
 	// Each contender gets its OWN fresh deep copy: mutating ops (e.g. `set`) must not
 	// share or poison state across contenders, nor leak a mutated dataset into later
 	// suites (the original shared a single instance — see audit B-1).
@@ -217,7 +291,16 @@ async function run_suite(operation: string, dataset: string, factories: Record<C
 		);
 	}
 
-	return { operation, dataset, label: `${operation} · ${dataset}`, description: datasets[dataset].description, results, fastest: fastest.name, baseline: 'traverse', speedupVsTraverse };
+	return {
+		operation,
+		dataset,
+		label: `${operation} · ${dataset}`,
+		description: datasets[dataset].description,
+		results,
+		fastest: fastest.name,
+		baseline: 'traverse',
+		speedupVsTraverse,
+	};
 }
 
 // 0.7 functional-only API (merge/diff/deepEqual/clone-circular/select/dereference):
@@ -255,21 +338,54 @@ async function run_modern_suites() {
 		m: new Map(Array.from({ length: 32 }, (_, i) => [`k${i}`, { i, v: `v${i}` }])),
 		s: new Set(Array.from({ length: 32 }, (_, i) => i)),
 	};
-	const refDoc = { defs: { Foo: { type: 'string' } }, items: Array.from({ length: 32 }, () => ({ $ref: '#/defs/Foo' })) };
+	const refDoc = {
+		defs: { Foo: { type: 'string' } },
+		items: Array.from({ length: 32 }, () => ({ $ref: '#/defs/Foo' })),
+	};
 
 	const out: any[] = [];
-	out.push(await run_modern('clone · circular', () => { sink += modern.clone(circular) ? 1 : 0; }));
-	out.push(await run_modern('clone · map+set', () => { sink += modern.clone(mapSet) ? 1 : 0; }));
-	out.push(await run_modern('deepEqual · json', () => { sink += modern.deepEqual(realistic, structuredClone(realistic)) ? 1 : 0; }));
-	out.push(await run_modern('diff · array(256)', () => { sink += modern.diff(arrA, arrB).length; }));
-	out.push(await run_modern('merge · json', () => { sink += modern.merge(realistic, realisticB) ? 1 : 0; }));
-	out.push(await run_modern('select · json', () => { sink += modern.select(realistic, 'posts[*].id').length; }));
-	out.push(await run_modern('dereference · refs', () => { sink += modern.dereference(refDoc) ? 1 : 0; }));
+	out.push(
+		await run_modern('clone · circular', () => {
+			sink += modern.clone(circular) ? 1 : 0;
+		}),
+	);
+	out.push(
+		await run_modern('clone · map+set', () => {
+			sink += modern.clone(mapSet) ? 1 : 0;
+		}),
+	);
+	out.push(
+		await run_modern('deepEqual · json', () => {
+			sink += modern.deepEqual(realistic, structuredClone(realistic)) ? 1 : 0;
+		}),
+	);
+	out.push(
+		await run_modern('diff · array(256)', () => {
+			sink += modern.diff(arrA, arrB).length;
+		}),
+	);
+	out.push(
+		await run_modern('merge · json', () => {
+			sink += modern.merge(realistic, realisticB) ? 1 : 0;
+		}),
+	);
+	out.push(
+		await run_modern('select · json', () => {
+			sink += modern.select(realistic, 'posts[*].id').length;
+		}),
+	);
+	out.push(
+		await run_modern('dereference · refs', () => {
+			sink += modern.dereference(refDoc) ? 1 : 0;
+		}),
+	);
 	return out;
 }
 
 async function main() {
-	console.log('traverse  vs  neotraverse legacy  vs  neotraverse modern (functional)\n' + '='.repeat(56));
+	console.log(
+		'traverse  vs  neotraverse legacy  vs  neotraverse modern (functional)\n' + '='.repeat(56),
+	);
 	const suites: any[] = [];
 
 	for (const [operation, factories] of Object.entries(operations)) {
@@ -286,8 +402,12 @@ async function main() {
 	// overall: geometric-mean speedup of each neotraverse build vs traverse
 	const geomean = (xs: number[]) => Math.exp(xs.reduce((a, b) => a + Math.log(b), 0) / xs.length);
 	const summary = {
-		'neotraverse legacy': +geomean(suites.map((s) => s.speedupVsTraverse['neotraverse legacy'])).toFixed(2),
-		'neotraverse modern': +geomean(suites.map((s) => s.speedupVsTraverse['neotraverse modern'])).toFixed(2),
+		'neotraverse legacy': +geomean(
+			suites.map((s) => s.speedupVsTraverse['neotraverse legacy']),
+		).toFixed(2),
+		'neotraverse modern': +geomean(
+			suites.map((s) => s.speedupVsTraverse['neotraverse modern']),
+		).toFixed(2),
 	};
 
 	const memoryReduction = (suite: (typeof suites)[number], contender: Contender) => {

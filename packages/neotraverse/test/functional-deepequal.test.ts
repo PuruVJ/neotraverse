@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { deepEqual } from '../src/index';
 
 /**
@@ -63,6 +63,8 @@ describe('deepEqual — depth bounding (S-1)', () => {
 		return root;
 	}
 	test('honors maxDepth instead of overflowing the stack', () => {
-		expect(() => deepEqual(deep(5000), deep(5000), { maxDepth: 50 } as any)).toThrow(/maximum traversal depth/);
+		expect(() => deepEqual(deep(5000), deep(5000), { maxDepth: 50 } as any)).toThrow(
+			/maximum traversal depth/,
+		);
 	});
 });

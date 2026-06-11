@@ -101,7 +101,11 @@ async function dispatch(
 		}
 	}
 
-	if (replaced) return { cmd: descend ? edit.replace(current, { descend: true }) : edit.replace(current), lastVisit };
+	if (replaced)
+		return {
+			cmd: descend ? edit.replace(current, { descend: true }) : edit.replace(current),
+			lastVisit,
+		};
 	return { cmd: undefined, lastVisit };
 }
 
@@ -141,18 +145,37 @@ async function fold(
 	let anyRuleViable = true;
 	if (ctx.rules !== null && states !== null) {
 		anyRuleViable = false;
-		for (let i = 0; i < ctx.rules.length; i++) if (ctx.rules[i].matcher.viable(states[i])) anyRuleViable = true;
+		for (let i = 0; i < ctx.rules.length; i++)
+			if (ctx.rules[i].matcher.viable(states[i])) anyRuleViable = true;
 	}
 
 	let base = node;
 	let result = node;
 	let changed = false;
 	let removed = false;
-	let ownVisit = new Visit(ctx.session as any, node, key, parentVisit, depth, isLeaf, circularVisit);
+	let ownVisit = new Visit(
+		ctx.session as any,
+		node,
+		key,
+		parentVisit,
+		depth,
+		isLeaf,
+		circularVisit,
+	);
 
 	// pre-order visitor
 	if (!ctx.post && !ctx.stopped && (ctx.matchMatcher === undefined || true)) {
-		const { cmd, lastVisit } = await dispatch(ctx, node, key, parentVisit, depth, isLeaf, circularVisit, states, matched);
+		const { cmd, lastVisit } = await dispatch(
+			ctx,
+			node,
+			key,
+			parentVisit,
+			depth,
+			isLeaf,
+			circularVisit,
+			states,
+			matched,
+		);
 		ownVisit = lastVisit;
 		if (cmd !== undefined) {
 			const t = (cmd as any)[COMMAND];
@@ -161,7 +184,10 @@ async function fold(
 				if ((cmd as any).descend) {
 					base = (cmd as any).value;
 					// descend into the replacement's children
-					keys = typeof base === 'object' && base !== null ? list_keys(base, ctx.symbols, ctx.mapSet) : null;
+					keys =
+						typeof base === 'object' && base !== null
+							? list_keys(base, ctx.symbols, ctx.mapSet)
+							: null;
 				} else {
 					return { value: (cmd as any).value, changed: true, removed: false };
 				}
@@ -186,7 +212,8 @@ async function fold(
 		const baseIsObj = typeof base === 'object' && base !== null;
 		if (baseIsObj) ancestors.set(base, true);
 		const edits = new Map<PropertyKey, any>();
-		const tag = ctx.mapSet && base instanceof Map ? 'map' : ctx.mapSet && base instanceof Set ? 'set' : '';
+		const tag =
+			ctx.mapSet && base instanceof Map ? 'map' : ctx.mapSet && base instanceof Set ? 'set' : '';
 
 		const childList: Array<{ k: PropertyKey; child: any }> = [];
 		if (tag === 'map') {
@@ -195,7 +222,8 @@ async function fold(
 			let i = 0;
 			for (const val of base as Set<any>) childList.push({ k: i++, child: val });
 		} else {
-			for (let i = 0; i < keys.length; i++) childList.push({ k: keys[i], child: (base as any)[keys[i]] });
+			for (let i = 0; i < keys.length; i++)
+				childList.push({ k: keys[i], child: (base as any)[keys[i]] });
 		}
 
 		const limit = ctx.concurrency;
@@ -234,7 +262,17 @@ async function fold(
 
 	// post-order visitor sees the folded value
 	if (ctx.post && !ctx.stopped) {
-		const { cmd } = await dispatch(ctx, result, key, parentVisit, depth, isLeaf, circularVisit, states, matched);
+		const { cmd } = await dispatch(
+			ctx,
+			result,
+			key,
+			parentVisit,
+			depth,
+			isLeaf,
+			circularVisit,
+			states,
+			matched,
+		);
 		if (cmd !== undefined) {
 			const t = (cmd as any)[COMMAND];
 			if (t === 'replace') {
@@ -267,9 +305,12 @@ export async function transformAsync(
 ): Promise<any> {
 	const { fns, rules } = normalize(visitor as any);
 	if (rules !== null && options.match !== undefined) {
-		throw new TypeError('neotraverse: the Rules form carries its own patterns; do not also pass options.match');
+		throw new TypeError(
+			'neotraverse: the Rules form carries its own patterns; do not also pass options.match',
+		);
 	}
-	const matchMatcher = rules === null && options.match !== undefined ? compile_pattern(options.match) : undefined;
+	const matchMatcher =
+		rules === null && options.match !== undefined ? compile_pattern(options.match) : undefined;
 	const ctx: Ctx = {
 		symbols: !!options.symbols,
 		mapSet: !!options.mapSet,
@@ -277,7 +318,10 @@ export async function transformAsync(
 		mutate: !!options.mutate,
 		post: options.order === 'post',
 		signal: options.signal,
-		concurrency: typeof options.concurrency === 'number' && options.concurrency >= 1 ? Math.floor(options.concurrency) : 1,
+		concurrency:
+			typeof options.concurrency === 'number' && options.concurrency >= 1
+				? Math.floor(options.concurrency)
+				: 1,
 		fns,
 		rules,
 		matchMatcher,
@@ -327,7 +371,9 @@ if (import.meta.vitest) {
 		it('aborts with the signal reason', async () => {
 			const ac = new AbortController();
 			ac.abort(new Error('stop now'));
-			await expect(transformAsync({ a: 1 }, async () => {}, { signal: ac.signal })).rejects.toThrow('stop now');
+			await expect(transformAsync({ a: 1 }, async () => {}, { signal: ac.signal })).rejects.toThrow(
+				'stop now',
+			);
 		});
 		it('sets Visit.circular on a back-edge, matching sync (regression)', async () => {
 			const cyc: any = { n: 1 };

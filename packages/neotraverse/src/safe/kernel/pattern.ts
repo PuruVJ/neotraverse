@@ -77,7 +77,11 @@ function parse(pattern: string): Seg[] {
 			const inner = raw.slice(1, -1);
 			// Drop empty alternatives so `{}`, `{,}`, `{a,}` don't spuriously match the
 			// empty-string key — an empty key set matches nothing.
-			const keys = new Set(split_escaped(inner, ',').map(unescape).filter((k) => k !== ''));
+			const keys = new Set(
+				split_escaped(inner, ',')
+					.map(unescape)
+					.filter((k) => k !== ''),
+			);
 			return { kind: 'alt', keys };
 		}
 		return { kind: 'lit', key: unescape(raw) };

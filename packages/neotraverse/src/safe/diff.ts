@@ -22,7 +22,8 @@ function pointer(path: PropertyKey[]): string {
 	let out = '';
 	for (let i = 0; i < path.length; i++) {
 		let s = String(path[i]);
-		if (s.indexOf('~') !== -1 || s.indexOf('/') !== -1) s = s.replace(/~/g, '~0').replace(/\//g, '~1');
+		if (s.indexOf('~') !== -1 || s.indexOf('/') !== -1)
+			s = s.replace(/~/g, '~0').replace(/\//g, '~1');
 		out += '/' + s;
 	}
 	return out;
@@ -90,7 +91,8 @@ function diff_pair(
 
 	if (ta === 'array') {
 		const min = Math.min(a.length, b.length);
-		for (let i = 0; i < min; i++) diff_pair(a[i], b[i], path.concat(i), ops, stack, maxDepth, depth + 1);
+		for (let i = 0; i < min; i++)
+			diff_pair(a[i], b[i], path.concat(i), ops, stack, maxDepth, depth + 1);
 		for (let i = a.length; i < b.length; i++) {
 			assert_acyclic(b[i], new Set());
 			ops.push({ op: 'add', path: pointer(path.concat(i)), value: clone(b[i]) });
@@ -101,7 +103,8 @@ function diff_pair(
 			ops.push({ op: 'remove', path: pointer(path.concat(i)) });
 		}
 	} else if (ATOMIC.has(ta)) {
-		if (!equal(a, b, { maxDepth })) ops.push({ op: 'replace', path: pointer(path), value: clone(b) });
+		if (!equal(a, b, { maxDepth }))
+			ops.push({ op: 'replace', path: pointer(path), value: clone(b) });
 	} else {
 		const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
 		for (const k of keys) {

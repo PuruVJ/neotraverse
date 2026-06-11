@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { clone, entries, forEach, get, has, map } from '../src/index';
 import { Traverse } from '../src/modern';
 
@@ -12,9 +12,13 @@ describe('functional options', () => {
 		expect(mapped.b.c).toBe(4);
 
 		const immFn = structuredClone(base);
-		forEach(immFn, (ctx, x) => {
-			if (typeof x === 'number') ctx.update(x * 2);
-		}, { immutable: true });
+		forEach(
+			immFn,
+			(ctx, x) => {
+				if (typeof x === 'number') ctx.update(x * 2);
+			},
+			{ immutable: true },
+		);
 		const immClass = structuredClone(base);
 		new Traverse(immClass, { immutable: true }).forEach((ctx, x) => {
 			if (typeof x === 'number') ctx.update(x * 2);
@@ -30,9 +34,13 @@ describe('functional options', () => {
 		expect([...entries(withSym, { includeSymbols: true })]).toHaveLength(3);
 
 		let fnCount = 0;
-		forEach(withSym, () => {
-			fnCount++;
-		}, { includeSymbols: true });
+		forEach(
+			withSym,
+			() => {
+				fnCount++;
+			},
+			{ includeSymbols: true },
+		);
 		let classCount = 0;
 		new Traverse(withSym, { includeSymbols: true }).forEach(() => {
 			classCount++;

@@ -13,7 +13,10 @@ function toPlain(md: string): string {
 		.replace(/^---\n[\s\S]*?\n---\n/, '') // frontmatter
 		.replace(/<script[\s\S]*?<\/script>/g, '') // <script setup>
 		.replace(/<style[\s\S]*?<\/style>/g, '') // <style>
-		.replace(/<BenchChart\s*\/>/g, '_(interactive benchmark charts at https://neotraverse.puruvj.dev/benchmarks)_')
+		.replace(
+			/<BenchChart\s*\/>/g,
+			'_(interactive benchmark charts at https://neotraverse.puruvj.dev/benchmarks)_',
+		)
 		.replace(/^::: ?code-group\s*$/gm, '') // code-group fences
 		.replace(/^:::\s*\w+.*$/gm, '') // ::: tip/warning/danger open
 		.replace(/^:::\s*$/gm, '') // ::: close
@@ -78,7 +81,8 @@ export default defineConfig({
 			'meta',
 			{
 				property: 'og:description',
-				content: 'Zero-dependency, hardened, ~5× faster and ~6× leaner functional API (up to ~10× / ~11×). Drop-in for traverse.',
+				content:
+					'Zero-dependency, hardened, ~5× faster and ~6× leaner functional API (up to ~10× / ~11×). Drop-in for traverse.',
 			},
 		],
 	],
@@ -148,7 +152,8 @@ export default defineConfig({
 		},
 		footer: {
 			message: 'Released under the MIT License.',
-			copyright: 'Copyright © <a href="https://puruvj.dev" target="_blank" rel="noreferrer">Puru Vijay</a>',
+			copyright:
+				'Copyright © <a href="https://puruvj.dev" target="_blank" rel="noreferrer">Puru Vijay</a>',
 		},
 	},
 	vite: {
@@ -162,7 +167,10 @@ export default defineConfig({
 						await fetchNpmDownloads({ outFile: NPM_DOWNLOADS_JSON, quiet: true });
 					} catch (err) {
 						if (!existsSync(NPM_DOWNLOADS_JSON)) throw err;
-						console.warn('[npm-downloads] fetch failed; using committed data:', (err as Error).message);
+						console.warn(
+							'[npm-downloads] fetch failed; using committed data:',
+							(err as Error).message,
+						);
 					}
 				},
 			},
