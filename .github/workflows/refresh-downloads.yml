@@ -1,0 +1,28 @@
+name: Refresh npm downloads
+
+# Redeploys the docs site daily so the build-time npm download counter
+# (docs/.vitepress/config.ts `npm-downloads-fetch` plugin) re-fetches and
+# bakes a fresh total into the static HTML.
+
+on:
+  schedule:
+    # 06:15 UTC daily. GitHub cron can drift by a few minutes under load.
+    - cron: '15 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        run: |
+          if [ -z "${VERCEL_DEPLOY_HOOK_URL}" ]; then
+            echo "::error::VERCEL_DEPLOY_HOOK_URL secret is not set"
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "${VERCEL_DEPLOY_HOOK_URL}"
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
