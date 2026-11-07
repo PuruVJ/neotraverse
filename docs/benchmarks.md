@@ -94,7 +94,7 @@ pnpm bench:count    # needs Node 26.4 or newer; writes packages/neotraverse/benc
 
 - The cases are in `packages/neotraverse/bench/*.bench.ts`: the operations and datasets of `run.ts` and `run-safe.ts` (default API, `neotraverse/legacy` and `neotraverse/safe`), plus `find`, `filter`, `breadthFirst`, `patch`, `transformAsync` and the string path parsers.
 - `bench/resolve.ts` lets the source's `./x.js` imports load the `./x.ts` files.
-- Every PR gets a comment from [`.github/workflows/heisenbench.yml`](https://github.com/PuruVJ/neotraverse/blob/main/.github/workflows/heisenbench.yml) with each function whose count changed, and the lines where it changed.
+- Every PR gets a comment from [`.github/workflows/heisenbench.yml`](https://github.com/PuruVJ/neotraverse/blob/main/.github/workflows/heisenbench.yml) with each function whose count changed and the lines where it changed, then the PR's own counts (`bench/summary.ts`): the heaviest cases, the function and line that do the most work in each, and the growth class. When the base has no bench files, the PR's bench files are run on the base's `src/`.
 - To compare two commits by hand, count each one, then run `pnpm exec heisenbench diff base.json pr.json --repo ../..` in `packages/neotraverse`.
 - `pnpm --filter neotraverse bench:growth` counts each case at 1×, 4×, 16× and 50× its input and names the curve. The datasets that have a `grow` in `bench/data.ts` grow by keys, depth or items (50× stays under the depth where the recursive default walk overflows). It shows, for example, that the default walks are quadratic in depth on the `deep` chain (each node is compared with every ancestor to find cycles), while `neotraverse/safe` stays linear.
 
