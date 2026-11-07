@@ -11,7 +11,7 @@ import {
 	_apply_edits as apply_edits,
 	_as_command as as_command,
 	_COMMAND as COMMAND,
-	_CompiledRule as CompiledRule,
+	type _CompiledRule as CompiledRule,
 	_edit as edit,
 	_normalize as normalize,
 	_REMOVED as REMOVED,

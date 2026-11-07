@@ -81,3 +81,21 @@ On a full eager scan, `/safe`'s lazy iterator runs at roughly **0.8×** the defa
 - **Full materialization is not a memory win.** `/safe` allocates one `Visit` per node, so keeping the whole tree costs _more_. Its memory advantage is specifically about **not** materializing what you don't consume.
 
 See [Why `/safe`](/guide/safe) for the full story.
+
+## Counting work (for PRs)
+
+The numbers above are timings: they answer "how fast is it, and how does it compare with `traverse`". They also move by a few percent from run to run, so they cannot tell you whether a PR made a walk 2% slower.
+
+For that, the repository also counts the work each function does with [Heisenbench](https://www.npmjs.com/package/heisenbench). It runs the TypeScript source in `src/` with every function rewritten to count its own operations (property reads, compares, calls, allocations). The count is exact and the same on every run, so one run of a PR and one run of its base are enough, and a change is reported on the line that caused it.
+
+```sh
+pnpm bench:count    # needs Node 26.4 or newer; writes packages/neotraverse/bench/heisenbench.json
+```
+
+- The cases are in `packages/neotraverse/bench/*.bench.ts`: the operations and datasets of `run.ts` and `run-safe.ts` (default API, `neotraverse/legacy` and `neotraverse/safe`), plus `find`, `filter`, `breadthFirst`, `patch`, `transformAsync` and the string path parsers.
+- `bench/resolve.ts` lets the source's `./x.js` imports load the `./x.ts` files.
+- Every PR gets a comment from [`.github/workflows/heisenbench.yml`](https://github.com/PuruVJ/neotraverse/blob/main/.github/workflows/heisenbench.yml) with each function whose count changed, and the lines where it changed.
+- To compare two commits by hand, count each one, then run `pnpm exec heisenbench diff base.json pr.json --repo ../..` in `packages/neotraverse`.
+- `pnpm --filter neotraverse bench:growth` counts each case at 1×, 4×, 16× and 50× its input and names the curve. The datasets that have a `grow` in `bench/data.ts` grow by keys, depth or items (50× stays under the depth where the recursive default walk overflows). It shows, for example, that the default walks are quadratic in depth on the `deep` chain (each node is compared with every ancestor to find cycles), while `neotraverse/safe` stays linear.
+
+Counts are not time: the engine can make some operations nearly free. Use `pnpm bench` for speed and for the comparison with `traverse`, and the counts to see what a change does to the work.

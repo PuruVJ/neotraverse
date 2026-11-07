@@ -64,6 +64,8 @@
 		"test": "vp test",
 		"test:cov": "vp test --coverage",
 		"bench": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run.ts",
+		"bench:count": "NODE_OPTIONS=--import=./bench/resolve.ts heisenbench run bench/*.bench.ts --out bench/heisenbench.json",
+		"bench:growth": "NODE_OPTIONS=--import=./bench/resolve.ts heisenbench growth bench/*.bench.ts --sizes 1,4,16,50 --out bench/heisenbench.json",
 		"bench:safe": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/run-safe.ts",
 		"bench:safe-memory": "pnpm compile && node --expose-gc --max-semi-space-size=128 --import tsx bench/safe-memory.ts",
 		"typecheck": "tsc --noEmit",
@@ -72,6 +74,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^25.9.1",
+		"heisenbench": "0.0.0",
 		"tinybench": "^6.0.2",
 		"traverse": "^0.6.11",
 		"tsx": "^4.22.4",

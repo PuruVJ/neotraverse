@@ -11,6 +11,7 @@
 		"lint": "vp lint",
 		"bench": "pnpm --filter neotraverse bench",
 		"bench:safe": "pnpm --filter neotraverse bench:safe",
+		"bench:count": "pnpm --filter neotraverse bench:count",
 		"docs:dev": "pnpm --filter docs dev",
 		"docs:build": "pnpm --filter docs build",
 		"docs:preview": "pnpm --filter docs preview",
