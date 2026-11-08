@@ -36,8 +36,8 @@ importers:
         specifier: ^25.9.1
         version: 25.9.1
       heisenbench:
-        specifier: 0.0.0
-        version: 0.0.0(typescript@6.0.3)
+        specifier: 0.1.0
+        version: 0.1.0(typescript@6.0.3)
       tinybench:
         specifier: ^6.0.2
         version: 6.0.2
@@ -1942,8 +1942,8 @@ packages:
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
 
-  heisenbench@0.0.0:
-    resolution: {integrity: sha512-DxwMyVMsy2GUbvsVj3JTnsU5DQoGoxhThAk5rE6Tg/FZ6qB7XEYaA8fiLimmrFO5by88hhEQ5NP0nutzqgozmA==}
+  heisenbench@0.1.0:
+    resolution: {integrity: sha512-kX6xZEnHu04WMH+0c0t+tCiSuV7gK0doTJ5yNA2wrcfd9Bczz8ffXKKltzvv6/6arzIrgPo4SjIEBYjNlKhw1w==}
     engines: {node: '>=26.4'}
     hasBin: true
     peerDependencies:
@@ -3398,7 +3398,7 @@ snapshots:
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/remapping@2.3.5':
@@ -3421,7 +3421,7 @@ snapshots:
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   '@manypkg/find-root@1.1.0':
     dependencies:
@@ -4598,7 +4598,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
 
-  heisenbench@0.0.0(typescript@6.0.3):
+  heisenbench@0.1.0(typescript@6.0.3):
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/trace-mapping': 0.3.31

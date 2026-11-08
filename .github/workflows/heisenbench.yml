@@ -1,8 +1,8 @@
 name: Heisenbench
 
 # Counts the work each function does (`pnpm bench:count`) on the PR head and on the commit it
-# branched from, and posts the difference, with the head's own counts and growth, as one PR
-# comment. Counts are exact, so one run of each side is enough and the runner's speed does
+# branched from, and posts the difference as one PR comment (with the head's own counts and
+# growth when no function changed). Counts are exact, so one run of each side is enough and the runner's speed does
 # not matter. Heisenbench needs Node 26.4+; the other workflows stay on Node 24.
 
 on:
@@ -43,9 +43,10 @@ jobs:
           pnpm --filter neotraverse bench:growth
           cp "$PKG/bench/heisenbench.json" "$RUNNER_TEMP/heisenbench/head.json"
 
-      # The base is the merge base. When it has its own bench files, it is counted with them.
-      # When it has none yet (the first PR), the PR's bench files run on the base's `src/`, so
-      # the diff still compares the two versions of the library.
+      # The base is the merge base. When it has its own bench files and the same Heisenbench, it
+      # is counted in its own checkout. Otherwise (the first PR, or a PR that changes the
+      # Heisenbench version, whose reports the other version cannot read) this PR's Heisenbench
+      # counts the base's code: `--source-from` reads every file the base commit has from git.
       - name: Count the base
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -54,7 +55,9 @@ jobs:
           base=$(git merge-base "$BASE_SHA" HEAD)
           echo "$base" > "$out/base-sha"
           git diff --name-only "$base" HEAD -- "$PKG/src" > "$out/src-changes"
-          if git show "$base:$PKG/package.json" | grep -q '"bench:count"'; then
+          version() { node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).devDependencies?.heisenbench'; }
+          if git show "$base:$PKG/package.json" | grep -q '"bench:count"' &&
+            [ "$(git show "$base:$PKG/package.json" | version)" = "$(version < "$PKG/package.json")" ]; then
             echo own > "$out/base-mode"
             git worktree add "$RUNNER_TEMP/base" "$base"
             cd "$RUNNER_TEMP/base"
@@ -63,14 +66,9 @@ jobs:
             pnpm bench:count || true
             cp "$PKG/bench/heisenbench.json" "$out/base.json"
           else
-            echo head-benches > "$out/base-mode"
-            rm -rf "$PKG/src"
-            git checkout "$base" -- "$PKG/src"
-            pnpm bench:count || true
+            echo source-from > "$out/base-mode"
+            pnpm bench:count --source-from "$base" || true
             cp "$PKG/bench/heisenbench.json" "$out/base.json"
-            git reset -q -- "$PKG/src"
-            git checkout -- "$PKG/src"
-            git clean -fdq -- "$PKG/src"
           fi
 
       - name: Write the comment
@@ -83,8 +81,8 @@ jobs:
           {
             echo "Head \`${HEAD_SHA:0:7}\` against \`${base:0:7}\`, where it branched from its base."
             echo
-            if [ "$(cat "$out/base-mode")" = head-benches ]; then
-              echo "The base has no bench files yet, so the base side is this PR's bench files run on the base commit's \`src/\`."
+            if [ "$(cat "$out/base-mode")" = source-from ]; then
+              echo "The base has no bench files yet or another Heisenbench version, so the base side is the base commit's code counted with this PR's Heisenbench."
               echo
             fi
             if [ "$changed" = 0 ]; then
@@ -95,8 +93,6 @@ jobs:
             fi
             echo
             (cd "$PKG" && pnpm exec heisenbench diff "$out/base.json" "$out/head.json" --repo ../.. --base "$base" --head "$HEAD_SHA")
-            echo
-            node "$PKG/bench/summary.ts" "$out/head.json" "$out/base.json"
           } > "$out/section.md"
           cat "$out/section.md" >> "$GITHUB_STEP_SUMMARY"
 
