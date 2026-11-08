@@ -547,19 +547,28 @@ function diffPair(
 		stack.add(a);
 	}
 	const opsBefore = ops.length;
+	// `path` is one array for the whole diff: a key is pushed before descending and
+	// popped after, and the pointer string is built only for an op that is pushed,
+	// instead of copying the path at every key (which made deep input quadratic).
 	if (ta === 'array') {
 		const min = Math.min(a.length, b.length);
 		for (let i = 0; i < min; i++) {
-			diffPair(a[i], b[i], path.concat(i), ops, stack, maxDepth, depth + 1, equalCache);
+			path.push(i);
+			diffPair(a[i], b[i], path, ops, stack, maxDepth, depth + 1, equalCache);
+			path.pop();
 		}
-		// growth: append the new tail (ascending)
-		for (let i = a.length; i < b.length; i++) {
-			ops.push({ op: 'add', path: pointerPath(path.concat(i)), value: clone(b[i]) });
-		}
-		// shrink: remove from the tail DOWNWARD so earlier indices stay valid when
-		// the ops are applied left-to-right (C-5).
-		for (let i = a.length - 1; i >= b.length; i--) {
-			ops.push({ op: 'remove', path: pointerPath(path.concat(i)) });
+		// An index never needs escaping, so the tail ops share the parent's pointer.
+		if (a.length !== b.length) {
+			const ptr = pointerPath(path);
+			// growth: append the new tail (ascending)
+			for (let i = a.length; i < b.length; i++) {
+				ops.push({ op: 'add', path: ptr + '/' + i, value: clone(b[i]) });
+			}
+			// shrink: remove from the tail DOWNWARD so earlier indices stay valid when
+			// the ops are applied left-to-right (C-5).
+			for (let i = a.length - 1; i >= b.length; i--) {
+				ops.push({ op: 'remove', path: ptr + '/' + i });
+			}
 		}
 	} else if (
 		ta === 'map' ||
@@ -580,12 +589,13 @@ function diffPair(
 	} else {
 		const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
 		for (const k of keys) {
-			const p = path.concat(k);
 			const ha = has_own_property.call(a, k);
 			const hb = has_own_property.call(b, k);
-			if (ha && !hb) ops.push({ op: 'remove', path: pointerPath(p) });
-			else if (!ha && hb) ops.push({ op: 'add', path: pointerPath(p), value: clone(b[k]) });
-			else if (ha && hb) diffPair(a[k], b[k], p, ops, stack, maxDepth, depth + 1, equalCache);
+			path.push(k);
+			if (ha && !hb) ops.push({ op: 'remove', path: pointerPath(path) });
+			else if (!ha && hb) ops.push({ op: 'add', path: pointerPath(path), value: clone(b[k]) });
+			else if (ha && hb) diffPair(a[k], b[k], path, ops, stack, maxDepth, depth + 1, equalCache);
+			path.pop();
 		}
 	}
 	if (tracked) {

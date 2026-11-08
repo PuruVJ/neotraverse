@@ -468,7 +468,10 @@ export function coerceKey(segment: string): PropertyKey {
 	// Only coerce canonical, safe integers. A round-trip check rejects
 	// leading-zero (`"08"`) and oversized (`"9".repeat(20)`) segments that would
 	// otherwise be silently corrupted into a different/imprecise number (C-13).
-	if (INT_RE.test(segment)) {
+	// Most segments are names: one char code rules them out before the regex runs
+	// (NaN for '' fails the range too, as the regex fails on '').
+	const c = segment.charCodeAt(0);
+	if (c >= 48 && c <= 57 && INT_RE.test(segment)) {
 		const n = Number(segment);
 		if (Number.isSafeInteger(n) && String(n) === segment) return n;
 	}

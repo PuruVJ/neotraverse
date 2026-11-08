@@ -13,9 +13,11 @@ import {
 	filter,
 	find,
 	forEach,
+	forEachAsync,
 	get,
 	has,
 	map,
+	mapAsync,
 	merge,
 	nodes,
 	parseDotPath,
@@ -30,9 +32,11 @@ import {
 	DEEP_PATH,
 	build_array,
 	build_circular,
+	build_deep,
 	build_map_set,
 	build_realistic,
 	build_refs,
+	build_wide,
 	dataset_options,
 	datasets,
 } from './data.ts';
@@ -69,6 +73,25 @@ for (const [operation, fn] of Object.entries(operations)) {
 	}
 }
 
+// The async walks: the same callbacks as forEach and map, awaited per node.
+const async_operations: Record<string, (d: any) => Promise<unknown>> = {
+	forEachAsync: (d) =>
+		forEachAsync(d, (_c: any, n: any) => {
+			if (typeof n === 'number') sink += n;
+		}),
+	mapAsync: (d) =>
+		mapAsync(d, (c: any, n: any) => {
+			if (typeof n === 'number') c.update(n + 1);
+			else if (typeof n === 'string') c.update(n.toUpperCase());
+		}),
+};
+
+for (const [operation, fn] of Object.entries(async_operations)) {
+	for (const [name, dataset] of Object.entries(datasets)) {
+		bench(`${operation} · ${name}`, ({ d }) => fn(d), dataset_options(dataset));
+	}
+}
+
 bench('get · json', ({ d }) => get(d, DEEP_PATH), { setup: () => ({ d: build_realistic() }) });
 bench('has · json', ({ d }) => has(d, DEEP_PATH), { setup: () => ({ d: build_realistic() }) });
 bench('set · json', ({ d }) => set(d, DEEP_PATH, 1), { setup: () => ({ d: build_realistic() }) });
@@ -88,6 +111,29 @@ bench('diff · array(256)', ({ a, b }) => diff(a, b).length, {
 		a: build_array(256),
 		b: build_array(256).map((o, i) => (i % 5 === 0 ? { ...o, name: `${o.name}!` } : o)),
 	}),
+});
+// A flat object with every third value changed: grows the key count, so an extra pass over
+// an object's keys shows as a class change.
+const wide_changed = (n: number) => {
+	const o = build_wide(n);
+	for (let i = 0; i < n; i += 3) o['k' + i] = 'changed';
+	return o;
+};
+bench('diff · wide', ({ a, b }) => diff(a, b).length, {
+	setup: () => ({ a: build_wide(64), b: wide_changed(64) }),
+	scale: (_ctx, factor) => ({ a: build_wide(64 * factor), b: wide_changed(64 * factor) }),
+});
+// One changed leaf at the bottom of a chain: grows the depth, so a per-key path copy shows.
+const deep_leaf_changed = (n: number) => {
+	const d = build_deep(n);
+	let cur = d;
+	while (cur.child) cur = cur.child;
+	cur.label = 'changed';
+	return d;
+};
+bench('diff · deep, one leaf changed', ({ a, b }) => diff(a, b).length, {
+	setup: () => ({ a: build_deep(32), b: deep_leaf_changed(32) }),
+	scale: (_ctx, factor) => ({ a: build_deep(32 * factor), b: deep_leaf_changed(32 * factor) }),
 });
 bench('merge · json', ({ a, b }) => merge(a, b), {
 	setup: () => {
@@ -117,12 +163,15 @@ bench(
 		}),
 	{ setup: () => ({ d: build_realistic() }) },
 );
+const patch_input = (n: number) => {
+	const a = build_array(n);
+	const b = build_array(n).map((o, i) => (i % 5 === 0 ? { ...o, name: `${o.name}!` } : o));
+	return { d: a, ops: diff(a, b) };
+};
 bench('patch · array(256), every fifth name', ({ d, ops }) => patch(d, ops), {
-	setup: () => {
-		const a = build_array(256);
-		const b = build_array(256).map((o, i) => (i % 5 === 0 ? { ...o, name: `${o.name}!` } : o));
-		return { d: a, ops: diff(a, b) };
-	},
+	setup: () => patch_input(256),
+	// more items, so more ops: an extra pass over the ops shows as a class change
+	scale: (_ctx, factor) => patch_input(256 * factor),
 });
 bench('parseDotPath · a.b[3].c', () => parseDotPath('profile.posts[3].meta.tags[0]'));
 bench('parseJsonPointer · /a/b/3/c', () => parseJsonPointer('/profile/posts/3/meta/tags/0'));

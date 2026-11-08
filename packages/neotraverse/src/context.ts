@@ -50,6 +50,40 @@ interface WalkState {
 	parents: WalkContext[];
 	descend_map_set: boolean;
 	concurrency: number;
+	// walk(): the ancestor Map while the stack is deeper than SCAN_DEPTH, else null
+	deep: Map<object, WalkContext> | null;
+	// walk(): a check found a match in `deep`, so an object may be on the stack twice
+	// (a callback can clear ctx.circular and descend); see enter_deep
+	deep_hit: boolean;
+	// walk_async() child states: the context the state was made for, while its
+	// `parents` array is not built yet (see build_parents); null otherwise
+	owner: WalkContext | null;
+	// walk_async(): true while `owner` descends (it is then the last of its parents)
+	descending: boolean;
+}
+
+// walk_async() child states start with these: their context sets its own
+// parent/key/level, and `parents` is built only when it is read. Never written.
+// One element each, so the constructor's `[level - 1]` reads stay in bounds
+// (an index of -1 is a slow named-property lookup).
+const NO_PATH: PropertyKey[] = [undefined as unknown as PropertyKey];
+const NO_PARENTS: WalkContext[] = [undefined as unknown as WalkContext];
+
+// The ancestors of an async child state's context, built from its parent chain
+// the first time `ctx.parents` is read. From then on the walker pushes and pops
+// the array like any other.
+function build_parents(w: WalkState, owner: WalkContext): WalkContext[] {
+	const n = owner.level;
+	const out = new Array<WalkContext>(w.descending ? n + 1 : n);
+	let c = owner.parent as WalkContext;
+	for (let i = n - 1; i >= 0; i--) {
+		out[i] = c;
+		c = c.parent as WalkContext;
+	}
+	if (w.descending) out[n] = owner;
+	w.parents = out;
+	w.owner = null;
+	return out;
 }
 
 // before/after/pre/post hooks — lazily allocated, so the common path that uses
@@ -105,7 +139,8 @@ class WalkContext implements TraverseContext {
 
 	// the live ancestor stack — shared, so it's read straight off the walk state
 	get parents(): TraverseContext[] {
-		return this.w.parents;
+		const w = this.w;
+		return w.owner === null ? w.parents : build_parents(w, w.owner);
 	}
 
 	// derived flags — no per-node storage
@@ -203,8 +238,7 @@ function make_sibling_ctx(self: WalkContext, sibKey: PropertyKey): WalkContext {
 	sib.level = self.level;
 	sib.isRoot = self.level === 0;
 	if (typeof sibNode === 'object' && sibNode !== null) {
-		sib.keys = initial_keys(w, sibNode, w.iter);
-		sib.isLeaf = sib.keys.length === 0;
+		set_initial_keys(sib, w, sibNode, w.iter);
 	} else {
 		sib.isLeaf = true;
 	}
@@ -223,6 +257,10 @@ function make_walk_state(options: TraverseOptions = empty_null, immutable?: bool
 		// Clamp to a positive integer. NaN / fractional / <1 values silently dropped
 		// or skipped nodes via the batch stride; floor and floor again to 1 (A-1).
 		concurrency: clamp_concurrency(options.concurrency),
+		deep: null,
+		deep_hit: false,
+		owner: null,
+		descending: false,
 	};
 }
 
@@ -240,43 +278,12 @@ function descend_children(
 	const { path } = w;
 	const pre = mods !== null ? mods.pre : undefined;
 	const post = mods !== null ? mods.post : undefined;
-	if (w.descend_map_set && node instanceof Map) {
-		const entries = [...node.entries()];
-		const last = entries.length - 1;
-		for (let index = 0; index <= last; index++) {
-			if (!w.alive && !immutable) break; // stop() — don't allocate contexts for remaining siblings (W2)
-			const [key, val] = entries[index];
-			path.push(key);
-			if (pre !== undefined) pre(ctx, val, key);
-			const child = walker(val);
-			// write the value back into the cloned Map entry only if it changed (C-9, DEEP-1)
-			if (immutable && child.node !== val) (node as Map<any, any>).set(key, child.node);
-			child.isLast = index === last;
-			child.isFirst = index === 0;
-			if (post !== undefined) post(ctx, child);
-			path.pop();
-		}
-		return;
-	}
-	if (w.descend_map_set && node instanceof Set) {
-		const vals = [...node];
-		const last = vals.length - 1;
-		for (let index = 0; index <= last; index++) {
-			if (!w.alive && !immutable) break; // stop() — don't allocate contexts for remaining siblings (W2)
-			path.push(index);
-			if (pre !== undefined) pre(ctx, vals[index], index);
-			const child = walker(vals[index]);
-			// rewrite the cloned Set member if the callback replaced it (C-9)
-			if (immutable && child.node !== vals[index]) {
-				(node as Set<any>).delete(vals[index]);
-				(node as Set<any>).add(child.node);
-			}
-			child.isLast = index === last;
-			child.isFirst = index === 0;
-			if (post !== undefined) post(ctx, child);
-			path.pop();
-		}
-		return;
+	// Map and Set children live in their own functions: the walk recurses through
+	// this one, so its frame (every local of every branch) is paid once per level
+	// of depth, and a smaller frame lets a deeper walk fit on the stack.
+	if (w.descend_map_set) {
+		if (node instanceof Map) return descend_map_entries(w, ctx, node, walker, immutable, pre, post);
+		if (node instanceof Set) return descend_set_members(w, ctx, node, walker, immutable, pre, post);
 	}
 	const keys = ctx.keys as PropertyKey[];
 	const node_is_array = is_array(node);
@@ -314,6 +321,62 @@ function descend_children(
 	}
 }
 
+function descend_map_entries(
+	w: WalkState,
+	ctx: WalkContext,
+	node: Map<any, any>,
+	walker: (node_: any) => WalkContext,
+	immutable: boolean,
+	pre: Modifiers['pre'],
+	post: Modifiers['post'],
+): void {
+	const { path } = w;
+	const entries = [...node.entries()];
+	const last = entries.length - 1;
+	for (let index = 0; index <= last; index++) {
+		if (!w.alive && !immutable) break; // stop() — don't allocate contexts for remaining siblings (W2)
+		const [key, val] = entries[index];
+		path.push(key);
+		if (pre !== undefined) pre(ctx, val, key);
+		const child = walker(val);
+		// write the value back into the cloned Map entry only if it changed (C-9, DEEP-1)
+		if (immutable && child.node !== val) node.set(key, child.node);
+		child.isLast = index === last;
+		child.isFirst = index === 0;
+		if (post !== undefined) post(ctx, child);
+		path.pop();
+	}
+}
+
+function descend_set_members(
+	w: WalkState,
+	ctx: WalkContext,
+	node: Set<any>,
+	walker: (node_: any) => WalkContext,
+	immutable: boolean,
+	pre: Modifiers['pre'],
+	post: Modifiers['post'],
+): void {
+	const { path } = w;
+	const vals = [...node];
+	const last = vals.length - 1;
+	for (let index = 0; index <= last; index++) {
+		if (!w.alive && !immutable) break; // stop() — don't allocate contexts for remaining siblings (W2)
+		path.push(index);
+		if (pre !== undefined) pre(ctx, vals[index], index);
+		const child = walker(vals[index]);
+		// rewrite the cloned Set member if the callback replaced it (C-9)
+		if (immutable && child.node !== vals[index]) {
+			node.delete(vals[index]);
+			node.add(child.node);
+		}
+		child.isLast = index === last;
+		child.isFirst = index === 0;
+		if (post !== undefined) post(ctx, child);
+		path.pop();
+	}
+}
+
 // Recompute keys/isLeaf after the cb replaced the node (the uncommon path).
 function update_state(ctx: WalkContext): void {
 	const node = ctx.node;
@@ -335,15 +398,83 @@ function update_state(ctx: WalkContext): void {
 	}
 }
 
-function initial_keys(
+// The child keys of an object node, and whether it is a leaf.
+function set_initial_keys(
+	ctx: WalkContext,
 	w: WalkState,
 	node0: object,
 	iter: (obj: object) => PropertyKey[],
-): PropertyKey[] {
-	if (w.descend_map_set && node0 instanceof Map) return map_set_child_keys(node0);
-	if (w.descend_map_set && node0 instanceof Set) return map_set_child_keys(node0);
-	const keys = iter(node0);
-	return is_array(node0) ? array_keys(node0, keys) : keys;
+): void {
+	let keys: PropertyKey[];
+	if (w.descend_map_set && (node0 instanceof Map || node0 instanceof Set)) {
+		keys = map_set_child_keys(node0);
+	} else {
+		keys = iter(node0);
+		if (is_array(node0)) keys = array_keys(node0, keys);
+	}
+	ctx.keys = keys;
+	ctx.isLeaf = keys.length === 0;
+}
+
+// A node is circular when its object is already on the ancestor stack, and
+// ctx.circular is the OUTERMOST such ancestor. Scanning the stack made a chain of
+// depth d cost d²/2. Up to SCAN_DEPTH ancestors the scan stays (cheaper than a Map
+// at the depths real data has); deeper, the walk keeps a Map of each object on the
+// stack → its outermost context there (see index_ancestors). It is made by the
+// first check on a stack deeper than SCAN_DEPTH and dropped when the stack is
+// back to SCAN_DEPTH.
+const SCAN_DEPTH = 32;
+
+// The Map for a stack deeper than SCAN_DEPTH: every object on it, mapped to its
+// outermost context (a callback that clears ctx.circular can put one object on the
+// stack twice). Contexts that descend while it lives add themselves when their
+// object is not in it yet, and remove themselves when they finish.
+function index_ancestors(parents: WalkContext[]): Map<object, WalkContext> {
+	const deep = new Map<object, WalkContext>();
+	// innermost first, so an outer context overwrites an inner one for the same object
+	for (let i = parents.length - 1; i >= 0; i--) {
+		const n = parents[i].node_;
+		if (typeof n === 'object' && n !== null) deep.set(n, parents[i]);
+	}
+	return deep;
+}
+
+// walk()'s walker scans up to SCAN_DEPTH ancestors inline and calls these two only
+// on a deeper stack, so a shallow walk pays one depth compare for them. The Map work
+// stays out of the walker on purpose: V8 inlines the walker into descend_children
+// only while its bytecode stays under 460 bytes, and without that every level of
+// depth takes an extra stack frame, so the deepest walk that fits gets shallower.
+function circular_deep(w: WalkState, ctx: WalkContext, node_: object): void {
+	const circular = (w.deep ??= index_ancestors(w.parents)).get(node_);
+	if (circular !== undefined) {
+		ctx.circular = circular;
+		w.deep_hit = true;
+	}
+}
+// Around the descent of a context at `depth` > SCAN_DEPTH on the stack: it enters
+// the Map (when one exists; a child's check makes it otherwise, from the stack),
+// leaves it after, and the context at SCAN_DEPTH + 1 drops it, as the stack goes
+// back to SCAN_DEPTH. Called beside descend_children, not around it, so a deep
+// walk takes no extra stack frame per level.
+//
+// An object can be on the stack twice only if a check found it there and the
+// callback cleared ctx.circular. Until a check in the Map finds a match
+// (w.deep_hit), a context's object cannot be in it yet when it enters, and is its
+// own entry when it leaves, so both skip the lookup. (A pair found by the scan sits
+// in the first SCAN_DEPTH levels, whose contexts never enter or leave.)
+function enter_deep(w: WalkState, ctx: WalkContext): void {
+	const deep = w.deep;
+	if (deep === null) return;
+	const n = ctx.node_;
+	if (typeof n === 'object' && n !== null && (!w.deep_hit || !deep.has(n))) deep.set(n, ctx);
+}
+function leave_deep(w: WalkState, ctx: WalkContext, depth: number): void {
+	const deep = w.deep;
+	if (deep === null) return;
+	if (depth === SCAN_DEPTH + 1) {
+		w.deep = null;
+		w.deep_hit = false;
+	} else if (!w.deep_hit || deep.get(ctx.node_) === ctx) deep.delete(ctx.node_);
 }
 
 /**
@@ -368,7 +499,8 @@ export function walk(
 	const w = make_walk_state(options);
 	const { immutable, max_depth, parents, iter } = w;
 	const walker = (node_: any): WalkContext => {
-		assert_within_depth(w.path.length, max_depth);
+		// the stack holds one context per level, as w.path holds one key
+		assert_within_depth(parents.length, max_depth);
 
 		const node0 = immutable ? copy(node_, options) : node_;
 		const ctx = new WalkContext(w, node_, node0);
@@ -377,15 +509,17 @@ export function walk(
 
 		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
 		if (node0_is_obj) {
-			const keys0 = initial_keys(w, node0, iter);
-			ctx.keys = keys0;
-			ctx.isLeaf = keys0.length === 0;
-			for (let i = 0; i < parents.length; i++) {
-				if (parents[i].node_ === node_) {
-					ctx.circular = parents[i];
-					break;
+			set_initial_keys(ctx, w, node0, iter);
+			// 32 is SCAN_DEPTH, written out: a module const costs the walker a context
+			// load and a TDZ check per use, and its bytecode is at the inlining limit
+			if (parents.length <= 32) {
+				for (let i = 0; i < parents.length; i++) {
+					if (parents[i].node_ === node_) {
+						ctx.circular = parents[i];
+						break;
+					}
 				}
-			}
+			} else circular_deep(w, ctx, node_);
 		} else {
 			ctx.isLeaf = true;
 		}
@@ -394,7 +528,7 @@ export function walk(
 		if (ret !== undefined) ctx.update(ret);
 
 		const mods = ctx.mods;
-		if (mods !== null && mods.before !== undefined) mods.before(ctx, ctx.node);
+		if (mods !== null) run_before(mods, ctx);
 
 		if (!ctx.keep_going) return ctx;
 
@@ -402,17 +536,97 @@ export function walk(
 		const fresh = node === node0; // callback didn't replace the node — copy is ours
 		const descend = fresh ? node0_is_obj : typeof node === 'object' && node !== null;
 		if (descend && ctx.circular === undefined) {
-			parents.push(ctx);
+			const depth = parents.push(ctx);
 			if (!fresh) update_state(ctx);
+			if (depth > 32) enter_deep(w, ctx);
 			descend_children(w, ctx, node, walker, immutable, mods, fresh);
+			if (depth > 32) leave_deep(w, ctx, depth);
 			parents.pop();
 		}
 
-		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
+		if (mods !== null) run_after(mods, ctx);
 
 		return ctx;
 	};
 	return walker(root).node;
+}
+
+// walk()'s before/after hooks, out of the walker to keep its bytecode small (see
+// circular_deep); they run only when a callback set a hook.
+function run_before(mods: Modifiers, ctx: WalkContext): void {
+	if (mods.before !== undefined) mods.before(ctx, ctx.node);
+}
+function run_after(mods: Modifiers, ctx: WalkContext): void {
+	if (mods.after !== undefined) mods.after(ctx, ctx.node);
+}
+
+// walk_async()'s circular check. Each object a context is descending into → that
+// context, or a list of them: with concurrency > 1 sibling branches descend at
+// once, so one object can be on several branches, and a callback that clears
+// ctx.circular puts one object on a branch twice. Each entry is checked against
+// the node's parent chain. Used only with concurrency > 1 (see walk_async).
+type ActiveAncestors = Map<object, WalkContext | WalkContext[]>;
+
+// The outermost ancestor of a child of `up` that holds `node_`, or undefined.
+function active_circular(
+	active: ActiveAncestors,
+	up: WalkContext | undefined,
+	node_: object,
+): WalkContext | undefined {
+	const hit = active.get(node_);
+	if (hit === undefined || up === undefined) return undefined;
+	if (!is_array(hit)) return is_ancestor(hit, up) ? hit : undefined;
+	let outermost: WalkContext | undefined;
+	for (let i = 0; i < hit.length; i++) {
+		const c = hit[i];
+		if (is_ancestor(c, up) && (outermost === undefined || c.level < outermost.level)) outermost = c;
+	}
+	return outermost;
+}
+
+// walk_async() with concurrency 1, on a chain deeper than SCAN_DEPTH: every object
+// on the parent chain from `up`, mapped to its outermost context there.
+function index_chain(up: WalkContext): Map<object, WalkContext> {
+	const deep = new Map<object, WalkContext>();
+	// innermost first, so an outer context overwrites an inner one for the same object
+	for (
+		let c: WalkContext | undefined = up;
+		c !== undefined;
+		c = c.parent as WalkContext | undefined
+	) {
+		const n = c.node_;
+		if (typeof n === 'object' && n !== null) deep.set(n, c);
+	}
+	return deep;
+}
+
+// Whether `c` is `up` or one of its ancestors.
+function is_ancestor(c: WalkContext, up: WalkContext): boolean {
+	let x: WalkContext | undefined = up;
+	while (x !== undefined && x.level > c.level) x = x.parent as WalkContext | undefined;
+	return x === c;
+}
+
+function enter_active(active: ActiveAncestors, ctx: WalkContext): void {
+	const n = ctx.node_;
+	if (typeof n !== 'object' || n === null) return;
+	const hit = active.get(n);
+	if (hit === undefined) active.set(n, ctx);
+	else if (is_array(hit)) hit.push(ctx);
+	else active.set(n, [hit, ctx]);
+}
+
+function leave_active(active: ActiveAncestors, ctx: WalkContext): void {
+	const n = ctx.node_;
+	if (typeof n !== 'object' || n === null) return;
+	const hit = active.get(n);
+	if (hit === ctx) {
+		active.delete(n);
+	} else if (hit !== undefined && is_array(hit)) {
+		const i = hit.indexOf(ctx);
+		if (i !== -1) hit.splice(i, 1);
+		if (hit.length === 0) active.delete(n);
+	}
 }
 
 // Async twin of walk(): identical shape, but awaits the callback and the
@@ -429,24 +643,52 @@ async function walk_async(
 	const w = make_walk_state(options);
 	const { immutable, iter } = w;
 	const signal = options.signal;
-	const walker = async (node_: any, state: WalkState = w): Promise<WalkContext> => {
+	// concurrency 1 runs one branch at a time, so the ancestors are exactly the parent
+	// chain: it is scanned up to SCAN_DEPTH levels and indexed deeper, as in walk().
+	// With more, sibling branches overlap and the check uses `active` instead.
+	const one_branch = w.concurrency === 1;
+	const active: ActiveAncestors = new Map();
+	let chain: Map<object, WalkContext> | null = null;
+	let chain_hit = false;
+	// `up` is the parent context and `key` this node's key (undefined for the root).
+	const walker = async (
+		node_: any,
+		state: WalkState = w,
+		up?: WalkContext,
+		key?: PropertyKey,
+	): Promise<WalkContext> => {
 		signal?.throwIfAborted();
-		assert_within_depth(state.path.length, state.max_depth);
+		const level = up === undefined ? 0 : up.level + 1;
+		assert_within_depth(level, state.max_depth);
 
 		const node0 = immutable ? copy(node_, options) : node_;
 		const ctx = new WalkContext(state, node_, node0);
+		if (up !== undefined) {
+			ctx.parent = up;
+			ctx.key = key;
+			ctx.level = level;
+			ctx.isRoot = false;
+			state.owner = ctx;
+		}
 
 		if (!state.alive) return ctx;
 
 		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
 		if (node0_is_obj) {
-			const keys0 = initial_keys(state, node0, iter);
-			ctx.keys = keys0;
-			ctx.isLeaf = keys0.length === 0;
-			for (let i = 0; i < state.parents.length; i++) {
-				if (state.parents[i].node_ === node_) {
-					ctx.circular = state.parents[i];
-					break;
+			set_initial_keys(ctx, state, node0, iter);
+			if (!one_branch) {
+				const circular = active_circular(active, up, node_);
+				if (circular !== undefined) ctx.circular = circular;
+			} else if (level <= SCAN_DEPTH) {
+				// the parent chain, innermost first: the last match is the outermost
+				for (let c = up; c !== undefined; c = c.parent as WalkContext | undefined) {
+					if (c.node_ === node_) ctx.circular = c;
+				}
+			} else {
+				const circular = (chain ??= index_chain(up as WalkContext)).get(node_);
+				if (circular !== undefined) {
+					ctx.circular = circular;
+					chain_hit = true;
 				}
 			}
 		} else {
@@ -464,10 +706,30 @@ async function walk_async(
 		const node = ctx.node;
 		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
 		if (descend && ctx.circular === undefined) {
-			state.parents.push(ctx);
+			if (state.owner === null) state.parents.push(ctx);
+			else state.descending = true;
+			if (!one_branch) enter_active(active, ctx);
+			else if (
+				level >= SCAN_DEPTH &&
+				chain !== null &&
+				typeof node_ === 'object' &&
+				node_ !== null
+			) {
+				// skip the lookup until a check found a match (see enter_deep)
+				if (!chain_hit || !chain.has(node_)) chain.set(node_, ctx);
+			}
 			if (node !== node0) update_state(ctx);
 			await descend_children_async(state, ctx, node, walker, immutable, mods);
-			state.parents.pop();
+			if (!one_branch) leave_active(active, ctx);
+			else if (level >= SCAN_DEPTH && chain !== null) {
+				// the context at SCAN_DEPTH drops the Map, as the chain goes back to it
+				if (level === SCAN_DEPTH) {
+					chain = null;
+					chain_hit = false;
+				} else if (!chain_hit || chain.get(node_) === ctx) chain.delete(node_);
+			}
+			if (state.owner === null) state.parents.pop();
+			else state.descending = false;
 		}
 
 		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
@@ -481,28 +743,33 @@ async function descend_children_async(
 	w: WalkState,
 	ctx: WalkContext,
 	node: any,
-	walker: (node_: any, state?: WalkState) => Promise<WalkContext>,
+	walker: (node_: any, state: WalkState, up: WalkContext, key: PropertyKey) => Promise<WalkContext>,
 	immutable: boolean,
 	mods: Modifiers | null,
 ): Promise<void> {
-	const { path, parents } = w;
 	const pre = mods !== null ? mods.pre : undefined;
 	const post = mods !== null ? mods.post : undefined;
 	const limit = w.concurrency;
 	const visitOne = async (key: PropertyKey, childVal: any, index: number, last: number) => {
+		// One state per child, so stop() stops that child's subtree only. It copies
+		// no arrays: the child's path comes from its parent chain, and its `parents`
+		// is built on first read (build_parents), so a child costs O(1), not O(depth).
 		const childState: WalkState = {
 			alive: w.alive,
 			immutable: w.immutable,
 			iter: w.iter,
 			max_depth: w.max_depth,
-			path: path.slice(),
-			parents: parents.slice(),
+			path: NO_PATH,
+			parents: NO_PARENTS,
 			descend_map_set: w.descend_map_set,
 			concurrency: w.concurrency,
+			deep: null,
+			deep_hit: false,
+			owner: null,
+			descending: false,
 		};
-		childState.path.push(key);
 		if (pre !== undefined) pre(ctx, childVal, key);
-		const child = await walker(childVal, childState);
+		const child = await walker(childVal, childState, ctx, key);
 		// Mirror the sync descend writeback (incl. Map/Set entries, C-9), but only when
 		// the slot doesn't already hold child.node — unchanged leaves and values that
 		// ctx.update() already wrote are skipped (DEEP-1).
@@ -609,9 +876,7 @@ function walk_bfs(
 
 		const node0_is_obj = typeof node0 === 'object' && node0 !== null;
 		if (node0_is_obj) {
-			const keys0 = initial_keys(w, node0, iter);
-			ctx.keys = keys0;
-			ctx.isLeaf = keys0.length === 0;
+			set_initial_keys(ctx, w, node0, iter);
 			for (let i = 0; i < parents.length; i++) {
 				if (parents[i].node_ === node_) {
 					ctx.circular = parents[i];
@@ -811,6 +1076,7 @@ export function groupBy(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/core#t-map
+ * @heisenbench linear in obj
  */
 export function map(
 	obj: any,
@@ -847,6 +1113,7 @@ export function forEach(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/core#t-reduce
+ * @heisenbench linear in obj
  */
 export function reduce(
 	obj: any,
@@ -1012,6 +1279,7 @@ export function paths(obj: any, options?: TraverseOptions): PropertyKey[][] {
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/core#t-paths-nodes
+ * @heisenbench linear in obj
  */
 export function nodes(obj: any, options?: TraverseOptions): any[] {
 	const acc: any[] = [];
@@ -1100,6 +1368,7 @@ function* iterate_values(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
+ * @heisenbench linear in obj
  */
 export async function forEachAsync(
 	obj: any,
@@ -1120,6 +1389,7 @@ export async function forEachAsync(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
+ * @heisenbench linear in obj
  */
 export async function mapAsync(
 	obj: any,

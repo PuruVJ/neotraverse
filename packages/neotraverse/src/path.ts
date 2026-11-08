@@ -175,8 +175,14 @@ export function parseJsonPointer(pointer: string): PropertyKey[] {
 	if (pointer === '') return [];
 	if (!pointer.startsWith('/')) throw new Error('neotraverse: JSON Pointer must start with "/"');
 	const raw = pointer.slice(1).split('/');
+	// Both escapes start with `~`, so a segment without one is already unescaped and
+	// skips the two regex passes (RFC 6901 order: `~1` → `/` first, then `~0` → `~`).
 	const keys = raw.map((seg) =>
-		coerceKey(seg.replace(PTR_UNESCAPE_SLASH_RE, '/').replace(PTR_UNESCAPE_TILDE_RE, '~')),
+		coerceKey(
+			seg.indexOf('~') === -1
+				? seg
+				: seg.replace(PTR_UNESCAPE_SLASH_RE, '/').replace(PTR_UNESCAPE_TILDE_RE, '~'),
+		),
 	);
 	assertSafePath(keys);
 	return keys;
