@@ -52,6 +52,35 @@ interface WalkState {
 	concurrency: number;
 	// walk(): the ancestor Map while the stack is deeper than SCAN_DEPTH, else null
 	deep: Map<object, WalkContext> | null;
+	// walk_async() child states: the context the state was made for, while its
+	// `parents` array is not built yet (see build_parents); null otherwise
+	owner: WalkContext | null;
+	// walk_async(): true while `owner` descends (it is then the last of its parents)
+	descending: boolean;
+}
+
+// walk_async() child states start with these: their context sets its own
+// parent/key/level, and `parents` is built only when it is read. Never written.
+// One element each, so the constructor's `[level - 1]` reads stay in bounds
+// (an index of -1 is a slow named-property lookup).
+const NO_PATH: PropertyKey[] = [undefined as unknown as PropertyKey];
+const NO_PARENTS: WalkContext[] = [undefined as unknown as WalkContext];
+
+// The ancestors of an async child state's context, built from its parent chain
+// the first time `ctx.parents` is read. From then on the walker pushes and pops
+// the array like any other.
+function build_parents(w: WalkState, owner: WalkContext): WalkContext[] {
+	const n = owner.level;
+	const out = new Array<WalkContext>(w.descending ? n + 1 : n);
+	let c = owner.parent as WalkContext;
+	for (let i = n - 1; i >= 0; i--) {
+		out[i] = c;
+		c = c.parent as WalkContext;
+	}
+	if (w.descending) out[n] = owner;
+	w.parents = out;
+	w.owner = null;
+	return out;
 }
 
 // before/after/pre/post hooks — lazily allocated, so the common path that uses
@@ -107,7 +136,8 @@ class WalkContext implements TraverseContext {
 
 	// the live ancestor stack — shared, so it's read straight off the walk state
 	get parents(): TraverseContext[] {
-		return this.w.parents;
+		const w = this.w;
+		return w.owner === null ? w.parents : build_parents(w, w.owner);
 	}
 
 	// derived flags — no per-node storage
@@ -226,6 +256,8 @@ function make_walk_state(options: TraverseOptions = empty_null, immutable?: bool
 		// or skipped nodes via the batch stride; floor and floor again to 1 (A-1).
 		concurrency: clamp_concurrency(options.concurrency),
 		deep: null,
+		owner: null,
+		descending: false,
 	};
 }
 
@@ -484,6 +516,65 @@ export function walk(
 	return walker(root).node;
 }
 
+// walk_async()'s circular check. Each object a context is descending into → that
+// context, or a list of them: with concurrency > 1 sibling branches descend at
+// once, so one object can be on several branches, and a callback that clears
+// ctx.circular puts one object on a branch twice. With concurrency 1 only one
+// branch runs, so every entry is an ancestor of the node being checked; otherwise
+// each entry is checked against the node's parent chain.
+type ActiveAncestors = Map<object, WalkContext | WalkContext[]>;
+
+// The outermost ancestor of a child of `up` that holds `node_`, or undefined.
+function active_circular(
+	active: ActiveAncestors,
+	up: WalkContext | undefined,
+	node_: object,
+	one_branch: boolean,
+): WalkContext | undefined {
+	const hit = active.get(node_);
+	if (hit === undefined || up === undefined) return undefined;
+	if (!is_array(hit)) return one_branch || is_ancestor(hit, up) ? hit : undefined;
+	let outermost: WalkContext | undefined;
+	for (let i = 0; i < hit.length; i++) {
+		const c = hit[i];
+		if (
+			(one_branch || is_ancestor(c, up)) &&
+			(outermost === undefined || c.level < outermost.level)
+		)
+			outermost = c;
+	}
+	return outermost;
+}
+
+// Whether `c` is `up` or one of its ancestors.
+function is_ancestor(c: WalkContext, up: WalkContext): boolean {
+	let x: WalkContext | undefined = up;
+	while (x !== undefined && x.level > c.level) x = x.parent as WalkContext | undefined;
+	return x === c;
+}
+
+function enter_active(active: ActiveAncestors, ctx: WalkContext): void {
+	const n = ctx.node_;
+	if (typeof n !== 'object' || n === null) return;
+	const hit = active.get(n);
+	if (hit === undefined) active.set(n, ctx);
+	else if (is_array(hit)) hit.push(ctx);
+	else active.set(n, [hit, ctx]);
+}
+
+function leave_active(active: ActiveAncestors, ctx: WalkContext): void {
+	const n = ctx.node_;
+	if (typeof n !== 'object' || n === null) return;
+	const hit = active.get(n);
+	if (hit === ctx) {
+		active.delete(n);
+	} else if (hit !== undefined && is_array(hit)) {
+		const i = hit.indexOf(ctx);
+		if (i !== -1) hit.splice(i, 1);
+		if (hit.length === 0) active.delete(n);
+	}
+}
+
 // Async twin of walk(): identical shape, but awaits the callback and the
 // recursive descent — so the callback may be `async`. The structural hooks
 // (before/after/pre/post) still run synchronously. Reuses WalkContext/WalkState/
@@ -498,12 +589,28 @@ async function walk_async(
 	const w = make_walk_state(options);
 	const { immutable, iter } = w;
 	const signal = options.signal;
-	const walker = async (node_: any, state: WalkState = w): Promise<WalkContext> => {
+	const active: ActiveAncestors = new Map();
+	const one_branch = w.concurrency === 1;
+	// `up` is the parent context and `key` this node's key (undefined for the root).
+	const walker = async (
+		node_: any,
+		state: WalkState = w,
+		up?: WalkContext,
+		key?: PropertyKey,
+	): Promise<WalkContext> => {
 		signal?.throwIfAborted();
-		assert_within_depth(state.path.length, state.max_depth);
+		const level = up === undefined ? 0 : up.level + 1;
+		assert_within_depth(level, state.max_depth);
 
 		const node0 = immutable ? copy(node_, options) : node_;
 		const ctx = new WalkContext(state, node_, node0);
+		if (up !== undefined) {
+			ctx.parent = up;
+			ctx.key = key;
+			ctx.level = level;
+			ctx.isRoot = false;
+			state.owner = ctx;
+		}
 
 		if (!state.alive) return ctx;
 
@@ -512,12 +619,8 @@ async function walk_async(
 			const keys0 = initial_keys(state, node0, iter);
 			ctx.keys = keys0;
 			ctx.isLeaf = keys0.length === 0;
-			for (let i = 0; i < state.parents.length; i++) {
-				if (state.parents[i].node_ === node_) {
-					ctx.circular = state.parents[i];
-					break;
-				}
-			}
+			const circular = active_circular(active, up, node_, one_branch);
+			if (circular !== undefined) ctx.circular = circular;
 		} else {
 			ctx.isLeaf = true;
 		}
@@ -533,10 +636,14 @@ async function walk_async(
 		const node = ctx.node;
 		const descend = node === node0 ? node0_is_obj : typeof node === 'object' && node !== null;
 		if (descend && ctx.circular === undefined) {
-			state.parents.push(ctx);
+			if (state.owner === null) state.parents.push(ctx);
+			else state.descending = true;
+			enter_active(active, ctx);
 			if (node !== node0) update_state(ctx);
 			await descend_children_async(state, ctx, node, walker, immutable, mods);
-			state.parents.pop();
+			leave_active(active, ctx);
+			if (state.owner === null) state.parents.pop();
+			else state.descending = false;
 		}
 
 		if (mods !== null && mods.after !== undefined) mods.after(ctx, ctx.node);
@@ -550,29 +657,32 @@ async function descend_children_async(
 	w: WalkState,
 	ctx: WalkContext,
 	node: any,
-	walker: (node_: any, state?: WalkState) => Promise<WalkContext>,
+	walker: (node_: any, state: WalkState, up: WalkContext, key: PropertyKey) => Promise<WalkContext>,
 	immutable: boolean,
 	mods: Modifiers | null,
 ): Promise<void> {
-	const { path, parents } = w;
 	const pre = mods !== null ? mods.pre : undefined;
 	const post = mods !== null ? mods.post : undefined;
 	const limit = w.concurrency;
 	const visitOne = async (key: PropertyKey, childVal: any, index: number, last: number) => {
+		// One state per child, so stop() stops that child's subtree only. It copies
+		// no arrays: the child's path comes from its parent chain, and its `parents`
+		// is built on first read (build_parents), so a child costs O(1), not O(depth).
 		const childState: WalkState = {
 			alive: w.alive,
 			immutable: w.immutable,
 			iter: w.iter,
 			max_depth: w.max_depth,
-			path: path.slice(),
-			parents: parents.slice(),
+			path: NO_PATH,
+			parents: NO_PARENTS,
 			descend_map_set: w.descend_map_set,
 			concurrency: w.concurrency,
 			deep: null,
+			owner: null,
+			descending: false,
 		};
-		childState.path.push(key);
 		if (pre !== undefined) pre(ctx, childVal, key);
-		const child = await walker(childVal, childState);
+		const child = await walker(childVal, childState, ctx, key);
 		// Mirror the sync descend writeback (incl. Map/Set entries, C-9), but only when
 		// the slot doesn't already hold child.node — unchanged leaves and values that
 		// ctx.update() already wrote are skipped (DEEP-1).

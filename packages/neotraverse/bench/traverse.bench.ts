@@ -13,9 +13,11 @@ import {
 	filter,
 	find,
 	forEach,
+	forEachAsync,
 	get,
 	has,
 	map,
+	mapAsync,
 	merge,
 	nodes,
 	parseDotPath,
@@ -64,6 +66,25 @@ const operations: Record<string, (d: any) => unknown> = {
 };
 
 for (const [operation, fn] of Object.entries(operations)) {
+	for (const [name, dataset] of Object.entries(datasets)) {
+		bench(`${operation} · ${name}`, ({ d }) => fn(d), dataset_options(dataset));
+	}
+}
+
+// The async walks: the same callbacks as forEach and map, awaited per node.
+const async_operations: Record<string, (d: any) => Promise<unknown>> = {
+	forEachAsync: (d) =>
+		forEachAsync(d, (_c: any, n: any) => {
+			if (typeof n === 'number') sink += n;
+		}),
+	mapAsync: (d) =>
+		mapAsync(d, (c: any, n: any) => {
+			if (typeof n === 'number') c.update(n + 1);
+			else if (typeof n === 'string') c.update(n.toUpperCase());
+		}),
+};
+
+for (const [operation, fn] of Object.entries(async_operations)) {
 	for (const [name, dataset] of Object.entries(datasets)) {
 		bench(`${operation} · ${name}`, ({ d }) => fn(d), dataset_options(dataset));
 	}
