@@ -75,7 +75,13 @@ function clone_node(
 	const keys = options.includeSymbols ? own_enumerable_keys(src) : object_keys(src);
 	for (let i = 0; i < keys.length; i++) {
 		const key = keys[i];
-		safe_set(dst, key, clone_node(src[key], seen, options, depth + 1));
+		const v = src[key];
+		// a primitive clones to itself: skip the call (most values in wide objects)
+		safe_set(
+			dst,
+			key,
+			typeof v !== 'object' || v === null ? v : clone_node(v, seen, options, depth + 1),
+		);
 	}
 	// Error.cause is a non-enumerable own slot make_shell copied by reference — deep-clone
 	// it so the clone is fully independent of the source (D2).
