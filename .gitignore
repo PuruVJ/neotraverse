@@ -10,6 +10,9 @@ dist
 packages/neotraverse/legacy.js
 packages/neotraverse/legacy.d.ts
 
+# Heisenbench step counts (`pnpm bench:count`)
+packages/neotraverse/bench/heisenbench.json
+
 # generated bundle-size measurement artifacts
 packages/neotraverse/scripts/bundle-out/
 

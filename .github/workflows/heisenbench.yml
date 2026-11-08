@@ -1,0 +1,133 @@
+name: Heisenbench
+
+# Counts the work each function does (`pnpm bench:count`) on the PR head and on the commit it
+# branched from, and posts the difference, with the head's own counts and growth, as one PR
+# comment. Counts are exact, so one run of each side is enough and the runner's speed does
+# not matter. Heisenbench needs Node 26.4+; the other workflows stay on Node 24.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heisenbench-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  PKG: packages/neotraverse
+
+jobs:
+  count:
+    # Runs the PR's code, so it can write nothing: no token is left in the checkout.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Count the PR
+        run: |
+          pnpm install --frozen-lockfile
+          mkdir -p "$RUNNER_TEMP/heisenbench"
+          pnpm bench:count
+          pnpm --filter neotraverse bench:growth
+          cp "$PKG/bench/heisenbench.json" "$RUNNER_TEMP/heisenbench/head.json"
+
+      # The base is the merge base. When it has its own bench files, it is counted with them.
+      # When it has none yet (the first PR), the PR's bench files run on the base's `src/`, so
+      # the diff still compares the two versions of the library.
+      - name: Count the base
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          out="$RUNNER_TEMP/heisenbench"
+          base=$(git merge-base "$BASE_SHA" HEAD)
+          echo "$base" > "$out/base-sha"
+          git diff --name-only "$base" HEAD -- "$PKG/src" > "$out/src-changes"
+          if git show "$base:$PKG/package.json" | grep -q '"bench:count"'; then
+            echo own > "$out/base-mode"
+            git worktree add "$RUNNER_TEMP/base" "$base"
+            cd "$RUNNER_TEMP/base"
+            pnpm install --frozen-lockfile
+            # A bench file that does not load on the base is listed in the diff, not fatal.
+            pnpm bench:count || true
+            cp "$PKG/bench/heisenbench.json" "$out/base.json"
+          else
+            echo head-benches > "$out/base-mode"
+            rm -rf "$PKG/src"
+            git checkout "$base" -- "$PKG/src"
+            pnpm bench:count || true
+            cp "$PKG/bench/heisenbench.json" "$out/base.json"
+            git reset -q -- "$PKG/src"
+            git checkout -- "$PKG/src"
+            git clean -fdq -- "$PKG/src"
+          fi
+
+      - name: Write the comment
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          out="$RUNNER_TEMP/heisenbench"
+          base=$(cat "$out/base-sha")
+          changed=$(grep -c . "$out/src-changes" || true)
+          {
+            echo "Head \`${HEAD_SHA:0:7}\` against \`${base:0:7}\`, where it branched from its base."
+            echo
+            if [ "$(cat "$out/base-mode")" = head-benches ]; then
+              echo "The base has no bench files yet, so the base side is this PR's bench files run on the base commit's \`src/\`."
+              echo
+            fi
+            if [ "$changed" = 0 ]; then
+              echo "**Same code on both sides:** this PR changes nothing under \`$PKG/src\`, so 0 change is expected."
+            else
+              echo "This PR changes $changed file(s) under \`$PKG/src\`:"
+              sed 's/^/- `/; s/$/`/' "$out/src-changes"
+            fi
+            echo
+            (cd "$PKG" && pnpm exec heisenbench diff "$out/base.json" "$out/head.json" --repo ../.. --base "$base" --head "$HEAD_SHA")
+            echo
+            node "$PKG/bench/summary.ts" "$out/head.json" "$out/base.json"
+          } > "$out/section.md"
+          cat "$out/section.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: heisenbench
+          path: ${{ runner.temp }}/heisenbench
+
+  comment:
+    # Holds the write token and runs nothing from the PR: it reads `section.md` as text.
+    needs: count
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: heisenbench
+      - name: Post or update the comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          marker='<!-- neotraverse-heisenbench -->'
+          body="$(printf '%s\n\n%s' "$marker" "$(head -c 60000 section.md)")"
+          id=$(gh api "repos/$GH_REPO/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id" | head -n 1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GH_REPO/issues/comments/$id" -f body="$body" > /dev/null
+          else
+            gh api "repos/$GH_REPO/issues/$PR/comments" -f body="$body" > /dev/null
+          fi

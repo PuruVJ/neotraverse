@@ -20,6 +20,7 @@ pnpm test           # run the library test suite
 pnpm test:cov       # …with coverage
 pnpm build          # build the library (tsdown)
 pnpm bench          # benchmark vs the original `traverse`
+pnpm bench:count    # count the work each function does (Heisenbench, Node 26.4+)
 
 pnpm docs:dev       # run the docs site locally
 pnpm docs:build     # build the docs site
