@@ -991,6 +991,7 @@ export function groupBy(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/core#t-map
+ * @heisenbench linear in obj
  */
 export function map(
 	obj: any,
@@ -1027,6 +1028,7 @@ export function forEach(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/core#t-reduce
+ * @heisenbench linear in obj
  */
 export function reduce(
 	obj: any,
@@ -1192,6 +1194,7 @@ export function paths(obj: any, options?: TraverseOptions): PropertyKey[][] {
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/core#t-paths-nodes
+ * @heisenbench linear in obj
  */
 export function nodes(obj: any, options?: TraverseOptions): any[] {
 	const acc: any[] = [];
@@ -1280,6 +1283,7 @@ function* iterate_values(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
+ * @heisenbench linear in obj
  */
 export async function forEachAsync(
 	obj: any,
@@ -1300,6 +1304,7 @@ export async function forEachAsync(
  * ```
  *
  * @see https://neotraverse.puruvj.dev/guide/api/async#t-async
+ * @heisenbench linear in obj
  */
 export async function mapAsync(
 	obj: any,
