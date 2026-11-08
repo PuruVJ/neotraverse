@@ -32,6 +32,7 @@ import {
 	DEEP_PATH,
 	build_array,
 	build_circular,
+	build_deep,
 	build_map_set,
 	build_realistic,
 	build_refs,
@@ -109,6 +110,18 @@ bench('diff · array(256)', ({ a, b }) => diff(a, b).length, {
 		a: build_array(256),
 		b: build_array(256).map((o, i) => (i % 5 === 0 ? { ...o, name: `${o.name}!` } : o)),
 	}),
+});
+// One changed leaf at the bottom of a chain: grows the depth, so a per-key path copy shows.
+const deep_leaf_changed = (n: number) => {
+	const d = build_deep(n);
+	let cur = d;
+	while (cur.child) cur = cur.child;
+	cur.label = 'changed';
+	return d;
+};
+bench('diff · deep, one leaf changed', ({ a, b }) => diff(a, b).length, {
+	setup: () => ({ a: build_deep(32), b: deep_leaf_changed(32) }),
+	scale: (_ctx, factor) => ({ a: build_deep(32 * factor), b: deep_leaf_changed(32 * factor) }),
 });
 bench('merge · json', ({ a, b }) => merge(a, b), {
 	setup: () => {
