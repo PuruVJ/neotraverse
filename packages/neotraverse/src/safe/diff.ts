@@ -7,7 +7,7 @@
 import { assert_depth, has_own, shallow_shell, type_tag } from './kernel/keys.js';
 import { clone } from './clone.js';
 import { equal } from './equal.js';
-import { set, to_keys, type WriteOptions } from './path.js';
+import { get, set, to_write_keys, type WriteOptions } from './path.js';
 
 export type PatchOp =
 	| { op: 'add'; path: string; value: any }
@@ -145,7 +145,7 @@ function remove_at(root: any, keys: readonly PropertyKey[], mutate: boolean): an
 	if (keys.length === 0) return root;
 	const parentKeys = keys.slice(0, -1);
 	const last = keys[keys.length - 1];
-	const parent = parentKeys.length ? get_in(root, parentKeys) : root;
+	const parent = parentKeys.length ? get(root, parentKeys) : root;
 	if (parent == null) return root; // nothing to remove
 	if (mutate) {
 		if (Array.isArray(parent) && typeof last === 'number') parent.splice(last, 1);
@@ -168,15 +168,6 @@ function remove_at(root: any, keys: readonly PropertyKey[], mutate: boolean): an
 	return parentKeys.length ? set(root, parentKeys, newParent) : newParent;
 }
 
-// minimal own-key navigation for patch internals (avoids importing get's overloads)
-function get_in(node: any, keys: readonly PropertyKey[]): any {
-	for (let i = 0; i < keys.length; i++) {
-		if (node == null) return undefined;
-		node = node instanceof Map ? node.get(keys[i]) : node[keys[i] as any];
-	}
-	return node;
-}
-
 /**
  * Apply RFC 6902 ops copy-on-write. `patch(x, []) === x`; `{ mutate: true }`
  * applies in place. Throws on `move`/`copy`/`test` ops.
@@ -184,13 +175,19 @@ function get_in(node: any, keys: readonly PropertyKey[]): any {
 export function patch<T>(value: T, ops: readonly PatchOp[], options?: WriteOptions): T;
 export function patch(value: any, ops: readonly PatchOp[], options?: WriteOptions): any {
 	const mutate = !!options?.mutate;
-	let root = value;
+	// Check every op before applying any, so a refused patch never leaves the input half patched.
+	const paths: (readonly PropertyKey[])[] = new Array(ops.length);
 	for (let i = 0; i < ops.length; i++) {
 		const op = ops[i];
 		if (op.op !== 'add' && op.op !== 'remove' && op.op !== 'replace') {
 			throw new TypeError(`neotraverse: unsupported patch op "${(op as any).op}"`);
 		}
-		const keys = to_keys(op.path.startsWith('/') || op.path === '' ? op.path : `/${op.path}`);
+		paths[i] = to_write_keys(op.path.startsWith('/') || op.path === '' ? op.path : `/${op.path}`);
+	}
+	let root = value;
+	for (let i = 0; i < ops.length; i++) {
+		const op = ops[i];
+		const keys = paths[i];
 		if (op.op === 'remove') {
 			root = remove_at(root, keys, mutate);
 		} else if (op.op === 'add' && keys.length > 0 && typeof keys[keys.length - 1] === 'number') {
@@ -206,7 +203,7 @@ export function patch(value: any, ops: readonly PatchOp[], options?: WriteOption
 function insert_at(root: any, keys: readonly PropertyKey[], value: any, mutate: boolean): any {
 	const parentKeys = keys.slice(0, -1);
 	const idx = keys[keys.length - 1] as number;
-	const parent = parentKeys.length ? get_in(root, parentKeys) : root;
+	const parent = parentKeys.length ? get(root, parentKeys) : root;
 	if (Array.isArray(parent)) {
 		if (mutate) {
 			parent.splice(idx, 0, value);

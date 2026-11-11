@@ -133,7 +133,7 @@ function apply_edits(
 			for (const [k, v] of edits) {
 				if (typeof k === 'number') continue;
 				if (v === REMOVED) delete (base as any)[k];
-				else (base as any)[k] = v;
+				else safe_set(base, k, v);
 			}
 			return base;
 		}
@@ -147,9 +147,9 @@ function apply_edits(
 			if (typeof k === 'string' && '' + +k === k && +k < len) continue; // a real index, already placed
 			if (edits.has(k)) {
 				const e = edits.get(k);
-				if (e !== REMOVED) (out as any)[k] = e;
+				if (e !== REMOVED) safe_set(out, k, e);
 			} else {
-				(out as any)[k] = (base as any)[k];
+				safe_set(out, k, (base as any)[k]);
 			}
 		}
 		return out;

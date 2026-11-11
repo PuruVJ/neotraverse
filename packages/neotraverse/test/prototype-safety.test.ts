@@ -2,6 +2,8 @@
 // built-in prototypes exactly as they were. One matrix for the whole class, so a new write
 // path that skips the guard fails here, not in the field (GHSA-cg7r-g8r9-c93w).
 import { describe, expect, test } from 'vite-plus/test';
+import { patch as modernPatch, set as modernSet } from '../src/index';
+import { Traverse } from '../src/legacy/index';
 import { patch, set, transform } from '../src/safe/index';
 
 const PROTOTYPES = [Object.prototype, Array.prototype, Map.prototype, Function.prototype] as const;
@@ -116,6 +118,35 @@ describe('safe API: no write reaches a built-in prototype', () => {
 			}
 		}
 	}
+
+	// The default and legacy entry points share no code with safe/, so the same class is checked there.
+	for (const [rootName, make] of Object.entries(ROOTS)) {
+		for (const hostile of HOSTILE) {
+			for (const tail of TAILS) {
+				const keys = [...hostile.split('/'), tail];
+				const pointer = `/${keys.join('/')}`;
+				const label = `${pointer} on ${rootName}`;
+				test(`default patch add/replace/remove ${label}`, () => {
+					for (const op of ['add', 'replace', 'remove'] as const) {
+						expect(
+							touched(() => modernPatch(make(), [{ op, path: pointer, value: 'x' } as any])),
+						).toEqual([]);
+					}
+				});
+				test(`default set ${label}`, () => {
+					expect(touched(() => modernSet(make(), keys, 'x'))).toEqual([]);
+				});
+				test(`legacy set ${label}`, () => {
+					expect(touched(() => new Traverse(make()).set(keys, 'x'))).toEqual([]);
+				});
+			}
+		}
+	}
+
+	test('default and legacy set never write through an inherited Symbol.unscopables', () => {
+		expect(touched(() => modernSet([], [Symbol.unscopables, 'polluted'], true))).toEqual([]);
+		expect(touched(() => new Traverse([]).set([Symbol.unscopables, 'polluted'], true))).toEqual([]);
+	});
 
 	test('set never writes through a value the path only inherits (Symbol.unscopables)', () => {
 		expect(
