@@ -8,7 +8,14 @@
 // writes, key coercion); it never pulls the cursor, pattern compiler, or
 // transform, so a get/set/has-only consumer stays tiny.
 
-import { coerce_key, has_own, is_unsafe_key, safe_set, shallow_shell } from './kernel/keys.js';
+import {
+	assert_safe_write_path,
+	coerce_key,
+	has_own,
+	is_unsafe_key,
+	safe_set,
+	shallow_shell,
+} from './kernel/keys.js';
 
 export type Path = string | readonly PropertyKey[];
 
@@ -45,6 +52,16 @@ export function to_keys(path: Path): readonly PropertyKey[] {
 	if (typeof path !== 'string') return path;
 	if (path === '') return [];
 	return path[0] === '/' ? parse_pointer(path) : parse_dot(path);
+}
+
+/**
+ * The one gate for every write path (set, patch): the keys, or a TypeError if
+ * any segment could reach a prototype. Reads treat such a segment as absent instead.
+ */
+export function to_write_keys(path: Path): readonly PropertyKey[] {
+	const keys = to_keys(path);
+	assert_safe_write_path(keys);
+	return keys;
 }
 
 // --- read --------------------------------------------------------------------
@@ -110,10 +127,12 @@ function write_child(node: any, key: PropertyKey, value: any): void {
 	else safe_set(node, key, value);
 }
 
+// A write walks the same own-data step as get, so set and get agree on what a
+// path names and a write never lands in an inherited object (prototype-safety.test.ts).
 function read_child(node: any, key: PropertyKey): any {
+	if (node === null || typeof node !== 'object' || node instanceof Set) return undefined;
 	if (node instanceof Map) return node.get(key);
-	if (node === null || typeof node !== 'object') return undefined;
-	return node[key];
+	return has_own.call(node, key) ? node[key] : undefined;
 }
 
 // Shallow-copy `node` for a write, preserving its container kind; autovivify a
@@ -165,13 +184,8 @@ export function set<T, const P extends Path>(
 	options?: WriteOptions,
 ): T;
 export function set(obj: any, path: Path, value: any, options?: WriteOptions): any {
-	const keys = to_keys(path);
+	const keys = to_write_keys(path);
 	if (keys.length === 0) return value;
-	for (let i = 0; i < keys.length; i++) {
-		if (is_unsafe_key(keys[i])) {
-			throw new TypeError(`neotraverse: unsafe path segment "${String(keys[i])}"`);
-		}
-	}
 	if (options?.mutate) {
 		set_in_place(obj, keys, value);
 		return obj;
