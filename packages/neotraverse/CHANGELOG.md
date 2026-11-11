@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- 1860cd9: `forEachAsync` and `mapAsync` no longer copy the path and the ancestor list for every child, so deeply nested input no longer slows them down with the square of the depth.
+- 1860cd9: `clone` copies primitive values without an extra function call, so wide objects clone faster.
+- 1860cd9: `forEach`, `map`, `reduce`, `paths`, `nodes` and the other depth-first walks no longer slow down with the square of the depth on deeply nested data: the circular check is a Map lookup past 32 levels instead of a scan of every ancestor.
+- 1860cd9: `diff` no longer copies the path at every key, so it is faster on large and deeply nested input; the ops it returns are the same.
+- 1860cd9: `parseDotPath` (and `parsePath` on dot paths) runs its number check only on segments that start with a digit.
+- d95273e: `neotraverse/safe`: `patch`, `set` and `transform` can no longer reach or change a built-in prototype (GHSA-cg7r-g8r9-c93w). `patch` now refuses a `__proto__`, `constructor` or `prototype` path segment with a TypeError before it applies any op, and `set` only walks through the object's own data, the same data `get` reads.
+- 1860cd9: `parseJsonPointer` (and `patch`, which uses it) skips the unescape step for segments without a `~`, the usual case.
+
 ## 1.0.1
 
 ### Patch Changes
