@@ -214,6 +214,14 @@ body {
 .nt-brand:hover .nt-version {
 	color: var(--nt-brand-1);
 }
+/* the links sit on the right, next to the theme switcher (search stays centered on wide screens) */
+.og-cheader-nav {
+	margin-left: auto;
+	gap: 1.25rem;
+}
+.og-cheader-tools {
+	margin-left: 0;
+}
 .og-cheader-link {
 	font-family: var(--nt-mono);
 	font-size: 0.78rem;
@@ -273,6 +281,9 @@ body {
 .og-body h2 {
 	font-weight: 800;
 	letter-spacing: -0.025em;
+	/* one rule under the heading, not ogygia's rule above it as well */
+	border-top: 0;
+	padding-top: 0;
 	border-bottom: 1px solid var(--nt-divider);
 	padding-bottom: 0.4rem;
 	margin-top: 3rem;
