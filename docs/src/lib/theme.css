@@ -357,6 +357,17 @@ body {
 	overflow: hidden;
 	font-variant-numeric: tabular-nums;
 }
+/* the table draws the rounded frame; cells only draw the lines between them */
+.og-body :is(th, td) {
+	border: 0;
+	border-bottom: 1px solid var(--nt-divider);
+}
+.og-body :is(th, td) + :is(th, td) {
+	border-left: 1px solid var(--nt-divider);
+}
+.og-body tr:last-child > td {
+	border-bottom: 0;
+}
 .og-body th {
 	font-family: var(--nt-mono);
 	font-size: 0.74rem;
