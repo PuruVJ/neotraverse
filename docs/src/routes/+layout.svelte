@@ -1,5 +1,8 @@
 <script lang="ts">
 	import DocsShell from '@ogygia/content/docs-shell';
+	// The shell's own sidebar island, mounted from our code: ogygia scans src/ before it builds the
+	// runtime, so the `keep` mark is seen in time (inside DocsShell it is found too late).
+	import { Sidebar } from '@ogygia/content' with { wake: 'load', keep: 'og-sidebar' };
 	import '@fontsource-variable/inter/index.css';
 	import '@ogygia/content/theme.css';
 	import '@ogygia/content/shell.css';
@@ -25,6 +28,9 @@
 			<img src="/logo.svg" alt="neotraverse" height="26" />
 			<span class="nt-version">v{pkg.version}</span>
 		</a>
+	{/snippet}
+	{#snippet sidebar(tree, base)}
+		<Sidebar nav={tree} {base} />
 	{/snippet}
 	{#snippet actions()}
 		<a
