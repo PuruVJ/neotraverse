@@ -17,5 +17,8 @@ packages/neotraverse/bench/heisenbench.json
 packages/neotraverse/scripts/bundle-out/
 
 # docs build
-docs/.vitepress/dist
-docs/.vitepress/cache
+docs/.svelte-kit
+docs/.vercel
+
+# ogygia build-time keep-client route (auto-removed; only survives a crashed build)
+**/.ogygia-keep-client/

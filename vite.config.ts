@@ -39,8 +39,9 @@ export default defineConfig({
 		ignorePatterns: [
 			'**/dist/**',
 			'**/node_modules/**',
-			'docs/.vitepress/cache/**',
-			'docs/.vitepress/data/**', // generated npm-stats data
+			'docs/.svelte-kit/**',
+			'docs/.vercel/**',
+			'docs/src/lib/data/**', // generated npm-stats data
 			'**/coverage/**',
 			'.claude/**', // local editor/agent settings
 		],

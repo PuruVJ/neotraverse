@@ -1,7 +1,7 @@
 name: Refresh npm downloads
 
 # Redeploys the docs site daily so the build-time npm download counter
-# (docs/.vitepress/config.ts `npm-downloads-fetch` plugin) re-fetches and
+# (docs/vite.config.ts `npm-downloads-fetch` plugin) re-fetches and
 # bakes a fresh total into the static HTML.
 
 on:

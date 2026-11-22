@@ -1,13 +1,13 @@
 /**
  * Fetch all-time npm download counts (sum of daily stats from registry API).
- * Writes docs/.vitepress/data/npm-downloads.json, run before `vitepress build` or via prebuild.
+ * Writes docs/src/lib/data/npm-downloads.json, run before `vite build` or via prebuild.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = join(ROOT, '.vitepress/data/npm-downloads.json');
+const OUT = join(ROOT, 'src/lib/data/npm-downloads.json');
 const PACKAGE = 'neotraverse';
 const RANGE_START = '2015-01-01';
 
