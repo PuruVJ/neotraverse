@@ -156,9 +156,14 @@
 /* ---------------------------------------------------------------------------
  * Concrete grunge, fixed, behind everything (ported from bundle-roast)
  * ------------------------------------------------------------------------- */
+/* Dialogs (the mobile nav sheet, the search palette) portal straight into <body>, outside
+ * .og-shell, so the type and colors have to live here too. */
 body {
 	margin: 0;
 	background-color: var(--nt-bg);
+	color: var(--nt-text-1);
+	font-family: var(--nt-sans);
+	line-height: 1.6;
 }
 .og-shell {
 	background-color: var(--nt-bg);
