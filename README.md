@@ -9,7 +9,7 @@ Traverse and transform objects by visiting every node on a recursive walk. A zer
 | Package                                          | Description                          |
 | ------------------------------------------------ | ------------------------------------ |
 | [`packages/neotraverse`](./packages/neotraverse) | The published `neotraverse` library. |
-| [`docs`](./docs)                                 | The documentation site (VitePress).  |
+| [`docs`](./docs)                                 | The documentation site (ogygia).     |
 
 ## Develop
 

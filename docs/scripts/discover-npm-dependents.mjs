@@ -8,8 +8,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = join(ROOT, '.vitepress/data/neotraverse-npm-dependents.json');
-const USERS_JSON = join(ROOT, '.vitepress/data/neotraverse-users.json');
+const OUT = join(ROOT, 'src/lib/data/neotraverse-npm-dependents.json');
+const USERS_JSON = join(ROOT, 'src/lib/data/neotraverse-users.json');
 const PKG_JSON = join(ROOT, '../packages/neotraverse/package.json');
 
 /** GitHub repo → npm package name (monorepos / renamed packages). */

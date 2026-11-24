@@ -1,13 +1,15 @@
 {
 	"$schema": "https://unpkg.com/wrangler@4.159.0/config-schema.json",
 	"name": "neotraverse-docs",
+	"main": "docs/.svelte-kit/cloudflare/_worker.js",
 	"compatibility_date": "2026-11-01",
+	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
-		"directory": "docs/.vitepress/dist",
-		"html_handling": "drop-trailing-slash",
-		"not_found_handling": "404-page"
+		"binding": "ASSETS",
+		"directory": "docs/.svelte-kit/cloudflare"
 	},
 	"routes": [{ "pattern": "neotraverse.puruvj.dev", "custom_domain": true }],
 	"workers_dev": true,
-	"preview_urls": true
+	"preview_urls": true,
+	"observability": { "enabled": true }
 }

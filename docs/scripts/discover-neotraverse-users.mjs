@@ -9,7 +9,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const DATA_DIR = join(dirname(fileURLToPath(import.meta.url)), '../.vitepress/data');
+const DATA_DIR = join(dirname(fileURLToPath(import.meta.url)), '../src/lib/data');
 const OUT = join(DATA_DIR, 'neotraverse-users.json');
 const USED_BY_OUT = join(DATA_DIR, 'used-by.json');
 

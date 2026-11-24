@@ -3,18 +3,30 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vitepress dev",
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"downloads": "node scripts/fetch-npm-downloads.mjs",
 		"discover-github": "node scripts/discover-neotraverse-users.mjs",
 		"discover-npm": "node scripts/discover-npm-dependents.mjs",
 		"discover": "node scripts/discover-neotraverse-users.mjs && node scripts/discover-npm-dependents.mjs",
-		"discover-users": "node scripts/discover-neotraverse-users.mjs",
-		"build": "vitepress build",
-		"preview": "vitepress preview"
+		"discover-users": "node scripts/discover-neotraverse-users.mjs"
+	},
+	"dependencies": {
+		"@ogygia/content": "^0.14.4",
+		"ogygia": "^0.14.4"
 	},
 	"devDependencies": {
 		"@fontsource-variable/inter": "^5.2.8",
-		"vitepress": "^1.6.4",
-		"vue": "^3.5.35"
+		"@sveltejs/adapter-cloudflare": "^7.2.10",
+		"@sveltejs/kit": "^2.70.2",
+		"@sveltejs/vite-plugin-svelte": "^7.2.0",
+		"mdsvex": "^0.12.8",
+		"shiki": "^4.4.1",
+		"svelte": "^5.57.3",
+		"svelte-check": "^4.7.4",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.5"
 	}
 }
