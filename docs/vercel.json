@@ -1,6 +1,0 @@
-{
-	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"framework": "sveltekit",
-	"installCommand": "pnpm install --frozen-lockfile",
-	"buildCommand": "pnpm build"
-}
