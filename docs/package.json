@@ -14,8 +14,8 @@
 		"discover-users": "node scripts/discover-neotraverse-users.mjs"
 	},
 	"dependencies": {
-		"@ogygia/content": "^0.14.4",
-		"ogygia": "^0.14.4"
+		"@ogygia/content": "^0.15.1",
+		"ogygia": "^0.15.1"
 	},
 	"devDependencies": {
 		"@fontsource-variable/inter": "^5.2.8",

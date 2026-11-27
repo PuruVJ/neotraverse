@@ -21,11 +21,11 @@ importers:
   docs:
     dependencies:
       '@ogygia/content':
-        specifier: ^0.14.4
-        version: 0.14.4(8791cb761f90d129c92e303c3ee62da6)
+        specifier: ^0.15.1
+        version: 0.15.1(d431ec0d7dd7f3753680516914a2d730)
       ogygia:
-        specifier: ^0.14.4
-        version: 0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
+        specifier: ^0.15.1
+        version: 0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
     devDependencies:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
@@ -776,10 +776,10 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@ogygia/compiler@0.14.2':
-    resolution: {integrity: sha512-SE9B4YMzWdgreCiRE3hQ1bTjENGCDg3FKm0Rm4UDLEC3S2p17M/1tR0seOE6MMUMZxLWkLuT01H6wTnqMGMxlg==}
+  '@ogygia/compiler@0.15.1':
+    resolution: {integrity: sha512-CwY57gT6LTGPXmDqtmUQSnUJtbx2y6fJlBeXRwcPeu8Y6pgFdHC7RUN96z+e103QSMZRdJ4vD5PnSp252CcBPg==}
     peerDependencies:
-      '@ogygia/core': ^0.14.1
+      '@ogygia/core': ^0.15.1
       '@sveltejs/kit': '>=2.70.2 <4'
       rolldown: '>=1.0.0'
       svelte: ^5.56.8
@@ -788,18 +788,18 @@ packages:
       rolldown:
         optional: true
 
-  '@ogygia/content@0.14.4':
-    resolution: {integrity: sha512-minFwEeQnPlgOgcN18z3xA0yUCl+49VgXyKX/4An4SSPxyFI3/cltKXonnKK54fvZda4oaFYgSXT+kHxTjuGMg==}
+  '@ogygia/content@0.15.1':
+    resolution: {integrity: sha512-/pBDP2dCNtqbMq2qAK1HO0lovj3y/B64sBQ5VSjJzss3smnMFKPkTMhRLx9andsnPr+21JeeSWDuekYSaHYKdw==}
     peerDependencies:
-      '@ogygia/compiler': ^0.14.2
-      '@ogygia/core': ^0.14.4
+      '@ogygia/compiler': ^0.15.1
+      '@ogygia/core': ^0.15.1
       '@sveltejs/kit': '>=2.70.2 <4'
       shiki: ^3.0.0 || ^4.0.0
       svelte: ^5.56.8
       vite: ^8.2.4
 
-  '@ogygia/core@0.14.4':
-    resolution: {integrity: sha512-uEVrbP+AN5BsRTpg4OtqZ3Qk1oQ6PG+FpayvIoZmc9GNUJustySkO0zGrGSZpsvTLIIlhCLBq4MLQX8wHRb3Tw==}
+  '@ogygia/core@0.15.1':
+    resolution: {integrity: sha512-4xlyp2lWN87IppH3vrEYZr7+nUCX182c8j2OWwww4TUPqBVajiTnXfbAZlfi3klvDUQx5/RPglpKSTbs3G6JiA==}
     peerDependencies:
       '@sveltejs/kit': '>=2.70.2 <4'
       rolldown: '>=1.0.0'
@@ -809,8 +809,8 @@ packages:
       rolldown:
         optional: true
 
-  '@ogygia/machine@0.14.0':
-    resolution: {integrity: sha512-+q7Y0/Wn051d7FojNjl4dPH8cZCdNLJbnWa+tyJUZMis7603kOJ0Uw3kQX+k0KYyec/J1CKGFTb2YmerudzeCA==}
+  '@ogygia/machine@0.15.1':
+    resolution: {integrity: sha512-mmz0pBJsv7237kZR4tDhYPtQmjbS2tGaSJkKJTsBDcjgXQb9ef4J1LVUN+YO59R0vJVseaI6VxMvBUPf+vAHjQ==}
 
   '@orama/orama@3.1.18':
     resolution: {integrity: sha512-a61ljmRVVyG5MC/698C8/FfFDw5a8LOIvyOLW5fztgUXqUpc1jOfQzOitSCbge657OgXXThmY3Tk8fpiDb4UcA==}
@@ -2547,8 +2547,8 @@ packages:
     resolution: {integrity: sha512-AWGB9WFcRXOQs48Z/udjI5ZcZMHXwX8XPByNpOydgcGsDLIzjGizhoMWJyKAWze7AVW/2W1i+/gPX4YtKe5cyg==}
     engines: {node: '>=12.20.0'}
 
-  ogygia@0.14.4:
-    resolution: {integrity: sha512-M/Yb/saQuVEfvLZBLJ2GKv8e2IskIeN+8ryHCSPWqOY1dy3j3pGpCLfzJmlmLB3OVJlbgwqUHKOdTFwVNI/ppA==}
+  ogygia@0.15.1:
+    resolution: {integrity: sha512-UgAr9oxGwXeobnbcUSc3CzanxZI8iEnJhvxb1WoY0JhypaRXpeO7sStB7V3XPjw461vIAQaX/hxQXMtWFUZCLg==}
     hasBin: true
     peerDependencies:
       '@sveltejs/kit': '>=2.70.2 <4'
@@ -2785,11 +2785,6 @@ packages:
 
   semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  semver@7.8.2:
-    resolution: {integrity: sha512-c8jsqUZm3omBOI66G90z1Dyw5z622G8oLG+omfsHBJf3CWQTlOcwOjvOG6wtiNfW6anKm/eA39LMwMtMez2TiQ==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -3853,11 +3848,11 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@ogygia/compiler@0.14.2(@ogygia/core@0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))':
+  '@ogygia/compiler@0.15.1(@ogygia/core@0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      '@ogygia/core': 0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
-      '@ogygia/machine': 0.14.0
+      '@ogygia/core': 0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
+      '@ogygia/machine': 0.15.1
       '@sveltejs/kit': 2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
       devalue: 5.9.4
       estree-walker: 3.0.3
@@ -3868,11 +3863,11 @@ snapshots:
     optionalDependencies:
       rolldown: 1.2.19
 
-  '@ogygia/content@0.14.4(8791cb761f90d129c92e303c3ee62da6)':
+  '@ogygia/content@0.15.1(d431ec0d7dd7f3753680516914a2d730)':
     dependencies:
-      '@ogygia/compiler': 0.14.2(@ogygia/core@0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
-      '@ogygia/core': 0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
-      '@ogygia/machine': 0.14.0
+      '@ogygia/compiler': 0.15.1(@ogygia/core@0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
+      '@ogygia/core': 0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
+      '@ogygia/machine': 0.15.1
       '@orama/orama': 3.1.18
       '@sveltejs/kit': 2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
       bits-ui: 2.22.0(@internationalized/date@3.12.4)(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)
@@ -3884,9 +3879,9 @@ snapshots:
     transitivePeerDependencies:
       - '@internationalized/date'
 
-  '@ogygia/core@0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))':
+  '@ogygia/core@0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))':
     dependencies:
-      '@ogygia/machine': 0.14.0
+      '@ogygia/machine': 0.15.1
       '@sveltejs/kit': 2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
       devalue: 5.9.4
       esm-env: 1.2.2
@@ -3895,7 +3890,7 @@ snapshots:
     optionalDependencies:
       rolldown: 1.2.19
 
-  '@ogygia/machine@0.14.0':
+  '@ogygia/machine@0.15.1':
     dependencies:
       esm-env: 1.2.2
 
@@ -5304,7 +5299,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.2
+      semver: 7.8.6
     optional: true
 
   math-intrinsics@1.1.0: {}
@@ -5410,10 +5405,10 @@ snapshots:
 
   obug@2.1.2: {}
 
-  ogygia@0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)):
+  ogygia@0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)):
     dependencies:
-      '@ogygia/compiler': 0.14.2(@ogygia/core@0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
-      '@ogygia/core': 0.14.4(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
+      '@ogygia/compiler': 0.15.1(@ogygia/core@0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
+      '@ogygia/core': 0.15.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(rolldown@1.2.19)(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
       '@sveltejs/kit': 2.70.4(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.59.1)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4))
       svelte: 5.59.1
       vite: 8.3.8(@types/node@25.9.1)(esbuild@0.28.2)(terser@5.31.2)(tsx@4.22.4)
@@ -5699,9 +5694,6 @@ snapshots:
   safer-buffer@2.1.2: {}
 
   semver@7.6.3: {}
-
-  semver@7.8.2:
-    optional: true
 
   semver@7.8.6: {}
 
